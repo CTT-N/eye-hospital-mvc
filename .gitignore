@@ -1,0 +1,7 @@
+target/
+*.class
+*.log
+.settings/
+.project
+.vscode/
+node_modules/
