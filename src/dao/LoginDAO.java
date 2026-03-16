@@ -42,4 +42,18 @@ public class LoginDAO {
 
         return user;
     }
+
+    public static void main(String[] args) {
+
+        LoginDAO dao = new LoginDAO();
+
+        User user = dao.checkLogin("admin", "123456");
+
+        if(user != null){
+            System.out.println("Login success");
+        }else{
+            System.out.println("Login failed");
+        }
+
+    }
 }

@@ -4,12 +4,10 @@ import dao.LoginDAO;
 import model.User;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet("/login")
 public class LoginController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request,
@@ -21,20 +19,23 @@ public class LoginController extends HttpServlet {
 
         LoginDAO dao = new LoginDAO();
 
-        User user = dao.checkLogin(username, password);
+        User user1 = dao.checkLogin(username, password);
 
-        if (user != null) {
+        if (user1 != null) {
+            // kiểm tra hiệu quả chạy
+            System.out.println("LoginController running");
+            System.out.println(username + " " + password);
 
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);
+            session.setAttribute("user", user1);
 
-            response.sendRedirect("views/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/views/home.jsp");
 
         } else {
 
             request.setAttribute("error", "Invalid username or password");
 
-            request.getRequestDispatcher("views/login.jsp")
+            request.getRequestDispatcher("/views/login.jsp")
                     .forward(request, response);
         }
     }

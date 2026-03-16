@@ -1,7 +1,33 @@
+# Build files
 target/
+build/
+out/
+
+# Compiled Java files
 *.class
+
+# Logs
 *.log
+logs/
+
+# IDE files
 .settings/
 .project
+.classpath
+
+# VS Code
 .vscode/
+
+# Node (nếu có frontend)
 node_modules/
+
+# Tomcat generated files
+work/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment config
+.env

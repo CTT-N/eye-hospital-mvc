@@ -30,9 +30,9 @@ public class DBConnection {
     public static void main(String[] args) {
     Connection conn = getConnection();
     if(conn != null){
-        System.out.println("Connected to MySQL!");
+        System.out.println("Connected to MySQL successfully!");
     } else {
-        System.out.println("Connection failed!");
+        System.out.println("Connected to MySQL failed!");
     }
 }
 }
