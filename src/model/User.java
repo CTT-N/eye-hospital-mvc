@@ -2,39 +2,41 @@ package model;
 
 public class User {
 
-    private String userId;
-    private String userName;
+    private int userId;
+    private String username;
     private String password;
     private String fullName;
     private String email;
     private String role;
-    private String phone;
     private String description;
+    private String phone;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(String userId, String userName, String password, String role) {
+    public User(int userId, String username, String password, String fullName, String email, String role, String phone) {
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
+        this.fullName = fullName;
+        this.email = email;
         this.role = role;
+        this.phone = phone;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -53,14 +55,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getRole() {
         return role;
     }
@@ -77,11 +71,4 @@ public class User {
         this.phone = phone;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

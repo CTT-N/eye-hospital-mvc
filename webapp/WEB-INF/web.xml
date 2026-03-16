@@ -3,15 +3,126 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
          https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+    <welcome-file-list>
+        <welcome-file>views/home.jsp</welcome-file>
+    </welcome-file-list>
 
+<!-- mapping cho LoginController-->
     <servlet>
         <servlet-name>LoginController</servlet-name>
-        <servlet-class>controller.LoginController</servlet-class>
+        <servlet-class>controller.auth.LoginController</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
-        <url-pattern>/login</url-pattern>
+        <url-pattern>/auth/login</url-pattern>
     </servlet-mapping>
+
+<!--mapping cho LogoutController-->
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>controller.auth.LogoutController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/auth/logout</url-pattern>
+    </servlet-mapping>
+
+<!--mapping cho ChangePasswordController-->
+    <servlet>
+        <servlet-name>ChangePasswordController</servlet-name>
+        <servlet-class>controller.auth.ChangePasswordController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ChangePasswordController</servlet-name>
+        <url-pattern>/auth/change-password</url-pattern>
+    </servlet-mapping>
+
+<!--Mapping cho Admin Controllers-->
+
+    <servlet>
+        <servlet-name>AdminDashboardController</servlet-name>
+        <servlet-class>controller.admin.AdminDashboardController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AdminDashboardController</servlet-name>
+        <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
+
+<!--Mapping cho  Manager Controllers-->
+
+    <servlet>
+        <servlet-name>ManagerDashboardController</servlet-name>
+        <servlet-class>controller.manager.ManagerDashboardController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ManagerDashboardController</servlet-name>
+        <url-pattern>/manager/dashboard</url-pattern>
+    </servlet-mapping>
+
+<!--Mapping cho Doctor Controllers-->
+    <servlet>
+        <servlet-name>DoctorDashboardController</servlet-name>
+        <servlet-class>controller.doctor.DoctorDashboardController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DoctorDashboardController</servlet-name>
+        <url-pattern>/doctor/dashboard</url-pattern>
+    </servlet-mapping>
+
+<!--Mapping Patient Controllers-->
+    <servlet>
+        <servlet-name>PatientDashboardController</servlet-name>
+        <servlet-class>controller.patient.PatientDashboardController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PatientDashboardController</servlet-name>
+        <url-pattern>/patient/dashboard</url-pattern>
+    </servlet-mapping>
+
+<!-- AUTH FILTER -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>filter.AuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+<!-- ROLE FILTER -->
+    <filter>
+        <filter-name>RoleFilter</filter-name>
+        <filter-class>filter.RoleFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/manager/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/doctor/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/patient/*</url-pattern>
+    </filter-mapping>
+
 
 </web-app>

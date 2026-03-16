@@ -1,14 +1,14 @@
-CREATE DATABASE eye_hospital;
+CREATE DATABASE IF NOT EXISTS eye_hospital;
 USE eye_hospital;
 
-CREATE TABLE Hospital (
+CREATE TABLE IF NOT EXISTS Hospital (
     HospitalId VARCHAR(25) PRIMARY KEY,
     HospitalName VARCHAR(50),
     Address VARCHAR(200),
     Description VARCHAR(255)
 );
 
-CREATE TABLE Department (
+CREATE TABLE IF NOT EXISTS Department (
     DepartmentId VARCHAR(25) PRIMARY KEY,
     HospitalId VARCHAR(25),
     DepartmentName VARCHAR(255),
@@ -18,7 +18,7 @@ CREATE TABLE Department (
     REFERENCES Hospital(HospitalId)
 );
 
-CREATE TABLE Room (
+CREATE TABLE IF NOT EXISTS Room (
     RoomId VARCHAR(25) PRIMARY KEY,
     DepartmentId VARCHAR(25),
     RoomName VARCHAR(255),
@@ -28,7 +28,7 @@ CREATE TABLE Room (
     REFERENCES Department(DepartmentId)
 );
 
-CREATE TABLE User (
+CREATE TABLE IF NOT EXISTS User (
     UserId VARCHAR(25) PRIMARY KEY,
     UserName VARCHAR(25) UNIQUE,
     Password VARCHAR(25),
@@ -39,7 +39,7 @@ CREATE TABLE User (
     Description VARCHAR(255)
 );
 
-CREATE TABLE Doctor (
+CREATE TABLE IF NOT EXISTS Doctor (
     DoctorId VARCHAR(25) PRIMARY KEY,
     UserId VARCHAR(25),
     DepartmentId VARCHAR(25),
@@ -54,7 +54,7 @@ CREATE TABLE Doctor (
     REFERENCES Department(DepartmentId)
 );
 
-CREATE TABLE Patient (
+CREATE TABLE IF NOT EXISTS Patient (
     PatientId VARCHAR(25) PRIMARY KEY,
     UserId VARCHAR(25),
     CCCD VARCHAR(20),
@@ -67,7 +67,7 @@ CREATE TABLE Patient (
     REFERENCES User(UserId)
 );
 
-CREATE TABLE Appointment (
+CREATE TABLE IF NOT EXISTS Appointment (
     AppointmentId VARCHAR(25) PRIMARY KEY,
     PatientId VARCHAR(25),
     DoctorId VARCHAR(25),
@@ -76,17 +76,12 @@ CREATE TABLE Appointment (
     Time TIME,
     Status VARCHAR(20),
 
-    FOREIGN KEY (PatientId)
-    REFERENCES Patient(PatientId),
-
-    FOREIGN KEY (DoctorId)
-    REFERENCES Doctor(DoctorId),
-
-    FOREIGN KEY (RoomId)
-    REFERENCES Room(RoomId)
+    FOREIGN KEY (PatientId) REFERENCES Patient(PatientId),
+    FOREIGN KEY (DoctorId) REFERENCES Doctor(DoctorId),
+    FOREIGN KEY (RoomId) REFERENCES Room(RoomId)
 );
 
-CREATE TABLE PatientRecord (
+CREATE TABLE IF NOT EXISTS MedicalRecord (
     RecordId VARCHAR(25) PRIMARY KEY,
     AppointmentId VARCHAR(25),
     Symptoms VARCHAR(255),
@@ -99,14 +94,14 @@ CREATE TABLE PatientRecord (
     REFERENCES Appointment(AppointmentId)
 );
 
-CREATE TABLE Service (
+CREATE TABLE IF NOT EXISTS Service (
     ServiceId VARCHAR(25) PRIMARY KEY,
     ServiceName VARCHAR(255),
     Price DECIMAL(10,2),
     Description VARCHAR(255)
 );
 
-CREATE TABLE Invoice (
+CREATE TABLE IF NOT EXISTS Invoice (
     InvoiceId VARCHAR(25) PRIMARY KEY,
     AppointmentId VARCHAR(25),
     Date DATE,
@@ -116,7 +111,7 @@ CREATE TABLE Invoice (
     REFERENCES Appointment(AppointmentId)
 );
 
-CREATE TABLE Invoice_Service (
+CREATE TABLE IF NOT EXISTS Invoice_Service (
     InvoiceId VARCHAR(25),
     ServiceId VARCHAR(25),
     Quanlity integer(10),
@@ -131,7 +126,7 @@ CREATE TABLE Invoice_Service (
     REFERENCES Service(ServiceId)
 );
 
-CREATE TABLE EyeDiseaseInfo (
+CREATE TABLE IF NOT EXISTS EyeDiseaseInfo (
     InfoId VARCHAR(25) PRIMARY KEY,
     UserId VARCHAR(25),
     DiseaseName VARCHAR(255),
@@ -157,4 +152,3 @@ INSERT INTO Department VALUES
 ('D001','H001','Ophthalmology','Eye department');
 INSERT INTO Doctor VALUES
 ('DOC001','U002','D001','PhD','10 years experience','Eye specialist');
-

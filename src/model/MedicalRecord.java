@@ -2,7 +2,7 @@ package model;
 
 import java.sql.Date;
 
-public class PatientRecord {
+public class MedicalRecord {
 
     private String recordId;
     private String appointmentId;
@@ -12,7 +12,7 @@ public class PatientRecord {
     private Date createdDate;
     private String note;
 
-    public PatientRecord() {
+    public MedicalRecord() {
     }
 
     public String getRecordId() {

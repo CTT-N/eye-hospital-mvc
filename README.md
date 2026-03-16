@@ -103,18 +103,47 @@ Trang login sẽ xuất hiện.
 ---
 
 Cấu trúc project:
-src
-├─ controller
-├─ dao
-├─ model
-└─ util
-
-webapp
-├─ views
-└─ WEB-INF
-    ├─ classes
-    ├─ lib
-    └─ web.xml
+eye-hospital-mvc
+│
+├── src
+│   ├── controller
+│   │     LoginController.java
+│   │     ...
+│   ├── dao
+│   │     UserDAO.java
+│   │     ...
+│   ├── model
+│   │     User.java
+│   │     ...
+│   └── util
+│         DBConnection.java
+│
+├── webapp
+│   ├── css
+│   ├── js
+│   │
+│   ├── views
+│   │     home.jsp
+│   │     login.jsp
+│   │
+│   │     ├── admin
+│   │     │     dashboard.jsp
+│   │     │     ...
+│   │     ├── doctor
+│   │     │     dashboard.jsp
+│   │     │     ...
+│   │     ├── manager
+│   │     │     dashboard.jsp
+│   │     │     ...
+│   │     └── patient
+│   │           dashboard.jsp
+│   │           ...
+│   └── WEB-INF
+│        ├── classes
+│        ├── lib
+│        │    mysql-connector-j-9.6.0.jar
+│        │    servlet-api.jar
+│        └── web.xml
 
 
 ---
