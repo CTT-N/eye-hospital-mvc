@@ -123,19 +123,19 @@
 <div class="header">
 
     <div class="logo">
-        Eye Hospital
+        Bệnh viện mắt
     </div>
 
     <div class="auth">
 
         <a class="login"
            href="${pageContext.request.contextPath}/auth/login">
-            Login
+            Đăng nhập
         </a>
 
         <a class="register"
            href="#">
-            Register
+            Đăng ký
         </a>
 
     </div>
@@ -154,7 +154,7 @@
 
 <div class="container">
 
-    <h2>Common Eye Diseases</h2>
+    <h2>Một số bệnh về mắt phổ biến</h2>
 
     <div class="grid">
 

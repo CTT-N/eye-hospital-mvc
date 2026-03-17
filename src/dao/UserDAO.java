@@ -11,7 +11,7 @@ public class UserDAO {
 
     public User login(String username, String password) {
 
-        String sql = "SELECT * FROM users WHERE username=? AND password=?";
+        String sql = "SELECT * FROM user WHERE username=? AND password=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -24,7 +24,7 @@ public class UserDAO {
             if (rs.next()) {
 
                 User user = new User();
-                user.setUserId(rs.getInt("id"));
+                user.setUserId(rs.getString("userId"));
                 user.setUsername(rs.getString("username"));
                 user.setRole(rs.getString("role"));
 
@@ -38,15 +38,15 @@ public class UserDAO {
         return null;
     }
 
-    public boolean updatePassword(int userId, String newPassword) {
+    public boolean updatePassword(String userId, String newPassword) {
 
-        String sql = "UPDATE users SET password = ? WHERE user_id = ?";
+        String sql = "UPDATE user SET password = ? WHERE userId = ?";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, newPassword);
-            ps.setInt(2, userId);
+            ps.setString(2, userId);
 
             int rows = ps.executeUpdate();
 

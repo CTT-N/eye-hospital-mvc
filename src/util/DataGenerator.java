@@ -1,322 +1,244 @@
 package util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.Random;
+import java.sql.*;
+import java.sql.Date;
+import java.util.*;
 
 public class DataGenerator {
 
+    static final String DB_URL = "jdbc:mysql://localhost:3306/eye_hospital";
+    static final String USER = "root";
+    static final String PASS = "123456";
+
     static Random rand = new Random();
 
-    static String[] firstNames = {"An","Binh","Chi","Dung","Ha","Lan","Minh","Nam","Phuc","Trang"};
-    static String[] lastNames = {"Nguyen","Tran","Le","Pham","Hoang","Phan","Vu","Dang"};
+    static String[] ho = {"Nguyen","Tran","Le","Pham","Hoang","Huynh","Phan","Vu","Dang","Bui"};
+    static String[] ten = {"An","Binh","Chau","Dung","Giang","Ha","Hung","Khanh","Linh","Nam","Phong","Quan","Son","Trang","Tu","Vy"};
 
     static String randomName(){
-        return lastNames[rand.nextInt(lastNames.length)] + " " +
-               firstNames[rand.nextInt(firstNames.length)];
+        return ho[rand.nextInt(ho.length)] + " " + ten[rand.nextInt(ten.length)];
     }
 
     static String randomPhone(){
-        return "09" + (rand.nextInt(90000000) + 10000000);
+        return "09" + (10000000 + rand.nextInt(89999999));
     }
 
-    static String randomEmail(int i){
-        return "user"+i+"@gmail.com";
+    static Date randomDate(){
+        long start = Date.valueOf("2024-01-01").getTime();
+        long end = Date.valueOf("2025-12-31").getTime();
+        return new Date(start + (long)(rand.nextDouble()*(end-start)));
     }
 
-    static String randomGender(){
-        return rand.nextBoolean() ? "Male" : "Female";
-    }
+    public static void main(String[] args) {
 
-    // 1 Hospital
-    public static void generateHospital() throws Exception {
+        try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
 
-    Connection conn = DBConnection.getConnection();
+            Statement st = conn.createStatement();
 
-    String sql = "INSERT INTO Hospital (HospitalId, HospitalName, Address, Description) VALUES (?,?,?,?)";
+            System.out.println("Reset database...");
 
-    PreparedStatement ps = conn.prepareStatement(sql);
+            st.execute("SET FOREIGN_KEY_CHECKS=0");
 
-    ps.setString(1,"H002");
-    ps.setString(2,"Vision Care Hospital");
-    ps.setString(3,"Hanoi");
-    ps.setString(4,"Eye treatment hospital");
+            st.execute("TRUNCATE Invoice_Service");
+            st.execute("TRUNCATE Invoice");
+            st.execute("TRUNCATE MedicalRecord");
+            st.execute("TRUNCATE Appointment");
+            st.execute("TRUNCATE Patient");
+            st.execute("TRUNCATE Doctor");
+            st.execute("TRUNCATE Room");
+            st.execute("TRUNCATE Department");
+            st.execute("TRUNCATE Service");
+            st.execute("TRUNCATE EyeDiseaseInfo");
+            st.execute("TRUNCATE User");
 
-    ps.executeUpdate();
+            st.execute("SET FOREIGN_KEY_CHECKS=1");
 
-    System.out.println("Hospital inserted");
-}
+            System.out.println("Generating Hospital...");
 
-    // 2 Department
-    public static void generateDepartments() throws Exception {
+            st.executeUpdate(
+                    "INSERT INTO Hospital VALUES('H001','Benh vien Mat Trung Uong','Ha Noi','Benh vien chuyen khoa mat')"
+            );
 
-        Connection conn = DBConnection.getConnection();
+            System.out.println("Generating Department...");
 
-        String[] deps = {"Eye Examination","Surgery","Emergency","Pharmacy"};
+            for(int i=1;i<=5;i++){
+                st.executeUpdate(
+                        "INSERT INTO Department VALUES('D00"+i+"','H001','Khoa mat "+i+"','Chuyen khoa mat')"
+                );
+            }
 
-        String sql = "INSERT INTO Department (DepartmentId,HospitalId,DepartmentName,Description) VALUES (?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
+            List<String> rooms = new ArrayList<>();
 
-        for(int i=2;i<=5;i++){
+            System.out.println("Generating Room...");
 
-            ps.setString(1,"D00"+i);
-            ps.setString(2,"H001");
-            ps.setString(3,deps[rand.nextInt(deps.length)]);
-            ps.setString(4,"Department description");
+            for(int i=1;i<=10;i++){
 
-            ps.executeUpdate();
+                String roomId="R"+String.format("%03d",i);
+                rooms.add(roomId);
+
+                st.executeUpdate(
+                        "INSERT INTO Room VALUES('"+roomId+"','D001','Phong "+i+"','Phong kham mat')"
+                );
+            }
+
+            List<String> doctorUsers = new ArrayList<>();
+            List<String> patientUsers = new ArrayList<>();
+
+            System.out.println("Generating Users...");
+
+            for(int i=1;i<=1000;i++){
+
+                String uid="U"+String.format("%03d",i);
+
+                String role;
+
+                if(i<=40) role="DOCTOR";
+                else if(i<=340) role="PATIENT";
+                else role="MANAGER";
+
+                st.executeUpdate(
+                        "INSERT INTO User VALUES('"+uid+"','user"+i+"','123456','"
+                                +randomName()+"','user"+i+"@gmail.com','"
+                                +role+"','"+randomPhone()+"','Generated user')"
+                );
+
+                if(role.equals("DOCTOR")) doctorUsers.add(uid);
+                if(role.equals("PATIENT")) patientUsers.add(uid);
+            }
+
+            List<String> doctors = new ArrayList<>();
+
+            System.out.println("Generating Doctor...");
+
+            int d=1;
+
+            for(String u: doctorUsers){
+
+                String did="DOC"+String.format("%03d",d++);
+
+                st.executeUpdate(
+                        "INSERT INTO Doctor VALUES('"+did+"','"+u+"','D001','Thac si','10 nam kinh nghiem','Bac si mat')"
+                );
+
+                doctors.add(did);
+            }
+
+            List<String> patients = new ArrayList<>();
+
+            System.out.println("Generating Patient...");
+
+            int p=1;
+
+            for(String u: patientUsers){
+
+                String pid="PAT"+String.format("%03d",p++);
+
+                st.executeUpdate(
+                        "INSERT INTO Patient VALUES('"+pid+"','"+u+"','0"+(100000000+rand.nextInt(899999999))+
+                                "','Ha Noi','"+randomDate()+"','Nam','Benh nhan')"
+                );
+
+                patients.add(pid);
+            }
+
+            List<String> services = new ArrayList<>();
+
+            System.out.println("Generating Service...");
+
+            for(int i=1;i<=20;i++){
+
+                String sid="S"+String.format("%03d",i);
+
+                services.add(sid);
+
+                st.executeUpdate(
+                        "INSERT INTO Service VALUES('"+sid+"','Dich vu mat "+i+"',"
+                                +(100000+rand.nextInt(500000))+",'Dich vu y te')"
+                );
+            }
+
+            List<String> appointments = new ArrayList<>();
+
+            System.out.println("Generating Appointment...");
+
+            for(int i=1;i<=200;i++){
+
+                String aid="A"+String.format("%03d",i);
+
+                String patient=patients.get(rand.nextInt(patients.size()));
+                String doctor=doctors.get(rand.nextInt(doctors.size()));
+                String room=rooms.get(rand.nextInt(rooms.size()));
+
+                st.executeUpdate(
+                        "INSERT INTO Appointment VALUES('"+aid+"','"+patient+"','"+doctor+"','"+room+"','"
+                                +randomDate()+"','09:00:00','DONE')"
+                );
+
+                appointments.add(aid);
+            }
+
+            System.out.println("Generating MedicalRecord...");
+
+            int r=1;
+
+            for(String a: appointments){
+
+                st.executeUpdate(
+                        "INSERT INTO MedicalRecord VALUES('MR"+String.format("%03d",r++)+"','"
+                                +a+"','Dau mat','Can thi','Deo kinh','"
+                                +randomDate()+"','Ho so benh')"
+                );
+            }
+
+            System.out.println("Generating Invoice...");
+
+            int inv=1;
+
+            for(String a: appointments){
+
+                String iid="INV"+String.format("%03d",inv++);
+
+                st.executeUpdate(
+                        "INSERT INTO Invoice VALUES('"+iid+"','"+a+"','"+randomDate()+"',0)"
+                );
+
+                int total=0;
+
+                for(int i=0;i<2;i++){
+
+                    String service=services.get(rand.nextInt(services.size()));
+
+                    int qty=1+rand.nextInt(3);
+                    int price=100000+rand.nextInt(400000);
+                    int tp=qty*price;
+
+                    total+=tp;
+
+                    st.executeUpdate(
+                            "INSERT ignore INTO Invoice_Service VALUES('"+iid+"','"+service+"',"+qty+","+tp+")"
+                    );
+                }
+
+                st.executeUpdate(
+                        "UPDATE Invoice SET totalAmount="+total+" WHERE invoiceId='"+iid+"'"
+                );
+            }
+
+            System.out.println("Generating EyeDiseaseInfo...");
+
+            for(int i=1;i<=50;i++){
+
+                st.executeUpdate(
+                        "INSERT INTO EyeDiseaseInfo VALUES('E"+String.format("%03d",i)+"','U001','Benh mat "+i+
+                                "','Thong tin benh mat','Mo ta benh','U001','"+randomDate()+"')"
+                );
+            }
+
+            System.out.println("DONE - Database generated successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        System.out.println("Departments inserted");
-    }
-
-    // 3 Room
-    public static void generateRooms() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Room (RoomId,DepartmentId,RoomName,Description) VALUES (?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=10;i++){
-
-            ps.setString(1,"R"+i);
-            ps.setString(2,"D001");
-            ps.setString(3,"Room "+i);
-            ps.setString(4,"Medical room");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Rooms inserted");
-    }
-
-    // 4 User
-    public static void generateUsers() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO User (UserId,UserName,Password,FullName,Email,Role,Phone,Description) VALUES (?,?,?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        String[] roles = {"DOCTOR","PATIENT","STAFF"};
-
-        for(int i=10;i<=40;i++){
-
-            ps.setString(1,"U"+i);
-            ps.setString(2,"user"+i);
-            ps.setString(3,"123456");
-            ps.setString(4,randomName());
-            ps.setString(5,randomEmail(i));
-            ps.setString(6,roles[rand.nextInt(roles.length)]);
-            ps.setString(7,randomPhone());
-            ps.setString(8,"Generated user");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Users inserted");
-    }
-
-    // 5 Doctor
-    public static void generateDoctors() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Doctor VALUES(?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=10;i++){
-
-            ps.setString(1,"DOC"+(100+i));
-            ps.setString(2,"U"+(10+i));
-            ps.setString(3,"D001");
-            ps.setString(4,"MD");
-            ps.setString(5,"5 years experience");
-            ps.setString(6,"Eye doctor");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Doctors inserted");
-    }
-
-    // 6 Patient
-    public static void generatePatients() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Patient VALUES(?,?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=30;i++){
-
-            ps.setString(1,"P"+i);
-            ps.setString(2,"U"+(20+i));
-            ps.setString(3,"0"+(rand.nextInt(900000000)+100000000));
-            ps.setString(4,"Hanoi");
-            ps.setDate(5,new java.sql.Date(System.currentTimeMillis()));
-            ps.setString(6,randomGender());
-            ps.setString(7,"No note");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Patients inserted");
-    }
-
-    // 7 Appointment
-    public static void generateAppointments() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Appointment VALUES(?,?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=50;i++){
-
-            ps.setString(1,"A"+i);
-            ps.setString(2,"P"+(rand.nextInt(30)+1));
-            ps.setString(3,"DOC"+(rand.nextInt(10)+101));
-            ps.setString(4,"R"+(rand.nextInt(10)+1));
-            ps.setDate(5,new java.sql.Date(System.currentTimeMillis()));
-            ps.setTime(6,new java.sql.Time(System.currentTimeMillis()));
-            ps.setString(7,"Scheduled");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Appointments inserted");
-    }
-
-    // 8 PatientRecord
-    public static void generateRecords() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO PatientRecord VALUES(?,?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=50;i++){
-
-            ps.setString(1,"REC"+i);
-            ps.setString(2,"A"+i);
-            ps.setString(3,"Eye pain");
-            ps.setString(4,"Dry eye");
-            ps.setString(5,"Eye drops");
-            ps.setDate(6,new java.sql.Date(System.currentTimeMillis()));
-            ps.setString(7,"No note");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Patient records inserted");
-    }
-
-    // 9 Service
-    public static void generateServices() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Service VALUES(?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        String[] services = {"Eye Test","Laser Surgery","Consultation","Glasses Check"};
-
-        for(int i=1;i<=services.length;i++){
-
-            ps.setString(1,"S"+i);
-            ps.setString(2,services[i-1]);
-            ps.setDouble(3,rand.nextInt(200)+50);
-            ps.setString(4,"Hospital service");
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Services inserted");
-    }
-
-    // 10 Invoice
-    public static void generateInvoices() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Invoice VALUES(?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=30;i++){
-
-            ps.setString(1,"INV"+i);
-            ps.setString(2,"A"+i);
-            ps.setDate(3,new java.sql.Date(System.currentTimeMillis()));
-            ps.setDouble(4,rand.nextInt(500)+100);
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Invoices inserted");
-    }
-
-    // 11 Invoice_Service
-    public static void generateInvoiceServices() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO Invoice_Service VALUES(?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=30;i++){
-
-            ps.setString(1,"INV"+i);
-            ps.setString(2,"S"+(rand.nextInt(4)+1));
-            ps.setInt(3,rand.nextInt(3)+1);
-            ps.setDouble(4,rand.nextInt(200)+50);
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Invoice services inserted");
-    }
-
-    // 12 EyeDiseaseInfo
-    public static void generateEyeDiseaseInfo() throws Exception {
-
-        Connection conn = DBConnection.getConnection();
-
-        String sql = "INSERT INTO EyeDiseaseInfo VALUES(?,?,?,?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        for(int i=1;i<=10;i++){
-
-            ps.setString(1,"INFO"+i);
-            ps.setString(2,"U001");
-            ps.setString(3,"Cataract");
-            ps.setString(4,"Eye disease information");
-            ps.setString(5,"Description");
-            ps.setString(6,"Admin");
-            ps.setDate(7,new java.sql.Date(System.currentTimeMillis()));
-
-            ps.executeUpdate();
-        }
-
-        System.out.println("Eye disease info inserted");
-    }
-
-    public static void main(String[] args) throws Exception {
-
-        generateHospital();
-        generateDepartments();
-        generateRooms();
-        generateUsers();
-        generateDoctors();
-        generatePatients();
-        generateAppointments();
-        generateRecords();
-        generateServices();
-        generateInvoices();
-        generateInvoiceServices();
-        generateEyeDiseaseInfo();
-
-        System.out.println("DATA GENERATED SUCCESSFULLY");
     }
 }
