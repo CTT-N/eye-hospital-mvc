@@ -58,4 +58,50 @@ public class UserDAO {
 
         return false;
     }
+    
+    // kiểm tra xem username đã tồn tại chưa
+    public boolean checkUsernameExists(String username) {
+        boolean exists = false;
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM User WHERE username = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                exists = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return exists;
+    }
+
+    // thêm tài khoản bệnh nhân mới
+    public void insertUser(User user) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            String sql = "INSERT INTO User (username, password, fullName, email, role) VALUES (?, ?, ?, ?, ?)";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getFullName());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getRole());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

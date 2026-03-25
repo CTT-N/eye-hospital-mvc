@@ -4,6 +4,6 @@ updateRecord()
 createRecord() */
 package dao;
 
-public class PatientRecordDAO {
+public class MedicalRecordDAO {
     
 }

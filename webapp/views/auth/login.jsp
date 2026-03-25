@@ -19,7 +19,7 @@
     <br><br>
 
     <button type="submit">Login</button>
-
+    <a href="${pageContext.request.contextPath}/auth/register">Register</a>
 </form>
 
 <p style="color:red">
