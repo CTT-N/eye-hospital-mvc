@@ -7,6 +7,17 @@
         <welcome-file>views/home.jsp</welcome-file>
     </welcome-file-list>
 
+<!-- Register -->
+<servlet>
+    <servlet-name>RegisterController</servlet-name>
+    <servlet-class>controller.auth.RegisterController</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>RegisterController</servlet-name>
+    <url-pattern>/auth/register</url-pattern>
+</servlet-mapping>
+
 <!-- mapping cho LoginController-->
     <servlet>
         <servlet-name>LoginController</servlet-name>
