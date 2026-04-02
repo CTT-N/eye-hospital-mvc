@@ -6,6 +6,8 @@ import util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.ArrayList;
 
 public class UserDAO {
 
@@ -103,5 +105,51 @@ public class UserDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM User";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setUserId(rs.getString("userId"));
+                u.setUsername(rs.getString("username"));
+                u.setRole(rs.getString("role"));
+                u.setFullName(rs.getString("fullName"));
+                u.setEmail(rs.getString("email"));
+                list.add(u);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean deleteUser(String userId) {
+        String sql = "DELETE FROM User WHERE userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateUserRole(String userId, String role) {
+        String sql = "UPDATE User SET role = ? WHERE userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ps.setString(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

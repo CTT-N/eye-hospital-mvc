@@ -37,8 +37,17 @@ public class ScheduleController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Có thể thêm tính năng duyệt lịch khám tập trung hoặc Chấm công bác sĩ
-        // Hiện tại chỉ implement API nhận POST request cơ bản
+        String action = request.getParameter("action");
+        if ("updateStatus".equals(action)) {
+            String appointmentId = request.getParameter("appointmentId");
+            String status = request.getParameter("status");
+            appointmentDAO.updateAppointmentStatus(appointmentId, status);
+        }
+        else if("delete".equals(action)) {
+            String appointmentId = request.getParameter("appointmentId");
+            appointmentDAO.deleteAppointment(appointmentId);
+        }
+
         response.sendRedirect(request.getContextPath() + "/manager/schedule?msg=updated");
     }
 }

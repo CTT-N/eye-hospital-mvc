@@ -9,7 +9,7 @@ public class DBConnection {
             "jdbc:mysql://localhost:3306/eye_hospital";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "@TaTh2005";
 
     public static Connection getConnection() {
 
