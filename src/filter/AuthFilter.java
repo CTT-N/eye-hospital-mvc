@@ -20,6 +20,7 @@ public class AuthFilter implements Filter {
         String uri = req.getRequestURI();
 
         if (uri.contains("/auth/login") ||
+            uri.contains("/auth/register")||
             uri.contains("/views") ||
             uri.contains("/css") ||
             uri.contains("/js") ||
@@ -27,7 +28,7 @@ public class AuthFilter implements Filter {
 
             chain.doFilter(request, response);
             return;
-        }
+        }//whitelist
 
         HttpSession session = req.getSession(false);
 
