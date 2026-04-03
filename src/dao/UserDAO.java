@@ -68,50 +68,34 @@ public class UserDAO {
     
     // kiểm tra xem username đã tồn tại chưa
     public boolean checkUsernameExists(String username) {
-        boolean exists = false;
-
-        try {
-            Connection conn = DBConnection.getConnection();
-
-            String sql = "SELECT * FROM User WHERE username = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
+        String sql = "SELECT 1 FROM User WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                exists = true;
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return exists;
+        return false;
     }
 
     // thêm tài khoản mới
     public void insertUser(User user) {
-
-        try {
-            Connection conn = DBConnection.getConnection();
-
-            if (user.getUserId() == null || user.getUserId().isEmpty()) {
-                user.setUserId("U-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-            }
-
-            String sql = "INSERT INTO User (userId, username, password, fullName, email, role) VALUES (?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        if (user.getUserId() == null || user.getUserId().isEmpty()) {
+            user.setUserId("U-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        }
+        String sql = "INSERT INTO User (userId, username, password, fullName, email, role) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUserId());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getPassword());
             ps.setString(4, user.getFullName());
             ps.setString(5, user.getEmail());
             ps.setString(6, user.getRole());
-
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
