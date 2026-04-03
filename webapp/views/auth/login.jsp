@@ -135,7 +135,7 @@
           </div>
 
           <c:if test="${not empty error}">
-            <div class="alert alert-danger" style="margin-bottom:12px">${error}</div>
+            <div class="alert alert-danger" style="margin-bottom:12px"><c:out value="${error}"/></div>
           </c:if>
 
           <button type="submit" class="login-submit" id="submitBtn">

@@ -144,10 +144,10 @@
         </label>
 
         <c:if test="${not empty error}">
-          <div class="alert alert-danger">${error}</div>
+          <div class="alert alert-danger"><c:out value="${error}"/></div>
         </c:if>
         <c:if test="${not empty success}">
-          <div class="alert alert-success">${success}</div>
+          <div class="alert alert-success"><c:out value="${success}"/></div>
         </c:if>
 
         <button type="submit" class="login-submit" id="regBtn">
