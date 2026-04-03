@@ -87,7 +87,14 @@
         <button class="topbar-icon-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
         <div>
           <div class="topbar-title">Xin chào, ${sessionScope.user.fullName}!</div>
-          <div style="font-size:12px;color:var(--text-muted)">Thứ Năm, 20/03/2025</div>
+          <div style="font-size:12px;color:var(--text-muted)" id="currentDate"></div>
+<script>
+  (function(){
+    var now = new Date();
+    var days = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+    document.getElementById('currentDate').textContent = days[now.getDay()] + ', ' + now.toLocaleDateString('vi-VN');
+  })();
+</script>
         </div>
       </div>
       <div class="topbar-right">
@@ -139,24 +146,24 @@
             <div class="stat-icon"><i class="fas fa-calendar"></i></div>
             <div class="stat-info">
               <div class="label">Tổng lượt khám</div>
-              <div class="value">${upcomingCount}</div>
+              <div class="value">${totalCount}</div>
             </div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="stat-card stat-green">
-            <div class="stat-icon"><i class="fas fa-file-medical"></i></div>
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
             <div class="stat-info">
-              <div class="label">Bệnh án</div>
+              <div class="label">Đã xác nhận</div>
               <div class="value">${upcomingCount}</div>
             </div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="stat-card stat-orange">
-            <div class="stat-icon"><i class="fas fa-pills"></i></div>
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
             <div class="stat-info">
-              <div class="label">Đơn thuốc</div>
+              <div class="label">Chờ xác nhận</div>
               <div class="value">${pendingCount}</div>
             </div>
           </div>
@@ -166,7 +173,7 @@
             <div class="stat-icon"><i class="fas fa-file-invoice"></i></div>
             <div class="stat-info">
               <div class="label">Hóa đơn</div>
-              <div class="value">${pendingCount}</div>
+              <div class="value"><a href="${pageContext.request.contextPath}/patient/invoices" style="color:inherit">Xem</a></div>
             </div>
           </div>
         </div>
@@ -274,20 +281,40 @@
                 <div class="card-body-h">
                   <div class="d-flex flex-column gap-2">
                     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-                      <span style="color:var(--text-muted)">Nhóm máu</span>
-                      <span style="font-weight:600">O+</span>
+                      <span style="color:var(--text-muted)">Giới tính</span>
+                      <span style="font-weight:600">
+                        <c:choose>
+                          <c:when test="${not empty patient.gender}">${patient.gender}</c:when>
+                          <c:otherwise>—</c:otherwise>
+                        </c:choose>
+                      </span>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-                      <span style="color:var(--text-muted)">Dị ứng</span>
-                      <span style="font-weight:600;color:var(--danger)">Không có</span>
+                      <span style="color:var(--text-muted)">Ngày sinh</span>
+                      <span style="font-weight:600">
+                        <c:choose>
+                          <c:when test="${not empty patient.birthday}">${patient.birthday}</c:when>
+                          <c:otherwise>—</c:otherwise>
+                        </c:choose>
+                      </span>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-                      <span style="color:var(--text-muted)">Tiền sử bệnh</span>
-                      <span style="font-weight:600;color:var(--warning)">Đái tháo đường T2</span>
+                      <span style="color:var(--text-muted)">Địa chỉ</span>
+                      <span style="font-weight:600">
+                        <c:choose>
+                          <c:when test="${not empty patient.address}">${patient.address}</c:when>
+                          <c:otherwise>—</c:otherwise>
+                        </c:choose>
+                      </span>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
-                      <span style="color:var(--text-muted)">Bác sĩ chính</span>
-                      <span style="font-weight:600">BS. Nguyễn Minh Tuấn</span>
+                      <span style="color:var(--text-muted)">Ghi chú</span>
+                      <span style="font-weight:600">
+                        <c:choose>
+                          <c:when test="${not empty patient.note}">${patient.note}</c:when>
+                          <c:otherwise>Không có</c:otherwise>
+                        </c:choose>
+                      </span>
                     </div>
                   </div>
                 </div>

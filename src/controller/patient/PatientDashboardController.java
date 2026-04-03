@@ -28,15 +28,18 @@ public class PatientDashboardController extends HttpServlet {
 
         long upcomingCount = 0;
         long pendingCount = 0;
+        long totalCount = 0;
         if (patient != null) {
             List<Appointment> appts = appointmentDAO.getAppointmentsByPatientId(patient.getPatientId());
             upcomingCount = appts.stream().filter(a -> "CONFIRMED".equalsIgnoreCase(a.getStatus())).count();
-            pendingCount = appts.stream().filter(a -> "PENDING".equalsIgnoreCase(a.getStatus())).count();
+            pendingCount  = appts.stream().filter(a -> "PENDING".equalsIgnoreCase(a.getStatus())).count();
+            totalCount    = appts.size();
             req.setAttribute("appointments", appts);
         }
         req.setAttribute("patient", patient);
         req.setAttribute("upcomingCount", upcomingCount);
         req.setAttribute("pendingCount", pendingCount);
+        req.setAttribute("totalCount", totalCount);
 
         req.getRequestDispatcher("/views/patient/patient-dashboard.jsp")
            .forward(req, resp);
