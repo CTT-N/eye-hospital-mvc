@@ -42,7 +42,7 @@ public class RoleFilter implements Filter {
             return;
         }
 
-        if (uri.contains("/patient") && !"PATIENT".equals(role)) {
+        if (uri.contains("/patient/") && !"PATIENT".equals(role)) {
             resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
