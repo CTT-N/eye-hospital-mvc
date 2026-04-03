@@ -63,6 +63,12 @@ public class LoginController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/patient/dashboard");
             break;
 
+            default:
+            req.getSession().invalidate();
+            req.setAttribute("error", "Vai trò tài khoản không hợp lệ. Vui lòng liên hệ quản trị viên.");
+            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+            break;
+
         }
     }
 }
