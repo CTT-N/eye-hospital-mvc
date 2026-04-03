@@ -26,6 +26,15 @@ public class RegisterController extends HttpServlet {
         String fullName = req.getParameter("fullName");
         String email = req.getParameter("email");
 
+        // Server-side validation
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty() ||
+            fullName == null || fullName.trim().isEmpty()) {
+            req.setAttribute("error", "Vui lòng điền đầy đủ thông tin bắt buộc.");
+            req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
+            return;
+        }
+
         UserDAO dao = new UserDAO();
 
         // check trùng username
@@ -38,10 +47,10 @@ public class RegisterController extends HttpServlet {
 
         // tạo user (role = patient)
         User user = new User();
-        user.setUsername(username);
+        user.setUsername(username.trim());
         user.setPassword(password);
-        user.setFullName(fullName);
-        user.setEmail(email);
+        user.setFullName(fullName.trim());
+        user.setEmail(email != null ? email.trim() : "");
         user.setRole("PATIENT");
 
         dao.insertUser(user);
