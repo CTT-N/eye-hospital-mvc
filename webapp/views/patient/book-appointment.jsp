@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -77,9 +78,22 @@
       <h4><div class="num">2</div> Chọn bác sĩ</h4>
       <div class="doc-pick-list">
         <c:forEach var="doc" items="${doctors}">
-        <div class="doc-pick-item" onclick="selectDoc(this,'${doc.doctorId}','${doc.fullName}')"">
-          <div style="width:48px;height:48px;background:var(--bg-alt);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--primary)">${doc.doctorId.charAt(0)}</div>
-          <div><div class="dpi-name">${doc.doctorId}</div><div class="dpi-spec">${doc.departmentId} · ${doc.experience}</div></div>
+        <div class="doc-pick-item" onclick="selectDoc(this,'${doc.doctorId}','${doc.fullName}')">
+          <div style="width:48px;height:48px;background:var(--bg-alt);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--primary)">
+            <c:choose>
+              <c:when test="${not empty doc.fullName}">${fn:substring(doc.fullName, 0, 1)}</c:when>
+              <c:otherwise>?</c:otherwise>
+            </c:choose>
+          </div>
+          <div>
+            <div class="dpi-name">
+              <c:choose>
+                <c:when test="${not empty doc.fullName}">${doc.fullName}</c:when>
+                <c:otherwise>${doc.doctorId}</c:otherwise>
+              </c:choose>
+            </div>
+            <div class="dpi-spec">${doc.departmentId} · ${doc.experience}</div>
+          </div>
           <div class="dpi-radio"></div>
         </div>
         </c:forEach>

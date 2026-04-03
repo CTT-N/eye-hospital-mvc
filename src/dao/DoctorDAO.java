@@ -13,7 +13,7 @@ public class DoctorDAO {
 
     public List<Doctor> getAllDoctors() {
         List<Doctor> list = new ArrayList<>();
-        String sql = "SELECT * FROM Doctor";
+        String sql = "SELECT d.*, u.fullName FROM Doctor d JOIN user u ON d.userId = u.userId";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -27,6 +27,7 @@ public class DoctorDAO {
                 doctor.setEducationDegree(rs.getString("educationDegree"));
                 doctor.setExperience(rs.getString("experience"));
                 doctor.setDescription(rs.getString("description"));
+                doctor.setFullName(rs.getString("fullName"));
                 list.add(doctor);
             }
         } catch (Exception e) {
@@ -36,7 +37,7 @@ public class DoctorDAO {
     }
 
     public Doctor getDoctorById(String id) {
-        String sql = "SELECT * FROM Doctor WHERE doctorId = ?";
+        String sql = "SELECT d.*, u.fullName FROM Doctor d JOIN user u ON d.userId = u.userId WHERE d.doctorId = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,6 +52,7 @@ public class DoctorDAO {
                     doctor.setEducationDegree(rs.getString("educationDegree"));
                     doctor.setExperience(rs.getString("experience"));
                     doctor.setDescription(rs.getString("description"));
+                    doctor.setFullName(rs.getString("fullName"));
                     return doctor;
                 }
             }

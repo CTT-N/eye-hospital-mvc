@@ -8,6 +8,10 @@ public class Doctor {
     private String educationDegree;
     private String experience;
     private String description;
+    private String fullName;
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public Doctor() {
     }
