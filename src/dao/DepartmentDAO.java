@@ -37,7 +37,7 @@ public class DepartmentDAO {
         String sql = "SELECT * FROM Department WHERE departmentId = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps =prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -54,10 +54,6 @@ public class DepartmentDAO {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private PreparedStatement prepareStatement(String sql) throws Exception {
-        return DBConnection.getConnection().prepareStatement(sql);
     }
 
     public boolean insertDepartment(Department dept) {
