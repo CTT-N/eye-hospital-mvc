@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -68,7 +69,7 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="avatar avatar-md">${sessionScope.user.fullName.charAt(0)}</div>
+        <div class="avatar avatar-md"><c:choose><c:when test="${not empty sessionScope.user.fullName}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
         <div class="user-info">
           <div class="user-name">${sessionScope.user.fullName}</div>
           <div class="user-role">Bệnh nhân</div>
@@ -102,7 +103,7 @@
           <i class="fas fa-bell"></i><span class="notif-dot"></span>
         </button>
         <button class="topbar-user">
-          <div class="avatar avatar-sm">${sessionScope.user.fullName.charAt(0)}</div>
+          <div class="avatar avatar-sm"><c:choose><c:when test="${not empty sessionScope.user.fullName}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
           <div class="user-details d-none d-md-block">
             <span class="user-name">${sessionScope.user.fullName}</span>
             <span class="user-role">Bệnh nhân</span>

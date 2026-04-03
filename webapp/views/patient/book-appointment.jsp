@@ -34,7 +34,7 @@
     </ul>
     <div class="nav-actions">
       <a href="${pageContext.request.contextPath}/patient/dashboard" style="display:flex; align-items:center; gap:10px; text-decoration:none; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); padding: 6px 16px 6px 6px; border-radius: 40px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-        <div style="width: 32px; height: 32px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff;">${sessionScope.user.fullName.charAt(0)}</div>
+        <div style="width: 32px; height: 32px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff;"><c:choose><c:when test="${not empty sessionScope.user.fullName}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
         <span style="font-size: 13px; font-weight: 600; color: #fff;" class="d-none d-sm-block">${sessionScope.user.fullName}</span>
       </a>
     </div>
