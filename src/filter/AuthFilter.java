@@ -22,7 +22,6 @@ public class AuthFilter implements Filter {
         if (uri.contains("/auth/") ||
             uri.contains("/static/") ||
             uri.contains("/common/find-doctor") ||
-            uri.contains("/views") ||
             uri.endsWith("home") ||
             uri.equals(req.getContextPath() + "/")) {
 
