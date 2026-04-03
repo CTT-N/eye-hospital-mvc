@@ -40,7 +40,6 @@
         <a href="${pageContext.request.contextPath}/patient/history" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
           <span class="nav-label">Lịch hẹn của tôi</span>
-          <span class="nav-badge">1</span>
         </a>
       </div>
       <div class="nav-section-label">Hồ sơ</div>
@@ -111,8 +110,7 @@
                 <tr>
                   <th>Mã hóa đơn</th>
                   <th>Ngày thanh toán</th>
-                  <th>Dịch vụ</th>
-                  <th>Bác sĩ</th>
+                  <th>Mã lịch hẹn</th>
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
                   <th class="action-cell">Chi tiết</th>
@@ -121,14 +119,13 @@
               <tbody>
                 <c:choose>
                   <c:when test="${empty listInvoices}">
-                    <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Không có hóa đơn nào</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted)">Không có hóa đơn nào</td></tr>
                   </c:when>
                   <c:otherwise>
                     <c:forEach var="inv" items="${listInvoices}">
                     <tr>
                       <td><strong>#${inv.invoiceId}</strong></td>
                       <td>${inv.date}</td>
-                      <td>${inv.appointmentId}</td>
                       <td>${inv.appointmentId}</td>
                       <td><strong>${inv.totalAmount} VNĐ</strong></td>
                       <td><span class="badge-status badge-completed">Đã thanh toán</span></td>
