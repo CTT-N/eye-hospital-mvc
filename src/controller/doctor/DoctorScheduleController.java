@@ -27,7 +27,7 @@ public class DoctorScheduleController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"DOCTOR".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -37,7 +37,7 @@ public class DoctorScheduleController extends HttpServlet {
             request.setAttribute("appointments", apps);
         }
 
-        request.getRequestDispatcher("/views/doctor/schedule.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/doctor/doctor-schedule.jsp").forward(request, response);
     }
 
     @Override

@@ -1,0 +1,90 @@
+<h2>Design — Conversion Pattern</h2>
+<p class="subtitle">How each HTML page becomes a live JSP with real data</p>
+
+<div class="section">
+  <h3>Step 1 — Copy static assets into webapp</h3>
+  <div class="mockup">
+    <div class="mockup-header">File moves (one-time)</div>
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <code>fe/css/</code> → <code>webapp/static/css/</code><br>
+      <code>fe/js/</code> → <code>webapp/static/js/</code><br>
+      <code>fe/images/</code> → <code>webapp/static/images/</code><br>
+      <br>
+      Then in every JSP, asset paths use the context path:<br>
+      <code>&lt;link href="${pageContext.request.contextPath}/static/css/variables.css"&gt;</code>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Step 2 — Controller loads data, forwards to JSP</h3>
+  <div class="mockup">
+    <div class="mockup-header">Example: PatientAppointmentController.java (doGet)</div>
+    <div class="mockup-body" style="font-size:13px;line-height:1.8;font-family:monospace">
+      PatientDAO dao = new PatientDAO();<br>
+      int patientId = ((Patient) session.getAttribute("user")).getPatientId();<br>
+      List&lt;Appointment&gt; appointments = dao.getAppointmentsByPatient(patientId);<br>
+      <br>
+      req.setAttribute("appointments", appointments);<br>
+      req.getRequestDispatcher("/views/patient/patient-appointments.jsp").forward(req, resp);
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Step 3 — JSP renders the data with JSTL</h3>
+  <div class="mockup">
+    <div class="mockup-header">patient-appointments.jsp — table body (replaces hardcoded HTML rows)</div>
+    <div class="mockup-body" style="font-size:13px;line-height:1.8;font-family:monospace">
+      &lt;%@ taglib uri="jakarta.tags.core" prefix="c" %&gt;<br>
+      ...<br>
+      &lt;c:forEach var="appt" items="${appointments}"&gt;<br>
+      &nbsp;&nbsp;&lt;tr data-status="${appt.status}"&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;${appt.appointmentDate}&lt;/td&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;${appt.doctorName}&lt;/td&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;span class="badge-status"&gt;${appt.status}&lt;/span&gt;&lt;/td&gt;<br>
+      &nbsp;&nbsp;&lt;/tr&gt;<br>
+      &lt;/c:forEach&gt;
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Step 4 — Forms post to correct servlet URLs</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Before (broken)</div>
+      <div class="mockup-body" style="font-size:13px">
+        <code>&lt;form action="LoginServlet"&gt;</code><br>
+        <code>&lt;a href="dashboard.html"&gt;</code><br>
+        <code>&lt;a href="../book-appointment.html"&gt;</code>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">After (correct)</div>
+      <div class="mockup-body" style="font-size:13px">
+        <code>&lt;form action="${pageContext.request.contextPath}/auth/login"&gt;</code><br>
+        <code>&lt;a href="${pageContext.request.contextPath}/patient/dashboard"&gt;</code><br>
+        <code>&lt;a href="${pageContext.request.contextPath}/patient/appointments"&gt;</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>New controllers needed (3 missing)</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr style="background:#f1f5f9">
+      <th style="padding:8px;border:1px solid #e2e8f0;text-align:left">Controller</th>
+      <th style="padding:8px;border:1px solid #e2e8f0;text-align:left">URL</th>
+      <th style="padding:8px;border:1px solid #e2e8f0;text-align:left">What it does</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientProfileController</td><td style="padding:6px 8px;border:1px solid #e2e8f0">/patient/profile</td><td style="padding:6px 8px;border:1px solid #e2e8f0">GET: load profile; POST: save changes</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">DoctorProfileController</td><td style="padding:6px 8px;border:1px solid #e2e8f0">/doctor/profile</td><td style="padding:6px 8px;border:1px solid #e2e8f0">GET: load profile; POST: save changes</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">FindDoctorController</td><td style="padding:6px 8px;border:1px solid #e2e8f0">/common/find-doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">GET: list all doctors (public, no auth)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p style="font-size:13px;color:#64748b;margin-top:16px">Does this conversion pattern look good? Reply in terminal to continue.</p>

@@ -1,0 +1,71 @@
+<h2>Design — Implementation Order</h2>
+<p class="subtitle">Recommended sequence to integrate all 25 pages safely</p>
+
+<div class="section">
+  <h3>Phase 1 — Foundation (do first, everything depends on this)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <strong>1.</strong> Move <code>fe/css/</code>, <code>fe/js/</code>, <code>fe/images/</code> → <code>webapp/static/</code><br>
+      <strong>2.</strong> Add JSTL jar to <code>webapp/WEB-INF/lib/</code> (jakarta.servlet.jsp.jstl-3.0.jar)<br>
+      <strong>3.</strong> Convert <code>login.html</code> → <code>login.jsp</code> (fix form action, test auth end-to-end)<br>
+      <strong>4.</strong> Convert <code>register.html</code> → <code>register.jsp</code>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Phase 2 — Patient role (5 pages)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <strong>5.</strong> patient-dashboard.jsp + PatientDashboardController (show name, upcoming appts count)<br>
+      <strong>6.</strong> patient-appointments.jsp + PatientAppointmentController (list + cancel)<br>
+      <strong>7.</strong> patient-history.jsp + PatientHistoryController (past records)<br>
+      <strong>8.</strong> patient-invoices.jsp + PatientInvoiceController (billing list)<br>
+      <strong>9.</strong> patient-profile.jsp + <em>new</em> PatientProfileController
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Phase 3 — Doctor role (5 pages)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <strong>10.</strong> doctor-dashboard.jsp + DoctorDashboardController<br>
+      <strong>11.</strong> doctor-patient-list.jsp + PatientListController<br>
+      <strong>12.</strong> doctor-patient-record.jsp + MedicalRecordController<br>
+      <strong>13.</strong> doctor-schedule.jsp + DoctorScheduleController<br>
+      <strong>14.</strong> doctor-appointment-detail.jsp + ExaminationController<br>
+      <strong>15.</strong> doctor-profile.jsp + <em>new</em> DoctorProfileController
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Phase 4 — Manager role (5 pages)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <strong>16.</strong> manager-dashboard.jsp + ManagerDashboardController<br>
+      <strong>17.</strong> manager-departments.jsp + DepartmentController<br>
+      <strong>18.</strong> manager-rooms.jsp + RoomController<br>
+      <strong>19.</strong> manager-schedules.jsp + ScheduleController<br>
+      <strong>20.</strong> manager-hospital-info.jsp + HospitalController<br>
+      <strong>21.</strong> manager-reports.jsp + ReportController
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Phase 5 — Admin role + Public pages</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-size:13px;line-height:2">
+      <strong>22.</strong> admin-dashboard.jsp + AdminDashboardController<br>
+      <strong>23.</strong> admin-users.jsp + ManageUserController<br>
+      <strong>24.</strong> admin-eye-diseases.jsp + ManageEyeDiseaseInfoController<br>
+      <strong>25.</strong> find-doctor.jsp + <em>new</em> FindDoctorController (public)<br>
+      <strong>26.</strong> book-appointment.jsp + PatientAppointmentController<br>
+      <strong>27.</strong> home.jsp (mostly static, minimal data)
+    </div>
+  </div>
+</div>
+
+<p style="font-size:13px;color:#64748b;margin-top:16px">Does this phased order work for you? Reply in terminal.</p>

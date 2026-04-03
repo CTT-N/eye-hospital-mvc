@@ -24,13 +24,13 @@ public class DepartmentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"MANAGER".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
         List<Department> list = departmentDAO.getAllDepartments();
         request.setAttribute("listDepartments", list);
-        request.getRequestDispatcher("/views/manager/departments.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/manager/manager-departments.jsp").forward(request, response);
     }
 
     @Override

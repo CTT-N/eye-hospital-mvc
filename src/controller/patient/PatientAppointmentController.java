@@ -33,7 +33,7 @@ public class PatientAppointmentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"PATIENT".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -41,7 +41,7 @@ public class PatientAppointmentController extends HttpServlet {
         List<Doctor> doctors = doctorDAO.getAllDoctors();
         request.setAttribute("doctors", doctors);
 
-        request.getRequestDispatcher("/views/patient/book_appointment.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/patient/book-appointment.jsp").forward(request, response);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PatientAppointmentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"PATIENT".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 

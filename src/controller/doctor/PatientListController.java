@@ -33,7 +33,7 @@ public class PatientListController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"DOCTOR".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -55,6 +55,6 @@ public class PatientListController extends HttpServlet {
         }
         
         request.setAttribute("patients", patients);
-        request.getRequestDispatcher("/views/doctor/patient_list.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/doctor/doctor-patient-list.jsp").forward(request, response);
     }
 }

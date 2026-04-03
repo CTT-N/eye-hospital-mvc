@@ -1,0 +1,99 @@
+<h2>Integration Design — Architecture</h2>
+<p class="subtitle">How all the pieces fit together after integration</p>
+
+<div class="section">
+  <h3>Request Flow (after integration)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Browser → Tomcat → Servlet → JSP → Browser</div>
+    <div class="mockup-body" style="font-family:monospace;font-size:13px;line-height:2">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="background:#3b82f6;color:#fff;padding:6px 12px;border-radius:6px">Browser</span>
+        <span>──── GET /patient/dashboard ────▶</span>
+        <span style="background:#8b5cf6;color:#fff;padding:6px 12px;border-radius:6px">AuthFilter</span>
+        <span>▶</span>
+        <span style="background:#8b5cf6;color:#fff;padding:6px 12px;border-radius:6px">RoleFilter</span>
+        <span>▶</span>
+        <span style="background:#10b981;color:#fff;padding:6px 12px;border-radius:6px">Controller</span>
+      </div>
+      <div style="margin-left:200px;margin-top:4px">▼ calls DAO, sets request attributes</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px">
+        <span style="background:#3b82f6;color:#fff;padding:6px 12px;border-radius:6px">Browser</span>
+        <span>◀─── HTML rendered ───────────</span>
+        <span style="background:#f59e0b;color:#fff;padding:6px 12px;border-radius:6px">JSP (was HTML)</span>
+        <span>◀ forward</span>
+        <span style="background:#10b981;color:#fff;padding:6px 12px;border-radius:6px">Controller</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Static Asset Strategy</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Before (broken)</div>
+      <div class="mockup-body" style="font-size:13px;line-height:1.8">
+        <code>fe/css/</code> — outside webapp<br>
+        <code>fe/js/</code> — outside webapp<br>
+        <code>fe/images/</code> — outside webapp<br>
+        <br>
+        ❌ Not served by Tomcat<br>
+        ❌ Paths are relative (<code>../css/</code>)
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">After (fixed)</div>
+      <div class="mockup-body" style="font-size:13px;line-height:1.8">
+        <code>webapp/static/css/</code><br>
+        <code>webapp/static/js/</code><br>
+        <code>webapp/static/images/</code><br>
+        <br>
+        ✅ Served by Tomcat at <code>/static/…</code><br>
+        ✅ Absolute paths in JSP (<code>/webapp/static/css/</code>)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Page Inventory — 22 pages to convert</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead>
+      <tr style="background:#f1f5f9">
+        <th style="text-align:left;padding:8px;border:1px solid #e2e8f0">Role</th>
+        <th style="text-align:left;padding:8px;border:1px solid #e2e8f0">HTML Source (fe/)</th>
+        <th style="text-align:left;padding:8px;border:1px solid #e2e8f0">JSP Target (webapp/views/)</th>
+        <th style="text-align:left;padding:8px;border:1px solid #e2e8f0">Backend Controller</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">Public</td><td style="padding:6px 8px;border:1px solid #e2e8f0">index.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">home.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">static / welcome</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">Public</td><td style="padding:6px 8px;border:1px solid #e2e8f0">login.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">auth/login.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">LoginController</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">Public</td><td style="padding:6px 8px;border:1px solid #e2e8f0">register.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">auth/register.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">RegisterController</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">Public</td><td style="padding:6px 8px;border:1px solid #e2e8f0">find-doctor.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">common/find-doctor.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">new: FindDoctorController</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid #e2e8f0">Public</td><td style="padding:6px 8px;border:1px solid #e2e8f0">book-appointment.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/book-appointment.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientAppointmentController</td></tr>
+      <tr style="background:#eff6ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Patient</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/dashboard.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/patient-dashboard.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientDashboardController</td></tr>
+      <tr style="background:#eff6ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Patient</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/appointments.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/patient-appointments.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientAppointmentController</td></tr>
+      <tr style="background:#eff6ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Patient</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/history.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/patient-history.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientHistoryController</td></tr>
+      <tr style="background:#eff6ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Patient</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/invoices.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/patient-invoices.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientInvoiceController</td></tr>
+      <tr style="background:#eff6ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Patient</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/profile.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">patient/patient-profile.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">new: PatientProfileController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/dashboard.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-dashboard.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">DoctorDashboardController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/patient-list.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-patient-list.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">PatientListController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/patient-record.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-patient-record.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">MedicalRecordController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/schedule.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-schedule.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">DoctorScheduleController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/appointment-detail.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-appointment-detail.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ExaminationController</td></tr>
+      <tr style="background:#f0fdf4"><td style="padding:6px 8px;border:1px solid #e2e8f0">Doctor</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/profile.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">doctor/doctor-profile.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">new: DoctorProfileController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/dashboard.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-dashboard.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ManagerDashboardController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/departments.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-departments.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">DepartmentController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/hospital-info.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-hospital-info.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">HospitalController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/reports.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-reports.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ReportController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/rooms.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-rooms.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">RoomController</td></tr>
+      <tr style="background:#fefce8"><td style="padding:6px 8px;border:1px solid #e2e8f0">Manager</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/schedules.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">manager/manager-schedules.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ScheduleController</td></tr>
+      <tr style="background:#fdf4ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Admin</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/dashboard.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/admin-dashboard.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">AdminDashboardController</td></tr>
+      <tr style="background:#fdf4ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Admin</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/users.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/admin-users.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ManageUserController</td></tr>
+      <tr style="background:#fdf4ff"><td style="padding:6px 8px;border:1px solid #e2e8f0">Admin</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/eye-diseases.html</td><td style="padding:6px 8px;border:1px solid #e2e8f0">admin/admin-eye-diseases.jsp</td><td style="padding:6px 8px;border:1px solid #e2e8f0">ManageEyeDiseaseInfoController</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p style="font-size:13px;color:#64748b;margin-top:16px">Does this architecture look right? Reply in the terminal to continue to the next design section.</p>

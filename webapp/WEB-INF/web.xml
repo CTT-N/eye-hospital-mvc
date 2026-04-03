@@ -63,6 +63,17 @@
         <url-pattern>/admin/dashboard</url-pattern>
     </servlet-mapping>
 
+<!--Mapping cho Common Controllers-->
+    <servlet>
+        <servlet-name>FindDoctorController</servlet-name>
+        <servlet-class>controller.common.FindDoctorController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FindDoctorController</servlet-name>
+        <url-pattern>/common/find-doctor</url-pattern>
+    </servlet-mapping>
+
 <!--Mapping cho  Manager Controllers-->
 
     <servlet>
@@ -95,6 +106,27 @@
     <servlet-mapping>
         <servlet-name>PatientDashboardController</servlet-name>
         <url-pattern>/patient/dashboard</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PatientProfileController</servlet-name>
+        <servlet-class>controller.patient.PatientProfileController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PatientProfileController</servlet-name>
+        <url-pattern>/patient/profile</url-pattern>
+    </servlet-mapping>
+
+<!--Mapping Doctor Profile Controller-->
+    <servlet>
+        <servlet-name>DoctorProfileController</servlet-name>
+        <servlet-class>controller.doctor.DoctorProfileController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DoctorProfileController</servlet-name>
+        <url-pattern>/doctor/profile</url-pattern>
     </servlet-mapping>
 
 <!-- AUTH FILTER -->

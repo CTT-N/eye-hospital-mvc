@@ -24,13 +24,13 @@ public class RoomController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"MANAGER".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
         List<Room> list = roomDAO.getAllRooms();
         request.setAttribute("listRooms", list);
-        request.getRequestDispatcher("/views/manager/rooms.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/manager/manager-rooms.jsp").forward(request, response);
     }
 
     @Override

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch hẹn của tôi – BV Mắt PTIT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../css/variables.css" rel="stylesheet">
+  <link href="../css/base.css" rel="stylesheet">
+  <link href="../css/components.css" rel="stylesheet">
+  <link href="../css/layout.css" rel="stylesheet">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="" class="sidebar-brand">
+      <div class="brand-logo"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></div>
+      <div class="brand-text">BV Mắt PTIT<small>Cổng Bệnh Nhân</small></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-item">
+        <a href="dashboard.html" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-house"></i></span>
+          <span class="nav-label">Tổng quan</span>
+        </a>
+      </div>
+      <div class="nav-section-label">Lịch khám</div>
+      <div class="nav-item">
+        <a href="../book-appointment.html" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-calendar-plus"></i></span>
+          <span class="nav-label">Đặt lịch mới</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="appointments.html" class="nav-link-h active">
+          <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+          <span class="nav-label">Lịch hẹn của tôi</span>
+          <span class="nav-badge">1</span>
+        </a>
+      </div>
+      <div class="nav-section-label">Hồ sơ</div>
+      <div class="nav-item">
+        <a href="history.html" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-notes-medical"></i></span>
+          <span class="nav-label">Bệnh án của tôi</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="invoices.html" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+          <span class="nav-label">Hóa đơn thanh toán</span>
+        </a>
+      </div>
+      <div class="nav-section-label">Tài khoản</div>
+      <div class="nav-item">
+        <a href="profile.html" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-user-circle"></i></span>
+          <span class="nav-label">Thông tin cá nhân</span>
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar avatar-md">VA</div>
+        <div class="user-info">
+          <div class="user-name">Nguyễn Văn An</div>
+          <div class="user-role">Bệnh nhân</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="topbar-icon-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <div>
+          <div class="topbar-title">Lịch hẹn của tôi</div>
+          <div style="font-size:12px;color:var(--text-muted)">Quản lý và theo dõi các lịch khám</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="../book-appointment.html" class="btn-hospital btn-primary-h btn-sm">
+          <i class="fas fa-plus"></i> Đặt lịch mới
+        </a>
+        <button class="topbar-icon-btn">
+          <i class="fas fa-bell"></i><span class="notif-dot"></span>
+        </button>
+        <button class="topbar-user">
+          <div class="avatar avatar-sm">VA</div>
+          <div class="user-details d-none d-md-block">
+            <span class="user-name">Nguyễn Văn An</span>
+            <span class="user-role">Bệnh nhân</span>
+          </div>
+        </button>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <!-- Tab filter -->
+      <div class="tab-nav-h">
+        <button class="tab-btn active" onclick="filterTab(this,'all')">Tất cả</button>
+        <button class="tab-btn" onclick="filterTab(this,'pending')">Chờ xác nhận</button>
+        <button class="tab-btn" onclick="filterTab(this,'confirmed')">Đã xác nhận</button>
+        <button class="tab-btn" onclick="filterTab(this,'done')">Hoàn thành</button>
+        <button class="tab-btn" onclick="filterTab(this,'cancelled')">Đã huỷ</button>
+      </div>
+
+      <!-- Table -->
+      <div class="card-hospital">
+        <div class="card-body-h" style="padding:0">
+          <div style="overflow-x:auto">
+            <table class="data-table" id="apptTable">
+              <thead>
+                <tr>
+                  <th>Ngày & Giờ</th>
+                  <th>Bác sĩ</th>
+                  <th>Chuyên khoa</th>
+                  <th>Phòng</th>
+                  <th>Trạng thái</th>
+                  <th class="action-cell">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-status="confirmed">
+                  <td><strong>25/03/2025</strong><br><span style="font-size:12px;color:var(--text-muted)">08:30 – 09:00</span></td>
+                  <td><div style="font-weight:600">BS. Trần Thị Mai</div><div style="font-size:12px;color:var(--text-muted)">GS.TS</div></td>
+                  <td>Giác mạc</td>
+                  <td>Phòng 103</td>
+                  <td><span class="badge-status badge-confirmed">Đã xác nhận</span></td>
+                  <td class="action-cell">
+                    <button class="btn-icon btn-icon-danger" title="Huỷ lịch" onclick="openCancel(this)" data-id="1">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="pending">
+                  <td><strong>02/04/2025</strong><br><span style="font-size:12px;color:var(--text-muted)">10:00 – 10:30</span></td>
+                  <td><div style="font-weight:600">BS. Lê Hoàng Nam</div><div style="font-size:12px;color:var(--text-muted)">TS.BS</div></td>
+                  <td>Võng mạc</td>
+                  <td>Phòng 205</td>
+                  <td><span class="badge-status badge-pending">Chờ xác nhận</span></td>
+                  <td class="action-cell">
+                    <button class="btn-icon btn-icon-danger" title="Huỷ lịch" onclick="openCancel(this)" data-id="2">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="done">
+                  <td><strong>10/03/2025</strong><br><span style="font-size:12px;color:var(--text-muted)">14:00 – 14:30</span></td>
+                  <td><div style="font-weight:600">BS. Phạm Thị Lan</div><div style="font-size:12px;color:var(--text-muted)">ThS.BS</div></td>
+                  <td>Mắt trẻ em</td>
+                  <td>Phòng 301</td>
+                  <td><span class="badge-status badge-done">Hoàn thành</span></td>
+                  <td class="action-cell">
+                    <span style="font-size:12px;color:var(--text-muted)">—</span>
+                  </td>
+                </tr>
+                <tr data-status="cancelled">
+                  <td><strong>05/03/2025</strong><br><span style="font-size:12px;color:var(--text-muted)">09:00 – 09:30</span></td>
+                  <td><div style="font-weight:600">BS. Nguyễn Đức Hùng</div><div style="font-size:12px;color:var(--text-muted)">PGS.TS</div></td>
+                  <td>Nhãn áp</td>
+                  <td>Phòng 108</td>
+                  <td><span class="badge-status badge-cancelled">Đã huỷ</span></td>
+                  <td class="action-cell">
+                    <span style="font-size:12px;color:var(--text-muted)">—</span>
+                  </td>
+                </tr>
+                <tr data-status="done">
+                  <td><strong>15/02/2025</strong><br><span style="font-size:12px;color:var(--text-muted)">13:30 – 14:00</span></td>
+                  <td><div style="font-weight:600">BS. Trần Thị Mai</div><div style="font-size:12px;color:var(--text-muted)">GS.TS</div></td>
+                  <td>Giác mạc</td>
+                  <td>Phòng 103</td>
+                  <td><span class="badge-status badge-done">Hoàn thành</span></td>
+                  <td class="action-cell">
+                    <span style="font-size:12px;color:var(--text-muted)">—</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Confirm Cancel Modal -->
+<div class="confirm-overlay" id="cancelOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" style="color:var(--danger)"><i class="fas fa-triangle-exclamation"></i></div>
+    <h5>Xác nhận huỷ lịch</h5>
+    <p>Bạn có chắc muốn huỷ lịch khám này? Hành động không thể hoàn tác.</p>
+    <div class="confirm-actions">
+      <button class="btn-hospital btn-ghost-h" onclick="closeCancel()">Không, giữ lại</button>
+      <button class="btn-hospital btn-danger-h" onclick="confirmCancel()">Huỷ lịch</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/patient-appointments.js"></script>
+</body>
+</html>

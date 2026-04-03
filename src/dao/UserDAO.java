@@ -28,7 +28,12 @@ public class UserDAO {
                 User user = new User();
                 user.setUserId(rs.getString("userId"));
                 user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setFullName(rs.getString("fullName"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
+                user.setDescription(rs.getString("description"));
 
                 return user;
             }
@@ -85,20 +90,25 @@ public class UserDAO {
         return exists;
     }
 
-    // thêm tài khoản bệnh nhân mới
+    // thêm tài khoản mới
     public void insertUser(User user) {
 
         try {
             Connection conn = DBConnection.getConnection();
 
-            String sql = "INSERT INTO User (username, password, fullName, email, role) VALUES (?, ?, ?, ?, ?)";
+            if (user.getUserId() == null || user.getUserId().isEmpty()) {
+                user.setUserId("U-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+            }
+
+            String sql = "INSERT INTO User (userId, username, password, fullName, email, role) VALUES (?, ?, ?, ?, ?, ?)";
 
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
-            ps.setString(3, user.getFullName());
-            ps.setString(4, user.getEmail());
-            ps.setString(5, user.getRole());
+            ps.setString(1, user.getUserId());
+            ps.setString(2, user.getUsername());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getFullName());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getRole());
 
             ps.executeUpdate();
 
@@ -133,6 +143,44 @@ public class UserDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public User getUserById(String userId) {
+        String sql = "SELECT * FROM user WHERE userId=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getString("userId"));
+                user.setUsername(rs.getString("username"));
+                user.setFullName(rs.getString("fullName"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setRole(rs.getString("role"));
+                user.setDescription(rs.getString("description"));
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE user SET fullName=?, email=?, phone=? WHERE userId=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPhone());
+            ps.setString(4, user.getUserId());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

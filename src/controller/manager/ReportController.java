@@ -19,10 +19,10 @@ public class ReportController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"MANAGER".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
-        request.getRequestDispatcher("/views/manager/report.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/manager/manager-reports.jsp").forward(request, response);
     }
 }

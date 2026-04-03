@@ -27,7 +27,7 @@ public class PatientHistoryController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"PATIENT".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -37,6 +37,6 @@ public class PatientHistoryController extends HttpServlet {
             request.setAttribute("appointments", apps);
         }
 
-        request.getRequestDispatcher("/views/patient/history.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/patient/patient-history.jsp").forward(request, response);
     }
 }

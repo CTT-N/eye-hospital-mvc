@@ -1,13 +1,14 @@
 package controller.admin;
 
+import dao.UserDAO;
+import dao.DoctorDAO;
+import dao.PatientDAO;
 import model.User;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
-@WebServlet("/admin/dashboard")
 public class AdminDashboardController extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -15,11 +16,15 @@ public class AdminDashboardController extends HttpServlet {
 
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            resp.sendRedirect(req.getContextPath() + "/login");
+            resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
+
+        req.setAttribute("userCount", new UserDAO().getAllUsers().size());
+        req.setAttribute("doctorCount", new DoctorDAO().getAllDoctors().size());
+        req.setAttribute("patientCount", new PatientDAO().getAllPatients().size());
 
         req.getRequestDispatcher("/views/admin/admin-dashboard.jsp")
            .forward(req, resp);

@@ -25,13 +25,13 @@ public class MedicalRecordController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"DOCTOR".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
         List<MedicalRecord> list = recordDAO.getAllRecords();
         request.setAttribute("listRecords", list);
-        request.getRequestDispatcher("/views/doctor/medical_records.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/doctor/doctor-patient-record.jsp").forward(request, response);
     }
 
     @Override

@@ -25,13 +25,13 @@ public class ManageEyeDiseaseInfoController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
         List<EyeDiseaseInfo> listInfos = infoDAO.getAllInfos();
         request.setAttribute("listInfos", listInfos);
-        request.getRequestDispatcher("/views/admin/manage_diseases.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/admin/admin-eye-diseases.jsp").forward(request, response);
     }
 
     @Override

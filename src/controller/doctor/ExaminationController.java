@@ -28,7 +28,7 @@ public class ExaminationController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"DOCTOR".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -41,7 +41,7 @@ public class ExaminationController extends HttpServlet {
             request.setAttribute("medicalRecord", record);
         }
 
-        request.getRequestDispatcher("/views/doctor/examination.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/doctor/doctor-appointment-detail.jsp").forward(request, response);
     }
 
     @Override

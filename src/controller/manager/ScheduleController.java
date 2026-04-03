@@ -24,7 +24,7 @@ public class ScheduleController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"MANAGER".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
@@ -32,7 +32,7 @@ public class ScheduleController extends HttpServlet {
         List<Appointment> allApps = appointmentDAO.getAllAppointments();
         request.setAttribute("allAppointments", allApps);
 
-        request.getRequestDispatcher("/views/manager/schedule.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/manager/manager-schedules.jsp").forward(request, response);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class RegisterController extends HttpServlet {
         user.setPassword(password);
         user.setFullName(fullName);
         user.setEmail(email);
-        user.setRole("patient");
+        user.setRole("PATIENT");
 
         dao.insertUser(user);
 

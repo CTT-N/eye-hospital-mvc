@@ -23,13 +23,13 @@ public class ManageUserController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
         List<User> listUsers = userDAO.getAllUsers();
         request.setAttribute("listUsers", listUsers);
-        request.getRequestDispatcher("/views/admin/manage_users.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/admin/admin-users.jsp").forward(request, response);
     }
 
     @Override
@@ -47,7 +47,13 @@ public class ManageUserController extends HttpServlet {
             String role = request.getParameter("role");
             userDAO.updateUserRole(userId, role);
         } else if ("add".equals(action)) {
-            // ... code for insertUser
+            User newUser = new User();
+            newUser.setFullName(request.getParameter("fullName"));
+            newUser.setUsername(request.getParameter("username"));
+            newUser.setEmail(request.getParameter("email"));
+            newUser.setPassword(request.getParameter("password"));
+            newUser.setRole(request.getParameter("role").toUpperCase());
+            userDAO.insertUser(newUser);
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/users?msg=success");
