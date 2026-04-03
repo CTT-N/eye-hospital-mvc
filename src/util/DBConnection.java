@@ -26,13 +26,4 @@ public class DBConnection {
 
         return conn;
     }
-
-    public static void main(String[] args) {
-    Connection conn = getConnection();
-    if(conn != null){
-        System.out.println("Connected to MySQL successfully!");
-    } else {
-        System.out.println("Connected to MySQL failed!");
-    }
-}
 }
