@@ -80,6 +80,32 @@ public class InvoiceDAO {
         return list;
     }
 
+    public List<Invoice> getInvoicesByPatientId(String patientId) {
+        List<Invoice> list = new ArrayList<>();
+        String sql = "SELECT i.* FROM Invoice i " +
+                     "JOIN Appointment a ON i.appointmentId = a.appointmentId " +
+                     "WHERE a.patientId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, patientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setInvoiceId(rs.getString("invoiceId"));
+                    invoice.setAppointmentId(rs.getString("appointmentId"));
+                    invoice.setDate(rs.getDate("date"));
+                    invoice.setTotalAmount(rs.getDouble("totalAmount"));
+                    list.add(invoice);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public boolean insertInvoice(Invoice invoice) {
         String sql = "INSERT INTO Invoice (invoiceId, appointmentId, date, totalAmount) VALUES (?, ?, ?, ?)";
 

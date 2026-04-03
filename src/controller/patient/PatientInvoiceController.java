@@ -1,7 +1,9 @@
 package controller.patient;
 
 import dao.InvoiceDAO;
+import dao.PatientDAO;
 import model.Invoice;
+import model.Patient;
 import model.User;
 
 import jakarta.servlet.ServletException;
@@ -17,20 +19,24 @@ import java.util.List;
 public class PatientInvoiceController extends HttpServlet {
 
     private InvoiceDAO invoiceDAO = new InvoiceDAO();
+    private PatientDAO patientDAO = new PatientDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         if (user == null || !"PATIENT".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
 
-        List<Invoice> list = invoiceDAO.getAllInvoices(); 
+        Patient patient = patientDAO.getPatientByUserId(user.getUserId());
+        List<Invoice> list = (patient != null)
+            ? invoiceDAO.getInvoicesByPatientId(patient.getPatientId())
+            : new java.util.ArrayList<>();
         request.setAttribute("listInvoices", list);
-        request.getRequestDispatcher("/views/patient/invoices.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/patient/patient-invoices.jsp").forward(request, response);
     }
     
     @Override
