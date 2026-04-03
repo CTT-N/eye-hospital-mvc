@@ -50,7 +50,7 @@ public class MedicalRecordController extends HttpServlet {
             record.setDiagnosis(request.getParameter("diagnosis"));
             record.setTreatment(request.getParameter("treatment"));
             record.setNote(request.getParameter("note"));
-            // Note: date should be set
+            record.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
             recordDAO.insertRecord(record);
         } else if ("update".equals(action)) {
             MedicalRecord record = new MedicalRecord();
