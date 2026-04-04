@@ -52,7 +52,7 @@
 </div>
 
 <c:if test="${not empty error}">
-  <div class="alert alert-danger" style="max-width:1100px;margin:16px auto 0;padding:0 24px">${error}</div>
+  <div class="alert alert-danger" style="max-width:1100px;margin:16px auto 0;padding:0 24px"><c:out value="${error}"/></div>
 </c:if>
 
 <div class="book-layout">
