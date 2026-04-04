@@ -21,21 +21,19 @@ public class UserDAO {
             ps.setString(1, username);
             ps.setString(2, password);
 
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                User user = new User();
-                user.setUserId(rs.getString("userId"));
-                user.setUsername(rs.getString("username"));
-                user.setPassword(rs.getString("password"));
-                user.setFullName(rs.getString("fullName"));
-                user.setEmail(rs.getString("email"));
-                user.setPhone(rs.getString("phone"));
-                user.setRole(rs.getString("role"));
-                user.setDescription(rs.getString("description"));
-
-                return user;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setUserId(rs.getString("userId"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPassword(rs.getString("password"));
+                    user.setFullName(rs.getString("fullName"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setRole(rs.getString("role"));
+                    user.setDescription(rs.getString("description"));
+                    return user;
+                }
             }
 
         } catch (Exception e) {
@@ -106,15 +104,16 @@ public class UserDAO {
         String sql = "SELECT * FROM User";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User u = new User();
-                u.setUserId(rs.getString("userId"));
-                u.setUsername(rs.getString("username"));
-                u.setRole(rs.getString("role"));
-                u.setFullName(rs.getString("fullName"));
-                u.setEmail(rs.getString("email"));
-                list.add(u);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setUserId(rs.getString("userId"));
+                    u.setUsername(rs.getString("username"));
+                    u.setRole(rs.getString("role"));
+                    u.setFullName(rs.getString("fullName"));
+                    u.setEmail(rs.getString("email"));
+                    list.add(u);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,17 +138,18 @@ public class UserDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getString("userId"));
-                user.setUsername(rs.getString("username"));
-                user.setFullName(rs.getString("fullName"));
-                user.setEmail(rs.getString("email"));
-                user.setPhone(rs.getString("phone"));
-                user.setRole(rs.getString("role"));
-                user.setDescription(rs.getString("description"));
-                return user;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setUserId(rs.getString("userId"));
+                    user.setUsername(rs.getString("username"));
+                    user.setFullName(rs.getString("fullName"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setRole(rs.getString("role"));
+                    user.setDescription(rs.getString("description"));
+                    return user;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
