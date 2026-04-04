@@ -119,21 +119,31 @@ public class AppointmentDAO {
     }
 
     public boolean insertAppointment(Appointment appt) {
-        String sql = "INSERT INTO Appointment (appointmentId, patientId, doctorId, roomId, date, time, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, appt.getAppointmentId());
-            ps.setString(2, appt.getPatientId());
-            ps.setString(3, appt.getDoctorId());
-            ps.setString(4, appt.getRoomId());
-            ps.setDate(5, appt.getDate());
-            ps.setTime(6, appt.getTime());
-            ps.setString(7, appt.getStatus());
-
-            int rows = ps.executeUpdate();
-            return rows > 0;
+        try (Connection conn = DBConnection.getConnection()) {
+            if (appt.getRoomId() != null) {
+                String sql = "INSERT INTO Appointment (appointmentId, patientId, doctorId, roomId, date, time, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, appt.getAppointmentId());
+                    ps.setString(2, appt.getPatientId());
+                    ps.setString(3, appt.getDoctorId());
+                    ps.setString(4, appt.getRoomId());
+                    ps.setDate(5, appt.getDate());
+                    ps.setTime(6, appt.getTime());
+                    ps.setString(7, appt.getStatus());
+                    return ps.executeUpdate() > 0;
+                }
+            } else {
+                String sql = "INSERT INTO Appointment (appointmentId, patientId, doctorId, date, time, status) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, appt.getAppointmentId());
+                    ps.setString(2, appt.getPatientId());
+                    ps.setString(3, appt.getDoctorId());
+                    ps.setDate(4, appt.getDate());
+                    ps.setTime(5, appt.getTime());
+                    ps.setString(6, appt.getStatus());
+                    return ps.executeUpdate() > 0;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
