@@ -1,7 +1,9 @@
 package controller.admin;
 
 import model.User;
+import model.Doctor;
 import dao.UserDAO;
+import dao.DoctorDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ManageUserController extends HttpServlet {
 
     private UserDAO userDAO = new UserDAO();
+    private DoctorDAO doctorDAO = new DoctorDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,6 +57,13 @@ public class ManageUserController extends HttpServlet {
             newUser.setPassword(request.getParameter("password"));
             newUser.setRole(request.getParameter("role").toUpperCase());
             userDAO.insertUser(newUser);
+            // If adding a DOCTOR user, also create the Doctor profile record
+            if ("DOCTOR".equals(newUser.getRole())) {
+                Doctor doctor = new Doctor();
+                doctor.setDoctorId("DOC-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                doctor.setUserId(newUser.getUserId());
+                doctorDAO.insertDoctor(doctor);
+            }
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/users?msg=success");
