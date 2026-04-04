@@ -12,7 +12,18 @@ public class RegisterController extends HttpServlet {
     // mở trang register
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
+        // If already logged in, redirect to dashboard
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            String role = user.getRole() != null ? user.getRole() : "";
+            switch (role) {
+                case "ADMIN":   resp.sendRedirect(req.getContextPath() + "/admin/dashboard");   return;
+                case "DOCTOR":  resp.sendRedirect(req.getContextPath() + "/doctor/dashboard");  return;
+                case "MANAGER": resp.sendRedirect(req.getContextPath() + "/manager/dashboard"); return;
+                default:        resp.sendRedirect(req.getContextPath() + "/patient/dashboard"); return;
+            }
+        }
         req.getRequestDispatcher("/views/auth/register.jsp")
            .forward(req, resp);
     }
