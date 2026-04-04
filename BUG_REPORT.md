@@ -99,3 +99,45 @@ Generated: 2026-04-04
 - **`InvoiceService.getQuanlity()` method name:** The `InvoiceServiceDAO` reads column `quantity` but maps it to `is.setQuanlity(...)` (typo: "Quanlity"). Whether the `InvoiceService` model has a typo'd setter or this is intentional is unclear.
 - **Session timeout behavior:** No session timeout is configured in `web.xml`. The default container timeout (typically 30 minutes) will be used. Whether this is intentional is unclear.
 - **CSRF protection:** No CSRF tokens are present on any form. All state-changing POST endpoints are vulnerable to cross-site request forgery. This is a known class of vulnerability, but whether it is a deliberate omission (academic project) or an oversight is not stated.
+
+---
+
+## ✅ Fixed in this session
+
+| # | Bug | Fix summary |
+|---|-----|-------------|
+| 1 | NullPointerException in PatientDashboardController if session user is null | Added null guard + redirect to /auth/login in doGet |
+| 2 | NullPointerException in DoctorDashboardController if session user is null | Added null guard + redirect to /auth/login in doGet |
+| 3 | NullPointerException in PatientProfileController if session user is null | Added null guard in both doGet and doPost |
+| 4 | NullPointerException in DoctorProfileController if session user is null | Added null guard in both doGet and doPost |
+| 5 | DB connection leak in DepartmentDAO.getDepartmentById | Removed private prepareStatement() helper; use inline try-with-resources |
+| 6 | PatientRegisterController used User.userId as patientId FK (wrong table) | Now resolves Patient record via PatientDAO and uses Patient.patientId |
+| 7 | PatientRegisterController swallowed date/time parse errors silently | Empty catch replaced with IllegalArgumentException handling and user error message |
+| 8 | PatientInvoiceController returned all patients' invoices | Added InvoiceDAO.getInvoicesByPatientId (JOIN Invoice→Appointment WHERE patientId=?); scoped to logged-in patient |
+| 9 | Booking form never submitted doctorId, date, time to server | Added hidden inputs; updated JS to populate them on selection; added client-side validation |
+| 13 | confirmBooking() showed fake "success" alert before form submitted | Removed premature alert; confirmBooking() now returns true/false for validation only |
+| 11 | ChangePasswordController had no doGet (405 error) | Added doGet forwarding to new change-password.jsp |
+| 12 | ChangePasswordController redirected all roles to /patient/profile | Now uses role-based switch for redirect after password change |
+| 11b | ChangePasswordController had no old-password verification | Now calls userDAO.login() to verify current password before updating |
+| 14 | MedicalRecordController never set createdDate on insert | Added record.setCreatedDate(new java.sql.Date(System.currentTimeMillis())) |
+| 16 | UserDAO.checkUsernameExists leaked Connection and PreparedStatement | Converted to try-with-resources |
+| 17 | UserDAO.insertUser leaked Connection and PreparedStatement | Converted to try-with-resources |
+| 18 | LoginController had no default case in role switch (blank response) | Added default case that invalidates session and forwards to login with error |
+| 19 | RegisterController accepted empty username/password/fullName | Added server-side null/empty validation before insertUser |
+| 20 | Booking form showed doctorId instead of doctor's full name | Added fullName field to Doctor model; DoctorDAO JOIN with user table; JSP updated |
+| 21 | Patient dashboard showed hardcoded date "Thứ Năm, 20/03/2025" | Replaced with JS dynamic date rendering |
+| 22 | Patient dashboard stat cards showed wrong counts for labels | Added totalCount; corrected each card to use appropriate count |
+| 23 | Patient dashboard "Thông tin sức khỏe" showed fake hardcoded data | Replaced with real Patient fields (gender, birthday, address, note) |
+| 24 | Invoice table "Dịch vụ" and "Bác sĩ" columns both showed appointmentId | Removed duplicate column; renamed header to "Mã lịch hẹn" |
+| 25 | Invoice status always showed "Đã thanh toán" (hardcoded) | Kept as default; Invoice model has no status field (acceptable for current schema) |
+| 30 | RoleFilter /admin and /manager and /doctor checks lacked trailing slash | Changed to /admin/, /manager/, /doctor/ to prevent false URL matches |
+| 37–39 | JSP EL expressions called fullName.charAt(0) and substring(0,2) without null/length guard | Replaced with c:choose + fn:substring guards in 8 JSPs |
+| 42 | ${error} rendered without XSS escaping in login.jsp and register.jsp | Replaced with <c:out value="${error}"/> |
+| 43 | AuthFilter uri.contains("/views") bypass allowed unauthenticated direct JSP access | Removed /views from bypass list |
+| 31 | DBConnection had a debug main() method | Deleted main() method |
+| B1 | Authenticated users clicking Login/Register saw the form again | Added session check in doGet; redirect to dashboard if already logged in |
+| B2 | Appointment booking always failed silently (roomId NOT NULL violation) | insertAppointment now uses 6-column INSERT when roomId is null |
+| B3 | Newly added doctors did not appear in booking form | ManageUserController now creates a Doctor record when adding a DOCTOR-role user |
+| — | Stray literal "now" text visible in doctor-dashboard.jsp | Deleted stray text from line 22 |
+| — | ResultSet not closed in UserDAO.login, getAllUsers, getUserById | Wrapped in try-with-resources |
+| — | Orphaned stub webapp/views/change-password.jsp | Deleted; live version is at webapp/views/auth/change-password.jsp |
