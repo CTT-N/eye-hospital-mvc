@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -143,8 +144,7 @@
             <div class="stat-icon" style="background:#FEE2E2;color:var(--danger)"><i class="fas fa-ban"></i></div>
             <div class="stat-info">
               <div class="label">Tài khoản khóa</div>
-              <div class="value">3</div>
-              <div class="trend" style="color:var(--danger);font-size:11px">Cần xử lý</div>
+              <div class="value">${lockedCount}</div>
             </div>
           </div>
         </div>
@@ -188,75 +188,31 @@
               </tr>
             </thead>
             <tbody>
+              <c:forEach var="u" items="${listUsers}">
               <tr>
                 <td><input type="checkbox" style="accent-color:var(--primary-light)"></td>
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    <div class="avatar avatar-sm">VA</div>
+                    <div class="avatar avatar-sm">${fn:length(u.fullName) >= 2 ? fn:substring(u.fullName, 0, 2) : fn:substring(u.fullName, 0, 1)}</div>
                     <div>
-                      <div style="font-size:13px;font-weight:600">Nguyễn Văn An</div>
-                      <div style="font-size:11px;color:var(--text-muted)">ID: U-00001</div>
+                      <div style="font-size:13px;font-weight:600">${u.fullName}</div>
+                      <div style="font-size:11px;color:var(--text-muted)">ID: ${u.userId}</div>
                     </div>
                   </div>
                 </td>
-                <td><span class="badge-h badge-gray">Bệnh nhân</span></td>
-                <td style="font-size:13px">nguyenvanan@email.com</td>
-                <td style="font-size:13px">10/01/2024</td>
-                <td><span class="badge-h badge-success">Hoạt động</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="topbar-icon-btn" title="Xem chi tiết"><i class="fas fa-eye" style="font-size:13px"></i></button>
-                    <button class="topbar-icon-btn" title="Chỉnh sửa"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
-                    <button class="topbar-icon-btn" title="Khóa tài khoản"><i class="fas fa-lock" style="font-size:13px;color:var(--warning)"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" style="accent-color:var(--primary-light)"></td>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="avatar avatar-sm">MT</div>
-                    <div>
-                      <div style="font-size:13px;font-weight:600">Nguyễn Minh Tuấn</div>
-                      <div style="font-size:11px;color:var(--text-muted)">ID: D-00012</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge-h badge-info">Bác sĩ</span></td>
-                <td style="font-size:13px">drminhtuab@bvmat.vn</td>
-                <td style="font-size:13px">05/09/2023</td>
-                <td><span class="badge-h badge-success">Hoạt động</span></td>
+                <td><span class="badge-h ${u.role eq 'ADMIN' ? 'badge-danger' : u.role eq 'DOCTOR' ? 'badge-info' : u.role eq 'MANAGER' ? 'badge-primary' : 'badge-gray'}">${u.role}</span></td>
+                <td style="font-size:13px">${u.email}</td>
+                <td style="font-size:13px">&mdash;</td>
+                <td><span class="badge-h badge-success">Hoat dong</span></td>
                 <td>
                   <div class="d-flex gap-1">
                     <button class="topbar-icon-btn" title="Xem"><i class="fas fa-eye" style="font-size:13px"></i></button>
-                    <button class="topbar-icon-btn" title="Sửa"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-lock" style="font-size:13px;color:var(--warning)"></i></button>
+                    <button class="topbar-icon-btn" title="Sua"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
+                    <button class="topbar-icon-btn" title="Khoa"><i class="fas fa-lock" style="font-size:13px;color:var(--warning)"></i></button>
                   </div>
                 </td>
               </tr>
-              <tr style="background:#FFF5F5">
-                <td><input type="checkbox" style="accent-color:var(--primary-light)"></td>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="avatar avatar-sm" style="background:#FEE2E2;color:var(--danger)">XB</div>
-                    <div>
-                      <div style="font-size:13px;font-weight:600">Lê Văn Xấu</div>
-                      <div style="font-size:11px;color:var(--text-muted)">ID: U-00498</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge-h badge-gray">Bệnh nhân</span></td>
-                <td style="font-size:13px">levanxau@spam.com</td>
-                <td style="font-size:13px">01/03/2025</td>
-                <td><span class="badge-h badge-danger">Đã khóa</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="topbar-icon-btn"><i class="fas fa-eye" style="font-size:13px"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-lock-open" style="font-size:13px;color:var(--success)"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-trash" style="font-size:13px;color:var(--danger)"></i></button>
-                  </div>
-                </td>
-              </tr>
+              </c:forEach>
             </tbody>
           </table>
         </div>
@@ -279,7 +235,7 @@
         <div class="card-header-h">
           <div>
             <h5>Danh Mục Bệnh Mắt</h5>
-            <p style="font-size:12px;color:var(--text-muted);margin:0">42 loại bệnh trong hệ thống</p>
+            <p style="font-size:12px;color:var(--text-muted);margin:0">${listDiseases.size()} loại bệnh trong hệ thống</p>
           </div>
           <button class="btn-hospital btn-primary-h">
             <i class="fas fa-plus"></i> Thêm bệnh
@@ -297,11 +253,12 @@
               </tr>
             </thead>
             <tbody>
+              <c:forEach var="d" items="${listDiseases}">
               <tr>
-                <td><code style="background:var(--bg-alt);padding:2px 8px;border-radius:4px;font-size:12px">H26</code></td>
-                <td style="font-size:13px;font-weight:500">Cườm đục thủy tinh thể</td>
-                <td style="font-size:13px;color:var(--text-muted)">Cataract</td>
-                <td><span class="badge-h badge-primary">Cườm mắt</span></td>
+                <td><code style="background:var(--bg-alt);padding:2px 8px;border-radius:4px;font-size:12px">${d.infoId}</code></td>
+                <td style="font-size:13px;font-weight:500">${d.diseaseName}</td>
+                <td style="font-size:13px;color:var(--text-muted)">&mdash;</td>
+                <td><span class="badge-h badge-primary">Nhãn khoa</span></td>
                 <td>
                   <div class="d-flex gap-1">
                     <button class="topbar-icon-btn"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
@@ -309,42 +266,7 @@
                   </div>
                 </td>
               </tr>
-              <tr>
-                <td><code style="background:var(--bg-alt);padding:2px 8px;border-radius:4px;font-size:12px">H40.1</code></td>
-                <td style="font-size:13px;font-weight:500">Glaucoma góc mở nguyên phát</td>
-                <td style="font-size:13px;color:var(--text-muted)">Primary open-angle glaucoma</td>
-                <td><span class="badge-h badge-primary">Tăng nhãn áp</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="topbar-icon-btn"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-trash" style="font-size:13px;color:var(--danger)"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><code style="background:var(--bg-alt);padding:2px 8px;border-radius:4px;font-size:12px">H52.1</code></td>
-                <td style="font-size:13px;font-weight:500">Cận thị</td>
-                <td style="font-size:13px;color:var(--text-muted)">Myopia</td>
-                <td><span class="badge-h badge-primary">Khúc xạ</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="topbar-icon-btn"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-trash" style="font-size:13px;color:var(--danger)"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><code style="background:var(--bg-alt);padding:2px 8px;border-radius:4px;font-size:12px">E11.3</code></td>
-                <td style="font-size:13px;font-weight:500">Bệnh lý võng mạc đái tháo đường</td>
-                <td style="font-size:13px;color:var(--text-muted)">Diabetic retinopathy</td>
-                <td><span class="badge-h badge-primary">Võng mạc</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="topbar-icon-btn"><i class="fas fa-pen" style="font-size:13px;color:var(--primary-light)"></i></button>
-                    <button class="topbar-icon-btn"><i class="fas fa-trash" style="font-size:13px;color:var(--danger)"></i></button>
-                  </div>
-                </td>
-              </tr>
+              </c:forEach>
             </tbody>
           </table>
         </div>
