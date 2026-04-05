@@ -362,6 +362,7 @@
 </div><!-- /app-shell -->
 
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>
+<script>window.dashboardStatusData = [${completedCount}, ${confirmedCount}, ${pendingCount}, ${cancelledCount}];</script>
 <script src="${pageContext.request.contextPath}/static/js/manager-dashboard.js"></script>
 </body>
 </html>

@@ -41,7 +41,7 @@ new Chart(ctx2, {
   data: {
     labels: ['Hoàn thành', 'Xác nhận', 'Chờ xác nhận', 'Đã hủy'],
     datasets: [{
-      data: [698, 321, 183, 84],
+      data: window.dashboardStatusData || [0, 0, 0, 0],
       backgroundColor: ['#16A34A', '#2563A8', '#D97706', '#DC2626'],
       borderWidth: 0,
       hoverOffset: 4,
