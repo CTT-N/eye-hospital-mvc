@@ -3,9 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import util.DBConnection;
 
@@ -34,18 +32,22 @@ public class ReportDAO {
     }
 
     /**
-     * Returns a map of doctorId -> appointment count.
+     * Returns a map of doctor name -> appointment count.
      */
     public Map<String, Integer> getAppointmentCountByDoctor() {
         Map<String, Integer> result = new LinkedHashMap<>();
-        String sql = "SELECT doctorId, COUNT(*) as cnt FROM Appointment WHERE doctorId IS NOT NULL GROUP BY doctorId ORDER BY cnt DESC";
+        String sql = "SELECT u.fullName, COUNT(*) as cnt FROM Appointment a " +
+                     "JOIN Doctor d ON a.doctorId = d.doctorId " +
+                     "JOIN User u ON d.userId = u.userId " +
+                     "WHERE a.doctorId IS NOT NULL " +
+                     "GROUP BY a.doctorId, u.fullName ORDER BY cnt DESC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                result.put(rs.getString("doctorId"), rs.getInt("cnt"));
+                result.put(rs.getString("fullName"), rs.getInt("cnt"));
             }
         } catch (Exception e) {
             e.printStackTrace();

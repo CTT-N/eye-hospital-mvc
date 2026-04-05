@@ -71,7 +71,15 @@
                 <tbody>
                   <c:forEach var="entry" items="${statusCounts}">
                   <tr>
-                    <td style="font-size:13px;font-weight:500">${entry.key}</td>
+                    <td style="font-size:13px;font-weight:500">
+                      <c:choose>
+                        <c:when test="${entry.key eq 'COMPLETED'}">Hoàn thành</c:when>
+                        <c:when test="${entry.key eq 'CONFIRMED'}">Đã xác nhận</c:when>
+                        <c:when test="${entry.key eq 'PENDING'}">Chờ xác nhận</c:when>
+                        <c:when test="${entry.key eq 'CANCELLED'}">Đã hủy</c:when>
+                        <c:otherwise>${entry.key}</c:otherwise>
+                      </c:choose>
+                    </td>
                     <td style="font-size:13px;text-align:right">${entry.value}</td>
                   </tr>
                   </c:forEach>
