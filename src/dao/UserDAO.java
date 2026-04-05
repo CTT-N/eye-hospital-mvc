@@ -112,6 +112,7 @@ public class UserDAO {
                     u.setRole(rs.getString("role"));
                     u.setFullName(rs.getString("fullName"));
                     u.setEmail(rs.getString("email"));
+                    u.setDescription(rs.getString("description"));
                     list.add(u);
                 }
             }
