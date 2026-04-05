@@ -156,6 +156,57 @@
             </div>
           </div>
         </div>
+
+        <!-- Medical Record Form -->
+        <div class="col-lg-12">
+          <div class="card-hospital">
+            <div class="card-header-h">
+              <h5><i class="fas fa-notes-medical" style="color:var(--primary);margin-right:8px"></i>
+                <c:choose>
+                  <c:when test="${not empty medicalRecord}">Cập nhật hồ sơ bệnh án</c:when>
+                  <c:otherwise>Nhập hồ sơ bệnh án</c:otherwise>
+                </c:choose>
+              </h5>
+            </div>
+            <div class="card-body-h">
+              <form action="${pageContext.request.contextPath}/doctor/examination" method="post">
+                <input type="hidden" name="appointmentId" value="${not empty appointment ? appointment.appointmentId : ''}">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label" style="font-size:13px;font-weight:600">Triệu chứng *</label>
+                    <textarea name="symptoms" class="form-control" rows="3" required
+                      placeholder="Mô tả triệu chứng bệnh nhân">${not empty medicalRecord ? medicalRecord.symptoms : ''}</textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" style="font-size:13px;font-weight:600">Chẩn đoán *</label>
+                    <textarea name="diagnosis" class="form-control" rows="3" required
+                      placeholder="Chẩn đoán bệnh">${not empty medicalRecord ? medicalRecord.diagnosis : ''}</textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" style="font-size:13px;font-weight:600">Phác đồ điều trị *</label>
+                    <textarea name="treatment" class="form-control" rows="3" required
+                      placeholder="Phương pháp điều trị">${not empty medicalRecord ? medicalRecord.treatment : ''}</textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" style="font-size:13px;font-weight:600">Ghi chú</label>
+                    <textarea name="note" class="form-control" rows="3"
+                      placeholder="Ghi chú thêm (nếu có)">${not empty medicalRecord ? medicalRecord.note : ''}</textarea>
+                  </div>
+                </div>
+                <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
+                  <a href="${pageContext.request.contextPath}/doctor/schedule" class="btn-hospital btn-outline-h btn-sm">Hủy</a>
+                  <button type="submit" class="btn-hospital btn-primary-h btn-sm">
+                    <i class="fas fa-save"></i>
+                    <c:choose>
+                      <c:when test="${not empty medicalRecord}">Cập nhật</c:when>
+                      <c:otherwise>Lưu hồ sơ</c:otherwise>
+                    </c:choose>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
