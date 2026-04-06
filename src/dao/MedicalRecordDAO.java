@@ -88,6 +88,41 @@ public class MedicalRecordDAO {
         return null;
     }
 
+    /**
+     * Returns all medical records belonging to a patient,
+     * ordered newest first. Joins through Appointment to filter by patientId.
+     */
+    public List<MedicalRecord> getRecordsByPatientId(String patientId) {
+        List<MedicalRecord> list = new ArrayList<>();
+        String sql =
+            "SELECT mr.* FROM MedicalRecord mr " +
+            "JOIN Appointment a ON mr.appointmentId = a.appointmentId " +
+            "WHERE a.patientId = ? " +
+            "ORDER BY mr.createdDate DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, patientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    MedicalRecord record = new MedicalRecord();
+                    record.setRecordId(rs.getString("recordId"));
+                    record.setAppointmentId(rs.getString("appointmentId"));
+                    record.setSymptoms(rs.getString("symptoms"));
+                    record.setDiagnosis(rs.getString("diagnosis"));
+                    record.setTreatment(rs.getString("treatment"));
+                    record.setCreatedDate(rs.getDate("createdDate"));
+                    record.setNote(rs.getString("note"));
+                    list.add(record);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public boolean insertRecord(MedicalRecord record) {
         String sql = "INSERT INTO MedicalRecord (recordId, appointmentId, symptoms, diagnosis, treatment, createdDate, note) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
