@@ -46,7 +46,7 @@
       </div>
       <div class="nav-section-label">Hồ sơ</div>
       <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/patient/history" class="nav-link-h">
+        <a href="${pageContext.request.contextPath}/patient/medical-records" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-notes-medical"></i></span>
           <span class="nav-label">Bệnh án của tôi</span>
         </a>
