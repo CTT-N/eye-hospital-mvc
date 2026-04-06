@@ -47,7 +47,7 @@
       </div>
       <div class="nav-section-label">Hồ sơ</div>
       <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/patient/history" class="nav-link-h">
+        <a href="${pageContext.request.contextPath}/patient/medical-records" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-notes-medical"></i></span>
           <span class="nav-label">Bệnh án của tôi</span>
         </a>
@@ -141,11 +141,15 @@
                     <c:forEach var="appt" items="${appointments}">
                     <tr data-status="${appt.status}">
                       <td>${appt.date} ${appt.time}</td>
-                      <td>${appt.doctorId}</td>
+                      <td>${appt.doctorName}</td>
+                      <td>${appt.departmentName}</td>
                       <td>${appt.roomId}</td>
-                      <td>${appt.roomId}</td>
-                      <td><span class="badge-status badge-${appt.status.toLowerCase()}">${appt.status}</span></td>
+                      <td><span class="badge-status badge-${fn:toLowerCase(appt.status)}">${appt.status}</span></td>
                       <td class="action-cell">
+                        <a href="${pageContext.request.contextPath}/patient/medical-records?appointmentId=${appt.appointmentId}"
+                           class="btn-hospital btn-ghost-h btn-sm">
+                          <i class="fas fa-eye"></i> Xem chi tiết
+                        </a>
                         <c:if test="${appt.status == 'PENDING' || appt.status == 'CONFIRMED'}">
                           <button class="btn-hospital btn-danger-h btn-sm" onclick="openCancel(this)">Huỷ</button>
                         </c:if>
