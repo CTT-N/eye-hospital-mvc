@@ -91,6 +91,46 @@ public class AppointmentDAO {
         return list;
     }
 
+    /**
+     * Returns appointments for a patient with doctor name and department name
+     * resolved via JOIN. Used by patient-facing controllers only.
+     */
+    public List<Appointment> getAppointmentsByPatientIdEnriched(String patientId) {
+        List<Appointment> list = new ArrayList<>();
+        String sql =
+            "SELECT a.*, u.fullName AS doctorName, dep.departmentName " +
+            "FROM Appointment a " +
+            "JOIN Doctor d ON a.doctorId = d.doctorId " +
+            "JOIN user u ON d.userId = u.userId " +
+            "JOIN Department dep ON d.departmentId = dep.departmentId " +
+            "WHERE a.patientId = ? " +
+            "ORDER BY a.date DESC, a.time DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, patientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Appointment appt = new Appointment();
+                    appt.setAppointmentId(rs.getString("appointmentId"));
+                    appt.setPatientId(rs.getString("patientId"));
+                    appt.setDoctorId(rs.getString("doctorId"));
+                    appt.setRoomId(rs.getString("roomId"));
+                    appt.setDate(rs.getDate("date"));
+                    appt.setTime(rs.getTime("time"));
+                    appt.setStatus(rs.getString("status"));
+                    appt.setDoctorName(rs.getString("doctorName"));
+                    appt.setDepartmentName(rs.getString("departmentName"));
+                    list.add(appt);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Appointment> getAppointmentsByDoctorId(String doctorId) {
         List<Appointment> list = new ArrayList<>();
         String sql = "SELECT * FROM Appointment WHERE doctorId = ?";
