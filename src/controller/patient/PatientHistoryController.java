@@ -33,10 +33,10 @@ public class PatientHistoryController extends HttpServlet {
 
         Patient patient = patientDAO.getPatientByUserId(user.getUserId());
         if (patient != null) {
-            List<Appointment> apps = appointmentDAO.getAppointmentsByPatientId(patient.getPatientId());
+            List<Appointment> apps = appointmentDAO.getAppointmentsByPatientIdEnriched(patient.getPatientId());
             request.setAttribute("appointments", apps);
         }
 
-        request.getRequestDispatcher("/views/patient/patient-history.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/patient/patient-appointments.jsp").forward(request, response);
     }
 }
