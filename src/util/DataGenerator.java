@@ -86,15 +86,21 @@ public class DataGenerator {
 
             System.out.println("Generating Users...");
 
-            for(int i=1;i<=1000;i++){
+            // tao rieng 1 tai khoan cho admin
+            st.executeUpdate(
+                        "INSERT INTO User VALUES('U000','admin','123456','Administrator','admin@gmail.com','ADMIN','0123456789','System admin')"
+                );
+
+            for(int i=1;i<500;i++){
 
                 String uid="U"+String.format("%03d",i);
 
                 String role;
 
-                if(i<=40) role="DOCTOR";
-                else if(i<=340) role="PATIENT";
-                else role="MANAGER";
+                if(i<=5) role="ADMIN";
+                if(i<=25) role="DOCTOR";
+                else if(i<=50) role="MANAGER";
+                else role="PATIENT";
 
                 st.executeUpdate(
                         "INSERT INTO User VALUES('"+uid+"','user"+i+"','123456','"

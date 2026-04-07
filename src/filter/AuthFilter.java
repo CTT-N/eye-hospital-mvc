@@ -27,7 +27,7 @@ public class AuthFilter implements Filter {
 
             chain.doFilter(request, response);
             return;
-        }
+        }//whitelist
 
         HttpSession session = req.getSession(false);
 

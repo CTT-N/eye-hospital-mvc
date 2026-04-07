@@ -1,6 +1,8 @@
 package controller.auth;
 
+import dao.PatientDAO;
 import dao.UserDAO;
+import model.Patient;
 import model.User;
 
 import jakarta.servlet.*;
@@ -49,10 +51,9 @@ public class RegisterController extends HttpServlet {
         UserDAO dao = new UserDAO();
 
         // check trùng username
-        if(dao.checkUsernameExists(username)){
+        if (dao.checkUsernameExists(username)) {
             req.setAttribute("error", "Username already exists!");
-            req.getRequestDispatcher("/views/auth/register.jsp")
-               .forward(req, resp);
+            req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
             return;
         }
 
@@ -65,6 +66,12 @@ public class RegisterController extends HttpServlet {
         user.setRole("PATIENT");
 
         dao.insertUser(user);
+
+        // Create a Patient profile row so the user can book appointments immediately
+        Patient patient = new Patient();
+        patient.setPatientId("PAT-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        patient.setUserId(user.getUserId());
+        new PatientDAO().insertPatient(patient);
 
         // đăng ký xong → login
         resp.sendRedirect(req.getContextPath() + "/auth/login");
