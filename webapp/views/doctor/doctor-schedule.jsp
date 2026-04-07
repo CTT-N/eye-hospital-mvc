@@ -102,17 +102,40 @@
           </c:when>
           <c:otherwise>
             <c:forEach var="appt" items="${appointments}">
-            <a href="${pageContext.request.contextPath}/doctor/examination?appointmentId=${appt.appointmentId}" class="schedule-card">
+            <div class="schedule-card" style="display:flex;align-items:center;gap:12px">
               <div class="schedule-time"><div class="time">${appt.time}</div><div class="dur">30 phut</div></div>
               <div class="schedule-divider"></div>
-              <div class="schedule-info">
-                <div class="patient-name">${appt.patientId}</div>
+              <div class="schedule-info" style="flex:1">
+                <div class="patient-name">
+                  <c:choose>
+                    <c:when test="${not empty appt.patientName}">${appt.patientName}</c:when>
+                    <c:otherwise>${appt.patientId}</c:otherwise>
+                  </c:choose>
+                </div>
                 <div class="schedule-meta">
-                  <span><i class="fas fa-door-open" style="margin-right:4px"></i>Phong ${appt.roomId}</span>
+                  <c:choose>
+                    <c:when test="${not empty appt.roomId}">
+                      <span><i class="fas fa-door-open" style="margin-right:4px"></i>Phong ${appt.roomId}</span>
+                    </c:when>
+                    <c:otherwise>
+                      <span style="color:var(--text-muted)">Chua co phong</span>
+                    </c:otherwise>
+                  </c:choose>
                 </div>
               </div>
-              <span class="badge-status badge-${appt.status.toLowerCase()}" style="align-self:center">${appt.status}</span>
-            </a>
+              <span class="badge-status badge-${fn:toLowerCase(appt.status)}" style="align-self:center">${appt.status}</span>
+              <div style="display:flex;gap:6px;align-self:center">
+                <c:if test="${appt.status == 'PENDING'}">
+                  <form method="post" action="${pageContext.request.contextPath}/doctor/schedule" style="margin:0">
+                    <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
+                    <input type="hidden" name="status" value="CONFIRMED">
+                    <button type="submit" class="btn-hospital btn-primary-h btn-sm">Xac nhan</button>
+                  </form>
+                </c:if>
+                <a href="${pageContext.request.contextPath}/doctor/examination?appointmentId=${appt.appointmentId}"
+                   class="btn-hospital btn-ghost-h btn-sm">Kham</a>
+              </div>
+            </div>
             </c:forEach>
           </c:otherwise>
         </c:choose>

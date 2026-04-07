@@ -33,7 +33,7 @@ public class DoctorScheduleController extends HttpServlet {
 
         Doctor doctor = doctorDAO.getDoctorByUserId(user.getUserId());
         if (doctor != null) {
-            List<Appointment> apps = appointmentDAO.getAppointmentsByDoctorId(doctor.getDoctorId());
+            List<Appointment> apps = appointmentDAO.getAppointmentsByDoctorIdWithPatientName(doctor.getDoctorId());
             request.setAttribute("appointments", apps);
         }
 

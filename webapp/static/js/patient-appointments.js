@@ -22,12 +22,27 @@ function closeCancel() {
 
 function confirmCancel() {
   if (cancelTarget) {
-    const statusCell = cancelTarget.querySelector('.badge-status');
-    statusCell.className = 'badge-status badge-cancelled';
-    statusCell.textContent = 'Đã huỷ';
-    cancelTarget.dataset.status = 'cancelled';
-    const actionCell = cancelTarget.querySelector('.action-cell');
-    actionCell.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">—</span>';
+    const appointmentId = cancelTarget.dataset.id;
+    if (appointmentId) {
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = document.querySelector('base')
+        ? document.querySelector('base').href.replace(/\/$/, '') + '/patient/history'
+        : window.location.pathname.replace(/\/patient\/.*/, '') + '/patient/history';
+      const actionInput = document.createElement('input');
+      actionInput.type = 'hidden';
+      actionInput.name = 'action';
+      actionInput.value = 'cancel';
+      const idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'appointmentId';
+      idInput.value = appointmentId;
+      form.appendChild(actionInput);
+      form.appendChild(idInput);
+      document.body.appendChild(form);
+      form.submit();
+      return;
+    }
   }
   closeCancel();
 }

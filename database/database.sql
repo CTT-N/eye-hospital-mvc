@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS Doctor (
     educationDegree VARCHAR(50),
     experience VARCHAR(255),
     description VARCHAR(255),
+    avatarUrl VARCHAR(255),
 
     FOREIGN KEY (userId)
     REFERENCES User(userId),

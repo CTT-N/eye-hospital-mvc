@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -39,8 +40,21 @@
         <li><a href="#">Liên hệ</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="${pageContext.request.contextPath}/auth/login" class="btn-nav-ghost">Đăng nhập</a>
-        <a href="${pageContext.request.contextPath}/auth/register" class="btn-nav-cta">Đăng ký</a>
+        <c:choose>
+          <c:when test="${not empty sessionScope.user}">
+            <c:set var="dashPath" value="/patient/dashboard"/>
+            <c:if test="${sessionScope.user.role == 'ADMIN'}">  <c:set var="dashPath" value="/admin/dashboard"/></c:if>
+            <c:if test="${sessionScope.user.role == 'DOCTOR'}"> <c:set var="dashPath" value="/doctor/dashboard"/></c:if>
+            <c:if test="${sessionScope.user.role == 'MANAGER'}"><c:set var="dashPath" value="/manager/dashboard"/></c:if>
+            <a href="${pageContext.request.contextPath}${dashPath}" class="btn-nav-cta">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </c:when>
+          <c:otherwise>
+            <a href="${pageContext.request.contextPath}/auth/login" class="btn-nav-ghost">Đăng nhập</a>
+            <a href="${pageContext.request.contextPath}/auth/register" class="btn-nav-cta">Đăng ký</a>
+          </c:otherwise>
+        </c:choose>
       </div>
     </div>
   </nav>
@@ -259,50 +273,31 @@
         </div>
       </div>
       <div class="doctors-grid">
-        <div class="doc-card">
-          <div class="doc-img">
-            <img src="${pageContext.request.contextPath}/static/images/doctor-1.jpg" alt="TS. BS. Nguyễn Minh Tuấn">
-            <div class="doc-overlay"><a href="${pageContext.request.contextPath}/common/find-doctor">Đặt lịch khám →</a></div>
+        <c:forEach var="doc" items="${doctors}" varStatus="vs">
+          <c:if test="${vs.index < 4}">
+          <c:set var="imgNum" value="${vs.index mod 4 + 1}" />
+          <c:set var="avatar" value="${not empty doc.avatarUrl ? doc.avatarUrl : pageContext.request.contextPath.concat('/static/images/doctor-').concat(imgNum).concat('.jpg')}" />
+          <div class="doc-card">
+            <div class="doc-img">
+              <img src="${avatar}" alt="${fn:escapeXml(doc.fullName)}">
+              <div class="doc-overlay"><a href="${pageContext.request.contextPath}/common/find-doctor">Đặt lịch khám →</a></div>
+            </div>
+            <div class="doc-body">
+              <div class="doc-name">${fn:escapeXml(doc.fullName)}</div>
+              <div class="doc-spec">
+                <c:choose>
+                  <c:when test="${not empty doc.departmentName}">${fn:escapeXml(doc.departmentName)}</c:when>
+                  <c:otherwise>Chuyên khoa nhãn khoa</c:otherwise>
+                </c:choose>
+                <c:if test="${not empty doc.experience}"> · ${fn:escapeXml(doc.experience)}</c:if>
+              </div>
+              <c:if test="${not empty doc.educationDegree}">
+                <span class="doc-tag">${fn:escapeXml(doc.educationDegree)}</span>
+              </c:if>
+            </div>
           </div>
-          <div class="doc-body">
-            <div class="doc-name">TS. BS. Nguyễn Minh Tuấn</div>
-            <div class="doc-spec">Chuyên khoa Võng mạc · 15 năm KN</div>
-            <span class="doc-tag">★ 4.9 · 2,400 bệnh nhân</span>
-          </div>
-        </div>
-        <div class="doc-card">
-          <div class="doc-img">
-            <img src="${pageContext.request.contextPath}/static/images/doctor-2.jpg" alt="PGS. BS. Lê Thị Hương">
-            <div class="doc-overlay"><a href="${pageContext.request.contextPath}/common/find-doctor">Đặt lịch khám →</a></div>
-          </div>
-          <div class="doc-body">
-            <div class="doc-name">PGS. BS. Lê Thị Hương</div>
-            <div class="doc-spec">Phẫu thuật Cườm mắt · 18 năm KN</div>
-            <span class="doc-tag">★ 4.8 · 3,100 bệnh nhân</span>
-          </div>
-        </div>
-        <div class="doc-card">
-          <div class="doc-img">
-            <img src="${pageContext.request.contextPath}/static/images/doctor-3.jpg" alt="GS. BS. Trần Văn Đức">
-            <div class="doc-overlay"><a href="${pageContext.request.contextPath}/common/find-doctor">Đặt lịch khám →</a></div>
-          </div>
-          <div class="doc-body">
-            <div class="doc-name">GS. BS. Trần Văn Đức</div>
-            <div class="doc-spec">Nhãn nhi & Lác mắt · 25 năm KN</div>
-            <span class="doc-tag">★ 5.0 · 5,200 bệnh nhân</span>
-          </div>
-        </div>
-        <div class="doc-card">
-          <div class="doc-img">
-            <img src="${pageContext.request.contextPath}/static/images/doctor-4.jpg" alt="BS. Phạm Thị Lan">
-            <div class="doc-overlay"><a href="${pageContext.request.contextPath}/common/find-doctor">Đặt lịch khám →</a></div>
-          </div>
-          <div class="doc-body">
-            <div class="doc-name">BS. Phạm Thị Lan</div>
-            <div class="doc-spec">Khúc xạ học · 10 năm KN</div>
-            <span class="doc-tag">★ 4.7 · 1,800 bệnh nhân</span>
-          </div>
-        </div>
+          </c:if>
+        </c:forEach>
       </div>
     </div>
   </section>

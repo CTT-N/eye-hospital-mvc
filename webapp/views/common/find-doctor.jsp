@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -62,13 +63,58 @@
       <option value="">Tất cả</option>
       <option value="open">Còn lịch trống</option>
     </select>
-    <span class="count" id="docCount">Hiển thị 8 bác sĩ</span>
+    <span class="count" id="docCount">Hiển thị 0 bác sĩ</span>
   </div>
 </div>
 
 <div class="doctors-main">
   <div class="doc-grid" id="docGrid">
-    <!-- Doctor cards are rendered by JS below for filter functionality -->
+    <c:choose>
+      <c:when test="${empty doctors}">
+        <div class="no-results" style="grid-column:1/-1;text-align:center;padding:48px;color:#6B7280">
+          <i class="fas fa-user-doctor fa-2x" style="margin-bottom:16px;opacity:.3"></i><br>
+          Chưa có bác sĩ nào trong hệ thống
+        </div>
+      </c:when>
+      <c:otherwise>
+        <c:forEach var="doc" items="${doctors}" varStatus="vs">
+          <c:set var="imgNum" value="${vs.index mod 4 + 1}" />
+          <c:set var="spec" value="${not empty doc.departmentName ? doc.departmentName : 'Nhãn khoa'}" />
+          <c:set var="avatar" value="${not empty doc.avatarUrl ? doc.avatarUrl : pageContext.request.contextPath.concat('/static/images/doctor-').concat(imgNum).concat('.jpg')}" />
+          <div class="doc-card-v2"
+               data-name="${fn:toLowerCase(fn:escapeXml(doc.fullName))}"
+               data-spec="${fn:toLowerCase(fn:escapeXml(spec))}"
+               data-avail="open">
+            <div class="doc-photo">
+              <img src="${avatar}"
+                   alt="${fn:escapeXml(doc.fullName)}" loading="lazy">
+              <div class="avail-badge open">Còn lịch trống</div>
+            </div>
+            <div class="doc-info">
+              <div class="name">${fn:escapeXml(doc.fullName)}</div>
+              <div class="spec">Chuyên khoa ${fn:escapeXml(spec)}</div>
+              <div class="tags">
+                <span class="tag">${fn:escapeXml(spec)}</span>
+                <c:if test="${not empty doc.experience}">
+                  <span class="tag">${fn:escapeXml(doc.experience)}</span>
+                </c:if>
+                <c:if test="${not empty doc.educationDegree}">
+                  <span class="tag">${fn:escapeXml(doc.educationDegree)}</span>
+                </c:if>
+              </div>
+              <div class="doc-meta">
+                <c:if test="${not empty doc.description}">
+                  <div class="patients" style="font-size:12px;color:#6B7280">${fn:escapeXml(doc.description)}</div>
+                </c:if>
+              </div>
+              <a href="${pageContext.request.contextPath}/auth/login" class="btn-book-sm">
+                <i class="fas fa-calendar-plus"></i> Đặt lịch ngay
+              </a>
+            </div>
+          </div>
+        </c:forEach>
+      </c:otherwise>
+    </c:choose>
   </div>
 </div>
 

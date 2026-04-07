@@ -9,9 +9,17 @@ public class Doctor {
     private String experience;
     private String description;
     private String fullName;
+    private String departmentName;
+    private String avatarUrl;
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getDepartmentName() { return departmentName; }
+    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
+
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 
     public Doctor() {
     }

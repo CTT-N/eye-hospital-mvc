@@ -13,7 +13,10 @@ public class DoctorDAO {
 
     public List<Doctor> getAllDoctors() {
         List<Doctor> list = new ArrayList<>();
-        String sql = "SELECT d.*, u.fullName FROM Doctor d JOIN user u ON d.userId = u.userId";
+        String sql = "SELECT d.*, u.fullName, dep.departmentName " +
+                     "FROM Doctor d " +
+                     "JOIN user u ON d.userId = u.userId " +
+                     "LEFT JOIN Department dep ON d.departmentId = dep.departmentId";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -28,6 +31,8 @@ public class DoctorDAO {
                 doctor.setExperience(rs.getString("experience"));
                 doctor.setDescription(rs.getString("description"));
                 doctor.setFullName(rs.getString("fullName"));
+                doctor.setDepartmentName(rs.getString("departmentName"));
+                doctor.setAvatarUrl(rs.getString("avatarUrl"));
                 list.add(doctor);
             }
         } catch (Exception e) {
@@ -37,7 +42,11 @@ public class DoctorDAO {
     }
 
     public Doctor getDoctorById(String id) {
-        String sql = "SELECT d.*, u.fullName FROM Doctor d JOIN user u ON d.userId = u.userId WHERE d.doctorId = ?";
+        String sql = "SELECT d.*, u.fullName, dep.departmentName " +
+                     "FROM Doctor d " +
+                     "JOIN user u ON d.userId = u.userId " +
+                     "LEFT JOIN Department dep ON d.departmentId = dep.departmentId " +
+                     "WHERE d.doctorId = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -53,6 +62,8 @@ public class DoctorDAO {
                     doctor.setExperience(rs.getString("experience"));
                     doctor.setDescription(rs.getString("description"));
                     doctor.setFullName(rs.getString("fullName"));
+                    doctor.setDepartmentName(rs.getString("departmentName"));
+                    doctor.setAvatarUrl(rs.getString("avatarUrl"));
                     return doctor;
                 }
             }
@@ -78,6 +89,7 @@ public class DoctorDAO {
                     doctor.setEducationDegree(rs.getString("educationDegree"));
                     doctor.setExperience(rs.getString("experience"));
                     doctor.setDescription(rs.getString("description"));
+                    doctor.setAvatarUrl(rs.getString("avatarUrl"));
                     return doctor;
                 }
             }
@@ -88,7 +100,7 @@ public class DoctorDAO {
     }
 
     public boolean insertDoctor(Doctor doctor) {
-        String sql = "INSERT INTO Doctor (doctorId, userId, departmentId, educationDegree, experience, description) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Doctor (doctorId, userId, departmentId, educationDegree, experience, description, avatarUrl) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -99,6 +111,7 @@ public class DoctorDAO {
             ps.setString(4, doctor.getEducationDegree());
             ps.setString(5, doctor.getExperience());
             ps.setString(6, doctor.getDescription());
+            ps.setString(7, doctor.getAvatarUrl());
 
             int rows = ps.executeUpdate();
             return rows > 0;
@@ -109,7 +122,7 @@ public class DoctorDAO {
     }
 
     public boolean updateDoctor(Doctor doctor) {
-        String sql = "UPDATE Doctor SET userId=?, departmentId=?, educationDegree=?, experience=?, description=? WHERE doctorId=?";
+        String sql = "UPDATE Doctor SET userId=?, departmentId=?, educationDegree=?, experience=?, description=?, avatarUrl=? WHERE doctorId=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -119,7 +132,8 @@ public class DoctorDAO {
             ps.setString(3, doctor.getEducationDegree());
             ps.setString(4, doctor.getExperience());
             ps.setString(5, doctor.getDescription());
-            ps.setString(6, doctor.getDoctorId());
+            ps.setString(6, doctor.getAvatarUrl());
+            ps.setString(7, doctor.getDoctorId());
 
             int rows = ps.executeUpdate();
             return rows > 0;

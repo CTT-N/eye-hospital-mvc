@@ -102,7 +102,7 @@ public class AppointmentDAO {
             "FROM Appointment a " +
             "JOIN Doctor d ON a.doctorId = d.doctorId " +
             "JOIN user u ON d.userId = u.userId " +
-            "JOIN Department dep ON d.departmentId = dep.departmentId " +
+            "LEFT JOIN Department dep ON d.departmentId = dep.departmentId " +
             "WHERE a.patientId = ? " +
             "ORDER BY a.date DESC, a.time DESC";
 
@@ -122,6 +122,39 @@ public class AppointmentDAO {
                     appt.setStatus(rs.getString("status"));
                     appt.setDoctorName(rs.getString("doctorName"));
                     appt.setDepartmentName(rs.getString("departmentName"));
+                    list.add(appt);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /** Doctor-facing: resolves patient name via LEFT JOIN to Patient + User. */
+    public List<Appointment> getAppointmentsByDoctorIdWithPatientName(String doctorId) {
+        List<Appointment> list = new ArrayList<>();
+        String sql =
+            "SELECT a.*, u.fullName AS patientName " +
+            "FROM Appointment a " +
+            "LEFT JOIN Patient p ON a.patientId = p.patientId " +
+            "LEFT JOIN user u ON p.userId = u.userId " +
+            "WHERE a.doctorId = ? " +
+            "ORDER BY a.date DESC, a.time DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Appointment appt = new Appointment();
+                    appt.setAppointmentId(rs.getString("appointmentId"));
+                    appt.setPatientId(rs.getString("patientId"));
+                    appt.setDoctorId(rs.getString("doctorId"));
+                    appt.setRoomId(rs.getString("roomId"));
+                    appt.setDate(rs.getDate("date"));
+                    appt.setTime(rs.getTime("time"));
+                    appt.setStatus(rs.getString("status"));
+                    appt.setPatientName(rs.getString("patientName"));
                     list.add(appt);
                 }
             }

@@ -42,7 +42,7 @@
         <a href="${pageContext.request.contextPath}/patient/history" class="nav-link-h active">
           <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
           <span class="nav-label">Lịch hẹn của tôi</span>
-          <span class="nav-badge">1</span>
+          <c:if test="${not empty pendingCount and pendingCount > 0}"><span class="nav-badge">${pendingCount}</span></c:if>
         </a>
       </div>
       <div class="nav-section-label">Hồ sơ</div>
@@ -139,11 +139,11 @@
                   </c:when>
                   <c:otherwise>
                     <c:forEach var="appt" items="${appointments}">
-                    <tr data-status="${appt.status}">
+                    <tr data-status="${appt.status}" data-id="${appt.appointmentId}">
                       <td>${appt.date} ${appt.time}</td>
-                      <td>${appt.doctorName}</td>
-                      <td>${appt.departmentName}</td>
-                      <td>${appt.roomId}</td>
+                      <td><c:choose><c:when test="${not empty appt.doctorName}">${appt.doctorName}</c:when><c:otherwise>${appt.doctorId}</c:otherwise></c:choose></td>
+                      <td><c:choose><c:when test="${not empty appt.departmentName}">${appt.departmentName}</c:when><c:otherwise>—</c:otherwise></c:choose></td>
+                      <td><c:choose><c:when test="${not empty appt.roomId}">${appt.roomId}</c:when><c:otherwise>—</c:otherwise></c:choose></td>
                       <td><span class="badge-status badge-${fn:toLowerCase(appt.status)}">${appt.status}</span></td>
                       <td class="action-cell">
                         <a href="${pageContext.request.contextPath}/patient/medical-records?appointmentId=${appt.appointmentId}"
