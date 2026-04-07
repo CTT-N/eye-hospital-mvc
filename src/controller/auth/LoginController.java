@@ -19,7 +19,18 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
+        // If already logged in, redirect to appropriate dashboard
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            String role = user.getRole() != null ? user.getRole() : "";
+            switch (role) {
+                case "ADMIN":   resp.sendRedirect(req.getContextPath() + "/admin/dashboard");   return;
+                case "DOCTOR":  resp.sendRedirect(req.getContextPath() + "/doctor/dashboard");  return;
+                case "MANAGER": resp.sendRedirect(req.getContextPath() + "/manager/dashboard"); return;
+                default:        resp.sendRedirect(req.getContextPath() + "/patient/dashboard"); return;
+            }
+        }
         req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
     }
 
@@ -61,6 +72,12 @@ public class LoginController extends HttpServlet {
 
             case "PATIENT":
             resp.sendRedirect(req.getContextPath()+"/patient/dashboard");
+            break;
+
+            default:
+            req.getSession().invalidate();
+            req.setAttribute("error", "Vai trò tài khoản không hợp lệ. Vui lòng liên hệ quản trị viên.");
+            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
             break;
 
         }

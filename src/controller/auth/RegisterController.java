@@ -1,9 +1,9 @@
 package controller.auth;
 
-import dao.UserDAO;
-import model.User;
 import dao.PatientDAO;
+import dao.UserDAO;
 import model.Patient;
+import model.User;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -12,15 +12,25 @@ import java.io.IOException;
 public class RegisterController extends HttpServlet {
 
     // mở trang register
-    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
+        // If already logged in, redirect to dashboard
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            String role = user.getRole() != null ? user.getRole() : "";
+            switch (role) {
+                case "ADMIN":   resp.sendRedirect(req.getContextPath() + "/admin/dashboard");   return;
+                case "DOCTOR":  resp.sendRedirect(req.getContextPath() + "/doctor/dashboard");  return;
+                case "MANAGER": resp.sendRedirect(req.getContextPath() + "/manager/dashboard"); return;
+                default:        resp.sendRedirect(req.getContextPath() + "/patient/dashboard"); return;
+            }
+        }
+        req.getRequestDispatcher("/views/auth/register.jsp")
+           .forward(req, resp);
     }
 
     // xử lý submit
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
@@ -29,10 +39,19 @@ public class RegisterController extends HttpServlet {
         String fullName = req.getParameter("fullName");
         String email = req.getParameter("email");
 
+        // Server-side validation
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty() ||
+            fullName == null || fullName.trim().isEmpty()) {
+            req.setAttribute("error", "Vui lòng điền đầy đủ thông tin bắt buộc.");
+            req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
+            return;
+        }
+
         UserDAO dao = new UserDAO();
 
         // check trùng username
-        if(dao.checkUsernameExists(username)){
+        if (dao.checkUsernameExists(username)) {
             req.setAttribute("error", "Username already exists!");
             req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
             return;
@@ -40,23 +59,20 @@ public class RegisterController extends HttpServlet {
 
         // tạo user (role = patient)
         User user = new User();
-        String commonId = ""+System.currentTimeMillis() % 10000;
-        user.setUserId("U" + commonId);
-        user.setUsername(username);
+        user.setUsername(username.trim());
         user.setPassword(password);
-        user.setFullName(fullName);
-        user.setEmail(email);
+        user.setFullName(fullName.trim());
+        user.setEmail(email != null ? email.trim() : "");
         user.setRole("PATIENT");
 
         dao.insertUser(user);
-            
-        //create patient
+
+        // Create a Patient profile row so the user can book appointments immediately
         Patient patient = new Patient();
-        patient.setPatientId("PA"+commonId);
-        patient.setUserId("U" + commonId);
-        PatientDAO pdao = new PatientDAO();
-        pdao.insertPatient(patient);
-        
+        patient.setPatientId("PAT-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        patient.setUserId(user.getUserId());
+        new PatientDAO().insertPatient(patient);
+
         // đăng ký xong → login
         resp.sendRedirect(req.getContextPath() + "/auth/login");
     }

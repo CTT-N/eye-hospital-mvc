@@ -31,3 +31,15 @@ Thumbs.db
 
 # Environment config
 .env
+
+# Claude Code / AI tooling
+.claude/
+.superpowers/
+.playwright-mcp/
+docs/superpowers/
+*.md
+!README.md
+!database/*.md
+
+# Frontend prototype (static HTML, not deployed)
+fe/

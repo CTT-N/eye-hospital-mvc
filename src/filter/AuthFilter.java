@@ -19,12 +19,11 @@ public class AuthFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        if (uri.contains("/auth/login") ||
-            uri.contains("/auth/register")||
-            uri.contains("/views") ||
-            uri.contains("/css") ||
-            uri.contains("/js") ||
-            uri.contains("/images")) {
+        if (uri.contains("/auth/") ||
+            uri.contains("/static/") ||
+            uri.contains("/common/find-doctor") ||
+            uri.endsWith("home") ||
+            uri.equals(req.getContextPath() + "/")) {
 
             chain.doFilter(request, response);
             return;
