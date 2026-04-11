@@ -1,0 +1,37 @@
+/* =========================================
+   manager-dashboard.css — Manager dashboard page styles
+   ========================================= */
+
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+.trend-up   { color: var(--success); }
+.trend-down { color: var(--danger); }
+.recent-row { cursor: default; }
+
+/* Activity feed */
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.activity-info .title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.activity-info .time  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }

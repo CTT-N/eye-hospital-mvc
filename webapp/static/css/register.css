@@ -1,0 +1,77 @@
+/* =========================================
+   register.css — Register-specific styles
+   ========================================= */
+
+/* Override hero alignment for register page */
+.login-hero {
+  justify-content: center;
+}
+
+/* Extra vertical breathing room for long form */
+.login-form-wrap {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* Two-column form row */
+.form-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Password strength bar */
+.pw-strength {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 8px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.pw-strength .bar {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.pw-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Terms agreement checkbox */
+.agreecheck {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.agreecheck input[type=checkbox] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-light);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.agreecheck a {
+  color: var(--primary-light);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Inline field error message */
+.error {
+  font-size: 12px;
+  color: var(--danger, #DC2626);
+  margin-top: 4px;
+  display: none;
+}
