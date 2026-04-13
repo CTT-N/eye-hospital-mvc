@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -362,7 +363,10 @@
 </div><!-- /app-shell -->
 
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>
-<script>window.dashboardStatusData = [${completedCount}, ${confirmedCount}, ${pendingCount}, ${cancelledCount}];</script>
+<script>
+  window.dashboardStatusData = [${completedCount}, ${confirmedCount}, ${pendingCount}, ${cancelledCount}];
+  window.dashboardMonthly = { labels: ${monthLabels}, data: ${monthData} };
+</script>
 <script src="${pageContext.request.contextPath}/static/js/manager-dashboard.js"></script>
 </body>
 </html>

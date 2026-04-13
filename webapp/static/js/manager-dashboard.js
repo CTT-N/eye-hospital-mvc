@@ -1,25 +1,19 @@
-// manager-dashboard.js — Revenue and status charts
+// manager-dashboard.js — Revenue and status charts using real DB data
+
+const monthly = window.dashboardMonthly || { labels: [], data: [] };
 
 const ctx1 = document.getElementById('revenueChart').getContext('2d');
 new Chart(ctx1, {
   type: 'bar',
   data: {
-    labels: ['T10/24', 'T11/24', 'T12/24', 'T1/25', 'T2/25', 'T3/25'],
+    labels: monthly.labels,
     datasets: [
       {
-        label: 'Doanh thu (triệu VNĐ)',
-        data: [2100, 2350, 2800, 2200, 2780, 3200],
+        label: 'Số lịch hẹn',
+        data: monthly.data,
         backgroundColor: 'rgba(37, 99, 168, 0.85)',
         borderRadius: 6,
         borderSkipped: false,
-      },
-      {
-        label: 'Lịch hẹn',
-        data: [980, 1100, 1320, 1050, 1240, 1284],
-        backgroundColor: 'rgba(14, 165, 233, 0.75)',
-        borderRadius: 6,
-        borderSkipped: false,
-        yAxisID: 'y1',
       },
     ],
   },
@@ -28,9 +22,8 @@ new Chart(ctx1, {
     maintainAspectRatio: false,
     plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', size: 12 }, boxWidth: 12 } } },
     scales: {
-      x:  { grid: { display: false }, ticks: { font: { family: 'Inter', size: 12 } } },
-      y:  { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Inter', size: 12 } } },
-      y1: { position: 'right', grid: { display: false }, ticks: { font: { family: 'Inter', size: 12 } } },
+      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 12 } } },
+      y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Inter', size: 12 } }, beginAtZero: true },
     },
   },
 });

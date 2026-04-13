@@ -87,6 +87,51 @@
         <url-pattern>/manager/dashboard</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>DepartmentController</servlet-name>
+        <servlet-class>controller.manager.DepartmentController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DepartmentController</servlet-name>
+        <url-pattern>/manager/departments</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>RoomController</servlet-name>
+        <servlet-class>controller.manager.RoomController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RoomController</servlet-name>
+        <url-pattern>/manager/rooms</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>HospitalController</servlet-name>
+        <servlet-class>controller.manager.HospitalController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HospitalController</servlet-name>
+        <url-pattern>/manager/hospital</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ScheduleController</servlet-name>
+        <servlet-class>controller.manager.ScheduleController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScheduleController</servlet-name>
+        <url-pattern>/manager/schedule</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ReportController</servlet-name>
+        <servlet-class>controller.manager.ReportController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReportController</servlet-name>
+        <url-pattern>/manager/report</url-pattern>
+    </servlet-mapping>
+
 <!--Mapping cho Doctor Controllers-->
     <servlet>
         <servlet-name>DoctorDashboardController</servlet-name>

@@ -262,6 +262,43 @@ public class AppointmentDAO {
         return false;
     }
 
+    /** Manager-facing: all appointments enriched with doctor name and patient name. */
+    public List<Appointment> getAllAppointmentsEnrichedForManager() {
+        List<Appointment> list = new ArrayList<>();
+        String sql =
+            "SELECT a.*, " +
+            "  du.fullName AS doctorName, " +
+            "  pu.fullName AS patientName " +
+            "FROM Appointment a " +
+            "LEFT JOIN Doctor d ON a.doctorId = d.doctorId " +
+            "LEFT JOIN user du ON d.userId = du.userId " +
+            "LEFT JOIN Patient p ON a.patientId = p.patientId " +
+            "LEFT JOIN user pu ON p.userId = pu.userId " +
+            "ORDER BY a.date DESC, a.time DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Appointment appt = new Appointment();
+                appt.setAppointmentId(rs.getString("appointmentId"));
+                appt.setPatientId(rs.getString("patientId"));
+                appt.setDoctorId(rs.getString("doctorId"));
+                appt.setRoomId(rs.getString("roomId"));
+                appt.setDate(rs.getDate("date"));
+                appt.setTime(rs.getTime("time"));
+                appt.setStatus(rs.getString("status"));
+                appt.setDoctorName(rs.getString("doctorName"));
+                appt.setPatientName(rs.getString("patientName"));
+                list.add(appt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public boolean deleteAppointment(String appointmentId) {
         String sql = "DELETE FROM Appointment WHERE appointmentId=?";
 

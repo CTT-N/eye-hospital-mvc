@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -162,6 +163,7 @@
     <form action="${pageContext.request.contextPath}/manager/departments" method="post">
       <input type="hidden" name="action" id="formAction" value="add">
       <input type="hidden" name="departmentId" id="editDeptId" value="">
+      <input type="hidden" name="hospitalId" value="H001">
       <div class="modal-body">
         <div class="form-group-h">
           <label class="form-label-h">Tên chuyên khoa <span class="required">*</span></label>

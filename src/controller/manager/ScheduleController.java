@@ -5,7 +5,6 @@ import model.Appointment;
 import model.User;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/manager/schedule")
 public class ScheduleController extends HttpServlet {
 
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
@@ -28,8 +26,8 @@ public class ScheduleController extends HttpServlet {
             return;
         }
 
-        // Quản lý có thể xem toàn bộ lịch khám của bệnh viện
-        List<Appointment> allApps = appointmentDAO.getAllAppointments();
+        // Quản lý có thể xem toàn bộ lịch khám của bệnh viện (enriched with names)
+        List<Appointment> allApps = appointmentDAO.getAllAppointmentsEnrichedForManager();
         request.setAttribute("allAppointments", allApps);
 
         request.getRequestDispatcher("/views/manager/manager-schedules.jsp").forward(request, response);

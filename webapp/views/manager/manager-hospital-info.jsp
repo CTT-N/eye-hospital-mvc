@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -119,32 +120,16 @@
           <h5><i class="fas fa-building" style="color:var(--primary);margin-right:8px"></i>Thông tin bệnh viện</h5>
         </div>
         <form action="${pageContext.request.contextPath}/manager/hospital" method="post">
-          <input type="hidden" name="action" value="update">
+          <input type="hidden" name="hospitalId" value="${hospital.hospitalId}">
           <div class="card-body-h">
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label-h">Tên bệnh viện <span class="required">*</span></label>
                 <input class="form-control-h" id="hospName" name="hospitalName" value="${hospital.hospitalName}" disabled>
               </div>
-              <div class="col-md-6">
+              <div class="col-12">
                 <label class="form-label-h">Địa chỉ <span class="required">*</span></label>
                 <input class="form-control-h" id="hospAddress" name="address" value="${hospital.address}" disabled>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label-h">Số điện thoại</label>
-                <input class="form-control-h" id="hospPhone" name="phone" value="${hospital.phone}" disabled>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label-h">Email liên hệ</label>
-                <input class="form-control-h" id="hospEmail" name="email" value="${hospital.email}" disabled>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label-h">Website</label>
-                <input class="form-control-h" id="hospWeb" name="website" value="${hospital.website}" disabled>
-              </div>
-              <div class="col-12">
-                <label class="form-label-h">Giờ làm việc</label>
-                <input class="form-control-h" id="hospHours" name="workingHours" value="${hospital.workingHours}" disabled>
               </div>
               <div class="col-12">
                 <label class="form-label-h">Giới thiệu bệnh viện</label>

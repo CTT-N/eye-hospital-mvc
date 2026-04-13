@@ -3,7 +3,9 @@ package controller.manager;
 import dao.DoctorDAO;
 import dao.PatientDAO;
 import dao.AppointmentDAO;
+import dao.ReportDAO;
 import model.User;
+import java.util.Map;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -46,6 +48,23 @@ public class ManagerDashboardController extends HttpServlet {
             .limit(5)
             .collect(java.util.stream.Collectors.toList());
 
+        // Monthly appointment counts for chart (last 6 months, ascending order)
+        ReportDAO reportDAO = new ReportDAO();
+        Map<String, Integer> monthlyCounts = reportDAO.getMonthlyAppointments(6);
+        StringBuilder monthLabels = new StringBuilder("[");
+        StringBuilder monthData = new StringBuilder("[");
+        // monthlyCounts is DESC by month; reverse for chart display
+        java.util.List<Map.Entry<String, Integer>> entries = new java.util.ArrayList<>(monthlyCounts.entrySet());
+        java.util.Collections.reverse(entries);
+        for (Map.Entry<String, Integer> e : entries) {
+            monthLabels.append("'").append(e.getKey()).append("',");
+            monthData.append(e.getValue()).append(",");
+        }
+        if (monthLabels.length() > 1) monthLabels.setLength(monthLabels.length() - 1);
+        if (monthData.length() > 1)   monthData.setLength(monthData.length() - 1);
+        monthLabels.append("]");
+        monthData.append("]");
+
         req.setAttribute("doctorCount", doctorDAO.getAllDoctors().size());
         req.setAttribute("patientCount", patientDAO.getAllPatients().size());
         req.setAttribute("totalAppointments", totalAppointments);
@@ -54,6 +73,8 @@ public class ManagerDashboardController extends HttpServlet {
         req.setAttribute("pendingCount", pendingCount);
         req.setAttribute("cancelledCount", cancelledCount);
         req.setAttribute("recentAppointments", recentAppointments);
+        req.setAttribute("monthLabels", monthLabels.toString());
+        req.setAttribute("monthData", monthData.toString());
 
         req.getRequestDispatcher("/views/manager/manager-dashboard.jsp")
            .forward(req, resp);

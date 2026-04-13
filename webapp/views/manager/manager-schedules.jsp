@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -97,9 +98,6 @@
         <div><div class="topbar-title">Quản lý lịch khám</div><div style="font-size:12px;color:var(--text-muted)">Tạo và quản lý lịch khám bác sĩ</div></div>
       </div>
       <div class="topbar-right">
-        <button class="btn-hospital btn-primary-h btn-sm" onclick="openModal()">
-          <i class="fas fa-plus"></i> Tạo lịch khám
-        </button>
         <button class="topbar-icon-btn">
           <i class="fas fa-bell"></i>
           <span class="notif-dot"></span>
@@ -120,39 +118,55 @@
       <div class="filter-bar">
         <div class="search-box" style="flex:1;max-width:280px">
           <span class="search-icon"><i class="fas fa-search"></i></span>
-          <input class="form-control-h btn-sm" placeholder="Tìm bác sĩ hoặc phòng..." id="searchInput" oninput="applyFilters()">
+          <input class="form-control-h btn-sm" placeholder="Tìm bác sĩ, bệnh nhân..." id="searchInput" oninput="applyFilters()">
         </div>
-        <select class="filter-select" id="filterDoctor" onchange="applyFilters()">
-          <option value="">Tất cả bác sĩ</option>
-          <option>BS. Trần Thị Mai</option>
-          <option>BS. Lê Hoàng Nam</option>
-          <option>BS. Phạm Thị Lan</option>
-          <option>BS. Nguyễn Đức Hùng</option>
+        <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+          <option value="">Tất cả trạng thái</option>
+          <option value="PENDING">Chờ xác nhận</option>
+          <option value="CONFIRMED">Đã xác nhận</option>
+          <option value="COMPLETED">Hoàn thành</option>
+          <option value="CANCELLED">Đã hủy</option>
         </select>
-        <select class="filter-select" id="filterRoom" onchange="applyFilters()">
-          <option value="">Tất cả phòng</option>
-          <option>Phòng 101</option><option>Phòng 103</option>
-          <option>Phòng 205</option><option>Phòng 301</option><option>Phòng 108</option>
-        </select>
-        <input type="date" class="filter-select" id="filterDate" value="2025-03-20" onchange="applyFilters()">
+        <input type="date" class="filter-select" id="filterDate" onchange="applyFilters()">
       </div>
 
       <div class="card-hospital">
         <div class="card-body-h" style="padding:0">
           <table class="data-table" id="schedTable">
             <thead>
-              <tr><th>Ngày</th><th>Giờ</th><th>Bác sĩ</th><th>Phòng</th><th>Trạng thái</th><th class="action-cell">Thao tác</th></tr>
+              <tr><th>Ngày</th><th>Giờ</th><th>Bác sĩ</th><th>Bệnh nhân</th><th>Phòng</th><th>Trạng thái</th><th class="action-cell">Thao tác</th></tr>
             </thead>
             <tbody id="schedBody">
 <c:forEach var="appt" items="${allAppointments}">
 <tr>
   <td>${appt.date}</td>
   <td>${appt.time}</td>
-  <td>${appt.doctorId}</td>
-  <td>${appt.roomId}</td>
-  <td><span class="badge-status badge-${appt.status.toLowerCase()}">${appt.status}</span></td>
+  <td>${not empty appt.doctorName ? appt.doctorName : appt.doctorId}</td>
+  <td>${not empty appt.patientName ? appt.patientName : appt.patientId}</td>
+  <td>${not empty appt.roomId ? appt.roomId : '-'}</td>
+  <td data-status="${appt.status}">
+    <c:choose>
+      <c:when test="${appt.status eq 'COMPLETED'}"><span class="badge-h badge-success">Hoàn thành</span></c:when>
+      <c:when test="${appt.status eq 'CONFIRMED'}"><span class="badge-h badge-info">Đã xác nhận</span></c:when>
+      <c:when test="${appt.status eq 'PENDING'}"><span class="badge-h badge-gray">Chờ xác nhận</span></c:when>
+      <c:when test="${appt.status eq 'CANCELLED'}"><span class="badge-h badge-danger">Đã hủy</span></c:when>
+      <c:otherwise><span class="badge-h badge-gray">${appt.status}</span></c:otherwise>
+    </c:choose>
+  </td>
   <td>
-    <button class="btn-hospital btn-sm" onclick="window.location='${pageContext.request.contextPath}/doctor/examination?appointmentId=${appt.appointmentId}'"><i class="fas fa-eye"></i></button>
+    <c:if test="${appt.status eq 'PENDING'}">
+      <form action="${pageContext.request.contextPath}/manager/schedule" method="post" style="display:inline">
+        <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
+        <input type="hidden" name="action" value="updateStatus">
+        <input type="hidden" name="status" value="CONFIRMED">
+        <button type="submit" class="btn-hospital btn-sm" title="Xác nhận"><i class="fas fa-check"></i></button>
+      </form>
+    </c:if>
+    <form action="${pageContext.request.contextPath}/manager/schedule" method="post" style="display:inline" onsubmit="return confirm('Xóa lịch hẹn này?')">
+      <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
+      <input type="hidden" name="action" value="delete">
+      <button type="submit" class="btn-hospital btn-danger-h btn-sm" title="Xóa"><i class="fas fa-trash"></i></button>
+    </form>
   </td>
 </tr>
 </c:forEach>
@@ -162,63 +176,6 @@
       </div>
     </div>
   </main>
-</div>
-
-<!-- Add/Edit Modal -->
-<div class="modal-overlay" id="schedModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h5 id="modalTitle">Tạo lịch khám</h5>
-      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="editIndex">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label-h">Bác sĩ <span class="required">*</span></label>
-          <select class="form-control-h" id="schedDoctor">
-            <option value="">-- Chọn bác sĩ --</option>
-            <option>BS. Trần Thị Mai</option><option>BS. Lê Hoàng Nam</option>
-            <option>BS. Phạm Thị Lan</option><option>BS. Nguyễn Đức Hùng</option>
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label-h">Phòng khám <span class="required">*</span></label>
-          <select class="form-control-h" id="schedRoom">
-            <option value="">-- Chọn phòng --</option>
-            <option>Phòng 101</option><option>Phòng 103</option>
-            <option>Phòng 205</option><option>Phòng 301</option><option>Phòng 108</option>
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label-h">Ngày <span class="required">*</span></label>
-          <input class="form-control-h" type="date" id="schedDate" value="2025-03-20">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label-h">Giờ bắt đầu <span class="required">*</span></label>
-          <input class="form-control-h" type="time" id="schedTime" value="08:00">
-        </div>
-      </div>
-      <div id="formError" style="font-size:12px;color:var(--danger);margin-top:10px;display:none">Vui lòng điền đầy đủ thông tin bắt buộc.</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-hospital btn-ghost-h" onclick="closeModal()">Hủy</button>
-      <button class="btn-hospital btn-primary-h" onclick="saveSched()"><i class="fas fa-check"></i> Lưu</button>
-    </div>
-  </div>
-</div>
-
-<!-- Delete confirm -->
-<div class="confirm-overlay" id="deleteOverlay">
-  <div class="confirm-box">
-    <div class="confirm-icon" style="color:var(--danger)"><i class="fas fa-trash"></i></div>
-    <h5>Xóa lịch khám</h5>
-    <p>Bạn có chắc muốn xóa lịch khám này?</p>
-    <div class="confirm-actions">
-      <button class="btn-hospital btn-ghost-h" onclick="closeDelete()">Hủy</button>
-      <button class="btn-hospital btn-danger-h" onclick="confirmDelete()">Xóa</button>
-    </div>
-  </div>
 </div>
 
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -170,8 +171,9 @@
           <label class="form-label-h">Chuyên khoa <span class="required">*</span></label>
           <select class="form-control-h" id="roomDept" name="departmentId">
             <option value="">-- Chọn chuyên khoa --</option>
-            <option>Giác mạc</option><option>Võng mạc</option><option>Mắt trẻ em</option>
-            <option>Nhãn áp - Glaucoma</option><option>Khúc xạ</option><option>Phẫu thuật Laser</option>
+            <c:forEach var="dept" items="${listDepartments}">
+              <option value="${dept.departmentId}">${dept.departmentName}</option>
+            </c:forEach>
           </select>
         </div>
         <div class="form-group-h">
