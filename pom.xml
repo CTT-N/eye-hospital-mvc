@@ -51,6 +51,7 @@
     <build>
         <!-- Point Maven at the existing src/ directory -->
         <sourceDirectory>src</sourceDirectory>
+        <finalName>webapp</finalName>
 
         <plugins>
             <!-- WAR plugin: point at existing webapp/ directory -->
