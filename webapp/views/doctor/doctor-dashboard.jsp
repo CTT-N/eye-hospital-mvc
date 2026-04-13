@@ -37,37 +37,24 @@
           <span class="nav-label">Tong quan</span>
         </a>
       </div>
-      <div class="nav-section-label">Lam sang</div>
+      <div class="nav-section-label">Lich kham</div>
       <div class="nav-item">
         <a href="${pageContext.request.contextPath}/doctor/schedule" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-calendar-week"></i></span>
-          <span class="nav-label">Lich lam viec</span>
+          <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+          <span class="nav-label">Lich theo ngay</span>
         </a>
       </div>
       <div class="nav-item">
         <a href="${pageContext.request.contextPath}/doctor/patients" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-users"></i></span>
-          <span class="nav-label">Hang cho hom nay</span>
-          <span class="nav-badge">${todayAppointments.size()}</span>
+          <span class="nav-label">Danh sach benh nhan</span>
         </a>
       </div>
+      <div class="nav-section-label">Tai khoan</div>
       <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/doctor/examination" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-stethoscope"></i></span>
-          <span class="nav-label">Phong kham</span>
-        </a>
-      </div>
-      <div class="nav-section-label">Ho so</div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/doctor/medical-records" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-file-medical"></i></span>
-          <span class="nav-label">Benh an dien tu</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="#" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-prescription"></i></span>
-          <span class="nav-label">Don thuoc</span>
+        <a href="${pageContext.request.contextPath}/doctor/profile" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-user-doctor"></i></span>
+          <span class="nav-label">Ho so bac si</span>
         </a>
       </div>
     </nav>

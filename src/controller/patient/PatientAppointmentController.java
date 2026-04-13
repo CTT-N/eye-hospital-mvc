@@ -59,13 +59,13 @@ public class PatientAppointmentController extends HttpServlet {
             String dateStr = request.getParameter("date");
             String timeStr = request.getParameter("time");
             
-            // Lấy thông tin patient từ user map sang
+            // Lấy thông tin patient từ user map sang; tự tạo nếu chưa có
             Patient patient = patientDAO.getPatientByUserId(user.getUserId());
             if (patient == null) {
-                // Xử lý lỗi nếu chưa có thông tin patient detail
-                request.setAttribute("error", "Vui lòng cập nhật thông tin bệnh nhân trước khi đặt lịch.");
-                doGet(request, response);
-                return;
+                patient = new Patient();
+                patient.setPatientId("PAT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                patient.setUserId(user.getUserId());
+                patientDAO.insertPatient(patient);
             }
 
             // Tạo đối tượng Appointment

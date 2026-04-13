@@ -2,8 +2,10 @@ package controller.admin;
 
 import model.User;
 import model.Doctor;
+import model.Patient;
 import dao.UserDAO;
 import dao.DoctorDAO;
+import dao.PatientDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +21,7 @@ public class ManageUserController extends HttpServlet {
 
     private UserDAO userDAO = new UserDAO();
     private DoctorDAO doctorDAO = new DoctorDAO();
+    private PatientDAO patientDAO = new PatientDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,6 +66,13 @@ public class ManageUserController extends HttpServlet {
                 doctor.setDoctorId("DOC-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
                 doctor.setUserId(newUser.getUserId());
                 doctorDAO.insertDoctor(doctor);
+            }
+            // If adding a PATIENT user, also create the Patient profile record
+            if ("PATIENT".equals(newUser.getRole())) {
+                Patient patient = new Patient();
+                patient.setPatientId("PAT-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                patient.setUserId(newUser.getUserId());
+                patientDAO.insertPatient(patient);
             }
         }
 

@@ -1,4 +1,4 @@
-// patient-history.js — Toggle medical record detail panels
+    // patient-history.js — Toggle medical record detail panels
 
 function toggleRecord(id, btn) {
   const content = document.getElementById(id);

@@ -57,6 +57,15 @@
           <div style="font-size:12px;color:var(--text-muted)">Dữ liệu từ cơ sở dữ liệu bệnh viện</div>
         </div>
       </div>
+      <div class="topbar-right">
+        <button class="topbar-icon-btn"><i class="fas fa-magnifying-glass"></i></button>
+        <button class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+        <button class="topbar-user">
+          <div class="avatar avatar-sm">${fn:substring(sessionScope.user.fullName, 0, 2)}</div>
+          <div class="user-details d-none d-md-block"><span class="user-name">${sessionScope.user.fullName}</span><span class="user-role">Manager</span></div>
+          <i class="fas fa-chevron-down" style="font-size:11px;color:var(--text-muted)"></i>
+        </button>
+      </div>
     </header>
 
     <div class="page-content">

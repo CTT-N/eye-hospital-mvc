@@ -80,7 +80,7 @@
 
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="avatar avatar-md">QT</div>
+        <div class="avatar avatar-md"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
         <div class="user-info">
           <div class="user-name">${sessionScope.user.fullName}</div>
           <div class="user-role">Quản lý bệnh viện</div>
@@ -119,7 +119,7 @@
           <span class="notif-dot"></span>
         </button>
         <button class="topbar-user">
-          <div class="avatar avatar-sm">QT</div>
+          <div class="avatar avatar-sm"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
           <div class="user-details d-none d-md-block">
             <span class="user-name">${sessionScope.user.fullName}</span>
             <span class="user-role">Manager</span>

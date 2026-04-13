@@ -58,10 +58,12 @@
         </div>
       </div>
       <div class="topbar-right">
+        <button class="topbar-icon-btn"><i class="fas fa-magnifying-glass"></i></button>
         <button class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
         <button class="topbar-user">
           <div class="avatar avatar-sm" style="background:var(--primary-light)"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
           <div class="user-details d-none d-md-block"><span class="user-name">${sessionScope.user.fullName}</span><span class="user-role">Bac si</span></div>
+          <i class="fas fa-chevron-down" style="font-size:11px;color:var(--text-muted)"></i>
         </button>
       </div>
     </header>

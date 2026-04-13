@@ -38,7 +38,7 @@
         <a href="${pageContext.request.contextPath}/manager/schedule" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
           <span class="nav-label">Lịch hẹn</span>
-          <span class="nav-badge">12</span>
+          <span class="nav-badge">${totalAppointments}</span>
         </a>
       </div>
       <div class="nav-item">
@@ -76,7 +76,7 @@
 
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="avatar avatar-md">QT</div>
+        <div class="avatar avatar-md"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
         <div class="user-info">
           <div class="user-name">${sessionScope.user.fullName}</div>
           <div class="user-role">Quản lý bệnh viện</div>
