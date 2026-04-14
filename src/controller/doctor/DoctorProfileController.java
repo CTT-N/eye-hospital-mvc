@@ -1,5 +1,6 @@
 package controller.doctor;
 
+import dao.DepartmentDAO;
 import dao.DoctorDAO;
 import dao.UserDAO;
 import model.Doctor;
@@ -15,6 +16,7 @@ public class DoctorProfileController extends HttpServlet {
 
     private final DoctorDAO doctorDAO = new DoctorDAO();
     private final UserDAO userDAO = new UserDAO();
+    private final DepartmentDAO departmentDAO = new DepartmentDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -26,6 +28,7 @@ public class DoctorProfileController extends HttpServlet {
         }
         Doctor doctor = doctorDAO.getDoctorByUserId(user.getUserId());
         req.setAttribute("doctor", doctor);
+        req.setAttribute("departments", departmentDAO.getAllDepartments());
         req.getRequestDispatcher("/views/doctor/doctor-profile.jsp").forward(req, resp);
     }
 
@@ -46,6 +49,8 @@ public class DoctorProfileController extends HttpServlet {
 
         Doctor doctor = doctorDAO.getDoctorByUserId(user.getUserId());
         if (doctor != null) {
+            doctor.setDepartmentId(req.getParameter("departmentId"));
+            doctor.setEducationDegree(req.getParameter("educationDegree"));
             doctor.setExperience(req.getParameter("experience"));
             doctor.setDescription(req.getParameter("description"));
             doctorDAO.updateDoctor(doctor);

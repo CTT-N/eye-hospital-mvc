@@ -7,7 +7,7 @@ function switchTab(btn, tabId) {
   document.getElementById(tabId).classList.add('active');
 }
 
-const editableIds = ['specialty', 'degree', 'phone', 'email', 'bio'];
+const editableIds = ['specialty', 'degree', 'phone', 'email', 'experience', 'bio'];
 
 function toggleEdit() {
   editableIds.forEach(id => document.getElementById(id).disabled = false);

@@ -90,11 +90,15 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label-h">Chuyen khoa</label>
-                  <input class="form-control-h" id="specialty" value="${not empty doctor ? doctor.departmentId : ''}" disabled>
+                  <select class="form-control-h" id="specialty" name="departmentId" disabled>
+                    <c:forEach var="dept" items="${departments}">
+                      <option value="${dept.departmentId}" ${not empty doctor && doctor.departmentId == dept.departmentId ? 'selected' : ''}>${dept.departmentName}</option>
+                    </c:forEach>
+                  </select>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label-h">Hoc ham / Hoc vi</label>
-                  <input class="form-control-h" id="degree" value="${not empty doctor ? doctor.educationDegree : ''}" disabled>
+                  <input class="form-control-h" id="degree" name="educationDegree" value="${not empty doctor ? doctor.educationDegree : ''}" disabled>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label-h">So dien thoai</label>
