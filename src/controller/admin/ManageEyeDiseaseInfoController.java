@@ -36,6 +36,7 @@ public class ManageEyeDiseaseInfoController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         if (action == null) action = "";
 
@@ -43,21 +44,26 @@ public class ManageEyeDiseaseInfoController extends HttpServlet {
             String id = request.getParameter("infoId");
             infoDAO.deleteInfo(id);
         } else if ("add".equals(action)) {
+            HttpSession addSession = request.getSession(false);
+            User addUser = addSession != null ? (User) addSession.getAttribute("user") : null;
+            String actorId = addUser != null ? addUser.getUserId() : null;
             EyeDiseaseInfo info = new EyeDiseaseInfo();
             info.setInfoId(request.getParameter("infoId"));
             info.setDiseaseName(request.getParameter("diseaseName"));
             info.setContent(request.getParameter("content"));
             info.setDescription(request.getParameter("description"));
-            // Set other fields assuming they are provided or default
+            info.setUserId(actorId);
+            info.setCreatedBy(actorId);
+            info.setLastUpdate(new Date(System.currentTimeMillis()));
             infoDAO.insertInfo(info);
         } else if ("update".equals(action)) {
-            // similar update logic
             String id = request.getParameter("infoId");
             EyeDiseaseInfo info = infoDAO.getInfoById(id);
-            if(info != null) {
+            if (info != null) {
                 info.setDiseaseName(request.getParameter("diseaseName"));
                 info.setContent(request.getParameter("content"));
                 info.setDescription(request.getParameter("description"));
+                info.setLastUpdate(new Date(System.currentTimeMillis()));
                 infoDAO.updateInfo(info);
             }
         }

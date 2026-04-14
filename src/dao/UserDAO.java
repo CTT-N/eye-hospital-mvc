@@ -13,7 +13,7 @@ public class UserDAO {
 
     public User login(String username, String password) {
 
-        String sql = "SELECT * FROM user WHERE username=? AND password=?";
+        String sql = "SELECT * FROM User WHERE username=? AND password=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
