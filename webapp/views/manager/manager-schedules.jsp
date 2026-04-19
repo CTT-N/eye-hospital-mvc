@@ -43,6 +43,12 @@
         </a>
       </div>
       <div class="nav-item">
+        <a href="${pageContext.request.contextPath}/manager/invoices" class="nav-link-h">
+          <span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+          <span class="nav-label">Hóa đơn</span>
+        </a>
+      </div>
+      <div class="nav-item">
         <a href="${pageContext.request.contextPath}/manager/departments" class="nav-link-h">
           <span class="nav-icon"><i class="fas fa-building-columns"></i></span>
           <span class="nav-label">Khoa phòng</span>
@@ -167,6 +173,19 @@
       <input type="hidden" name="action" value="delete">
       <button type="submit" class="btn-hospital btn-danger-h btn-sm" title="Xóa"><i class="fas fa-trash"></i></button>
     </form>
+    <c:if test="${appt.status eq 'COMPLETED'}">
+      <c:choose>
+        <c:when test="${invoicedIds.contains(appt.appointmentId)}">
+          <span class="badge-h badge-info" style="font-size:11px">Đã xuất HĐ</span>
+        </c:when>
+        <c:otherwise>
+          <a href="${pageContext.request.contextPath}/manager/invoices/create?appointmentId=${appt.appointmentId}"
+             class="btn-hospital btn-sm" title="Tạo hóa đơn">
+            <i class="fas fa-file-invoice"></i>
+          </a>
+        </c:otherwise>
+      </c:choose>
+    </c:if>
   </td>
 </tr>
 </c:forEach>

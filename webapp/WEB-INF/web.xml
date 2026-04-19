@@ -124,6 +124,24 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ManagerInvoiceController</servlet-name>
+        <servlet-class>controller.manager.ManagerInvoiceController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManagerInvoiceController</servlet-name>
+        <url-pattern>/manager/invoices</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ManagerInvoiceCreateController</servlet-name>
+        <servlet-class>controller.manager.ManagerInvoiceCreateController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManagerInvoiceCreateController</servlet-name>
+        <url-pattern>/manager/invoices/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>ReportController</servlet-name>
         <servlet-class>controller.manager.ReportController</servlet-class>
     </servlet>
