@@ -195,6 +195,42 @@ public class AppointmentDAO {
         return list;
     }
 
+    public List<Appointment> getPendingAppointmentsByDoctorIdFromDate(String doctorId, java.sql.Date fromDate) {
+        List<Appointment> list = new ArrayList<>();
+        String sql =
+            "SELECT a.*, u.fullName AS patientName " +
+            "FROM Appointment a " +
+            "LEFT JOIN Patient p ON a.patientId = p.patientId " +
+            "LEFT JOIN user u ON p.userId = u.userId " +
+            "WHERE a.doctorId = ? AND a.status = 'PENDING' AND a.date >= ? " +
+            "ORDER BY a.date ASC, a.time ASC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, doctorId);
+            ps.setDate(2, fromDate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Appointment appt = new Appointment();
+                    appt.setAppointmentId(rs.getString("appointmentId"));
+                    appt.setPatientId(rs.getString("patientId"));
+                    appt.setDoctorId(rs.getString("doctorId"));
+                    appt.setRoomId(rs.getString("roomId"));
+                    appt.setDate(rs.getDate("date"));
+                    appt.setTime(rs.getTime("time"));
+                    appt.setStatus(rs.getString("status"));
+                    appt.setPatientName(rs.getString("patientName"));
+                    list.add(appt);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Appointment> getAppointmentsByDoctorId(String doctorId) {
         List<Appointment> list = new ArrayList<>();
         String sql = "SELECT * FROM Appointment WHERE doctorId = ?";
