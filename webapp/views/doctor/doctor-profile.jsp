@@ -64,7 +64,10 @@
 
     <div class="content-area">
       <c:if test="${param.msg == 'updated'}">
-        <div class="alert alert-success" style="margin-bottom:16px">Cap nhat thanh cong!</div>
+        <div class="alert alert-success" style="margin-bottom:16px">Cap nhat thong tin thanh cong!</div>
+      </c:if>
+      <c:if test="${param.msg == 'password_changed'}">
+        <div class="alert alert-success" style="margin-bottom:16px">Doi mat khau thanh cong!</div>
       </c:if>
 
       <div class="tab-nav-h">
@@ -83,7 +86,7 @@
               <div class="avatar" style="width:72px;height:72px;font-size:24px;background:var(--primary-light)"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
               <div>
                 <div style="font-size:var(--font-xl);font-weight:700">${sessionScope.user.fullName}</div>
-                <div style="font-size:var(--font-sm);color:var(--text-muted)">${not empty doctor ? doctor.departmentId : ''} · ${not empty doctor ? doctor.educationDegree : ''}</div>
+                <div style="font-size:var(--font-sm);color:var(--text-muted)">${not empty doctor ? doctor.educationDegree : 'Bac si'}</div>
               </div>
             </div>
             <form action="${pageContext.request.contextPath}/doctor/profile" method="post" id="profileForm">
@@ -134,7 +137,7 @@
             <form action="${pageContext.request.contextPath}/auth/change-password" method="post">
               <div class="form-group-h">
                 <label class="form-label-h">Mat khau hien tai <span class="required">*</span></label>
-                <input class="form-control-h" type="password" name="oldPassword" id="oldPwd" placeholder="Nhap mat khau hien tai">
+                <input class="form-control-h" type="password" name="currentPassword" id="oldPwd" placeholder="Nhap mat khau hien tai">
               </div>
               <div class="form-group-h">
                 <label class="form-label-h">Mat khau moi <span class="required">*</span></label>
