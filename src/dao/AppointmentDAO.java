@@ -314,4 +314,39 @@ public class AppointmentDAO {
         }
         return false;
     }
+
+    public Appointment getAppointmentByIdEnriched(String appointmentId) {
+        String sql =
+            "SELECT a.*, du.fullName AS doctorName, pu.fullName AS patientName " +
+            "FROM Appointment a " +
+            "LEFT JOIN Doctor doc ON a.doctorId = doc.doctorId " +
+            "LEFT JOIN user du ON doc.userId = du.userId " +
+            "LEFT JOIN Patient pat ON a.patientId = pat.patientId " +
+            "LEFT JOIN user pu ON pat.userId = pu.userId " +
+            "WHERE a.appointmentId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, appointmentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Appointment appt = new Appointment();
+                    appt.setAppointmentId(rs.getString("appointmentId"));
+                    appt.setPatientId(rs.getString("patientId"));
+                    appt.setDoctorId(rs.getString("doctorId"));
+                    appt.setRoomId(rs.getString("roomId"));
+                    appt.setDate(rs.getDate("date"));
+                    appt.setTime(rs.getTime("time"));
+                    appt.setStatus(rs.getString("status"));
+                    appt.setDoctorName(rs.getString("doctorName"));
+                    appt.setPatientName(rs.getString("patientName"));
+                    return appt;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
