@@ -36,6 +36,7 @@ Thumbs.db
 .claude/
 .superpowers/
 .playwright-mcp/
+.worktrees/
 docs/superpowers/
 *.md
 !README.md
