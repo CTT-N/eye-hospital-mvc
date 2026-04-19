@@ -13,7 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet("/doctor/schedule")
 public class DoctorScheduleController extends HttpServlet {
@@ -35,10 +37,26 @@ public class DoctorScheduleController extends HttpServlet {
         }
 
         Doctor doctor = doctorDAO.getDoctorByUserId(user.getUserId());
+        List<Appointment> apps = new java.util.ArrayList<>();
         if (doctor != null) {
-            List<Appointment> apps = appointmentDAO.getAppointmentsByDoctorIdWithPatientName(doctor.getDoctorId());
-            request.setAttribute("appointments", apps);
+            Date today = new Date(System.currentTimeMillis());
+            List<Appointment> all = appointmentDAO.getAppointmentsByDoctorIdWithPatientName(doctor.getDoctorId());
+            apps = all.stream()
+                .filter(a -> today.toString().equals(a.getDate() != null ? a.getDate().toString() : ""))
+                .collect(Collectors.toList());
         }
+
+        long pendingCount = apps.stream()
+            .filter(a -> "PENDING".equalsIgnoreCase(a.getStatus()) || "CONFIRMED".equalsIgnoreCase(a.getStatus()))
+            .count();
+        long doneCount = apps.stream()
+            .filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus()))
+            .count();
+
+        request.setAttribute("appointments", apps);
+        request.setAttribute("totalCount", apps.size());
+        request.setAttribute("pendingCount", pendingCount);
+        request.setAttribute("doneCount", doneCount);
 
         request.getRequestDispatcher("/views/doctor/doctor-schedule.jsp").forward(request, response);
     }

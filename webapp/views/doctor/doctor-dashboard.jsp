@@ -11,7 +11,7 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  
+
   <link href="${pageContext.request.contextPath}/static/css/variables.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/static/css/base.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/static/css/components.css" rel="stylesheet">
@@ -84,9 +84,7 @@
         </button>
         <div>
           <div class="topbar-title">Chao buoi sang, ${sessionScope.user.fullName}</div>
-          <div style="font-size:12px;color:var(--text-muted)">
-            Trang chu Bac Si
-          </div>
+          <div style="font-size:12px;color:var(--text-muted)">Trang chu Bac Si</div>
         </div>
       </div>
       <div class="topbar-right">
@@ -113,7 +111,7 @@
             <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
             <div class="stat-info">
               <div class="label">Lich hen hom nay</div>
-              <div class="value">${todayAppointments.size()}</div>
+              <div class="value">${totalAppointments}</div>
               <div class="trend" style="color:var(--text-muted);font-size:11px">Tong cong hom nay</div>
             </div>
           </div>
@@ -123,7 +121,7 @@
             <div class="stat-icon"><i class="fas fa-user-check"></i></div>
             <div class="stat-info">
               <div class="label">Da kham xong</div>
-              <div class="value">${totalAppointments - pendingCount}</div>
+              <div class="value">${completedTodayCount}</div>
               <div class="trend trend-up" style="font-size:11px">Da hoan thanh</div>
             </div>
           </div>
@@ -132,9 +130,9 @@
           <div class="stat-card stat-orange">
             <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
             <div class="stat-info">
-              <div class="label">Dang cho</div>
+              <div class="label">Con cho kham</div>
               <div class="value">${pendingCount}</div>
-              <div class="trend" style="color:var(--warning);font-size:11px">Benh nhan tiep theo</div>
+              <div class="trend" style="color:var(--warning);font-size:11px">Cho xu ly</div>
             </div>
           </div>
         </div>
@@ -142,9 +140,9 @@
           <div class="stat-card stat-teal">
             <div class="stat-icon"><i class="fas fa-star"></i></div>
             <div class="stat-info">
-              <div class="label">Tong lich kham</div>
-              <div class="value">${totalAppointments}</div>
-              <div class="trend trend-up" style="font-size:11px">Tat ca lich hen</div>
+              <div class="label">Chua kham</div>
+              <div class="value">${totalAppointments - completedTodayCount}</div>
+              <div class="trend trend-up" style="font-size:11px">Con lai hom nay</div>
             </div>
           </div>
         </div>
@@ -152,197 +150,61 @@
 
       <!-- Main grid -->
       <div class="row g-3">
-        <!-- Queue / Today Schedule -->
+        <!-- Today appointment list (read-only) -->
         <div class="col-lg-4">
           <div class="card-hospital" style="height:100%">
             <div class="card-header-h">
               <div>
-                <h5>Hang cho hom nay</h5>
-                <p style="font-size:12px;color:var(--text-muted);margin:0">${todayAppointments.size()} benh nhan</p>
+                <h5>Lich kham hom nay</h5>
+                <p style="font-size:12px;color:var(--text-muted);margin:0">${totalAppointments} lich hen</p>
               </div>
-              <span class="badge-h badge-warning">Dang kham</span>
+              <span class="badge-h badge-info">Overview</span>
             </div>
             <div class="card-body-h" style="padding:12px;max-height:480px;overflow-y:auto">
-              <div class="d-flex flex-column gap-2">
-
-                <c:forEach var="appt" items="${todayAppointments}" varStatus="loop">
-                  <c:choose>
-                    <c:when test="${appt.status == 'COMPLETED'}">
-                      <div class="patient-item" style="opacity:0.55">
-                        <div class="patient-num">${loop.count}</div>
-                        <div class="avatar avatar-sm">${appt.patientId.substring(0,2)}</div>
-                        <div class="flex-grow-1">
-                          <div class="name" style="font-size:13px;font-weight:600">${appt.patientId}</div>
-                          <div style="font-size:11px;color:var(--text-muted)">${appt.time}</div>
-                        </div>
-                        <span class="badge-h badge-success">Xong</span>
-                      </div>
-                    </c:when>
-                    <c:when test="${appt.status == 'IN_PROGRESS'}">
-                      <div class="patient-item selected">
-                        <div class="patient-num active">${loop.count}</div>
-                        <div class="avatar avatar-sm" style="background:var(--primary);color:#fff">${appt.patientId.substring(0,2)}</div>
-                        <div class="flex-grow-1">
-                          <div class="name" style="font-size:13px;font-weight:600">${appt.patientId}</div>
-                          <div style="font-size:11px;color:var(--text-muted)">${appt.time}</div>
-                        </div>
-                        <span class="badge-h badge-warning">Dang kham</span>
-                      </div>
-                    </c:when>
-                    <c:otherwise>
+              <c:choose>
+                <c:when test="${empty todayAppointments}">
+                  <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+                    <i class="fas fa-calendar-xmark" style="font-size:32px;margin-bottom:12px;opacity:0.3"></i>
+                    <p>Khong co lich kham hom nay</p>
+                  </div>
+                </c:when>
+                <c:otherwise>
+                  <div class="d-flex flex-column gap-2">
+                    <c:forEach var="appt" items="${todayAppointments}" varStatus="loop">
                       <div class="patient-item">
                         <div class="patient-num">${loop.count}</div>
-                        <div class="avatar avatar-sm">${appt.patientId.substring(0,2)}</div>
+                        <div class="avatar avatar-sm">${fn:substring(appt.patientId, 0, 2)}</div>
                         <div class="flex-grow-1">
                           <div class="name" style="font-size:13px;font-weight:600">${appt.patientId}</div>
                           <div style="font-size:11px;color:var(--text-muted)">${appt.time}</div>
                         </div>
-                        <span class="badge-h badge-gray" style="font-size:11px">${appt.time}</span>
+                        <c:choose>
+                          <c:when test="${appt.status == 'COMPLETED'}"><span class="badge-h badge-success" style="font-size:11px">Xong</span></c:when>
+                          <c:when test="${appt.status == 'CONFIRMED'}"><span class="badge-h badge-info" style="font-size:11px">Da xac nhan</span></c:when>
+                          <c:otherwise><span class="badge-h badge-warning" style="font-size:11px">Cho</span></c:otherwise>
+                        </c:choose>
                       </div>
-                    </c:otherwise>
-                  </c:choose>
-                </c:forEach>
-
-              </div>
-            </div>
-            <div class="card-footer-h">
-              <div class="d-flex gap-2">
-                <button class="btn-hospital btn-outline-h btn-sm flex-grow-1">
-                  <i class="fas fa-arrow-left"></i> Truoc
-                </button>
-                <button class="btn-hospital btn-primary-h btn-sm flex-grow-1">
-                  Goi tiep <i class="fas fa-arrow-right"></i>
-                </button>
-              </div>
+                    </c:forEach>
+                  </div>
+                </c:otherwise>
+              </c:choose>
             </div>
           </div>
         </div>
 
-        <!-- Current Patient Examination Panel -->
+        <!-- Guide panel -->
         <div class="col-lg-8">
           <div class="card-hospital">
-            <div class="card-header-h" style="background:var(--primary);border-radius:var(--radius-lg) var(--radius-lg) 0 0">
-              <div style="display:flex;align-items:center;gap:12px">
-                <div class="avatar avatar-md" style="background:rgba(255,255,255,0.20);color:#fff;font-size:15px">
-                  <c:choose>
-                    <c:when test="${not empty currentAppointment}">${currentAppointment.patientId.substring(0,2)}</c:when>
-                    <c:otherwise>--</c:otherwise>
-                  </c:choose>
-                </div>
-                <div>
-                  <h5 style="color:#fff;margin:0">
-                    <c:choose>
-                      <c:when test="${not empty currentAppointment}">${currentAppointment.patientId}</c:when>
-                      <c:otherwise>Khong co benh nhan</c:otherwise>
-                    </c:choose>
-                  </h5>
-                  <p style="color:rgba(255,255,255,0.65);font-size:12px;margin:0">
-                    <c:if test="${not empty currentAppointment}">
-                      ${currentAppointment.appointmentId} · ${currentAppointment.time}
-                    </c:if>
-                  </p>
-                </div>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn-hospital" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.20);font-size:12px">
-                  <i class="fas fa-history"></i> Lich su
-                </button>
-                <button class="btn-hospital" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.20);font-size:12px">
-                  <i class="fas fa-file-medical"></i> Ho so
-                </button>
-              </div>
+            <div class="card-header-h">
+              <h5>Kham benh hom nay</h5>
             </div>
-
             <div class="card-body-h">
-              <c:choose>
-                <c:when test="${not empty currentAppointment}">
-                  <!-- Examination form -->
-                  <form action="${pageContext.request.contextPath}/doctor/examination" method="post">
-                    <input type="hidden" name="appointmentId" value="${currentAppointment.appointmentId}">
-                    <div class="row g-3">
-                      <!-- Vital Signs -->
-                      <div class="col-12">
-                        <h6 style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">
-                          <i class="fas fa-eye" style="margin-right:6px;color:var(--primary-light)"></i>Ket qua thi luc
-                        </h6>
-                        <div class="row g-2">
-                          <div class="col-6 col-sm-3">
-                            <label class="form-label-h">Mat phai (khong kinh)</label>
-                            <input type="text" class="form-control-h" name="rightEyeNoGlass" placeholder="20/200">
-                          </div>
-                          <div class="col-6 col-sm-3">
-                            <label class="form-label-h">Mat trai (khong kinh)</label>
-                            <input type="text" class="form-control-h" name="leftEyeNoGlass" placeholder="20/200">
-                          </div>
-                          <div class="col-6 col-sm-3">
-                            <label class="form-label-h">Mat phai (co kinh)</label>
-                            <input type="text" class="form-control-h" name="rightEyeWithGlass" placeholder="20/20">
-                          </div>
-                          <div class="col-6 col-sm-3">
-                            <label class="form-label-h">Mat trai (co kinh)</label>
-                            <input type="text" class="form-control-h" name="leftEyeWithGlass" placeholder="20/20">
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Diagnosis -->
-                      <div class="col-12">
-                        <label class="form-label-h">
-                          Chan doan <span class="required">*</span>
-                        </label>
-                        <input type="text" class="form-control-h" name="diagnosis" placeholder="Nhap chan doan...">
-                      </div>
-
-                      <!-- Clinical Notes -->
-                      <div class="col-12">
-                        <label class="form-label-h">Ghi chu lam sang</label>
-                        <textarea class="form-control-h" rows="4" name="symptoms" placeholder="Nhap ghi chu kham benh..."></textarea>
-                      </div>
-
-                      <!-- Treatment -->
-                      <div class="col-12">
-                        <label class="form-label-h">Dieu tri</label>
-                        <textarea class="form-control-h" rows="3" name="treatment" placeholder="Phac do dieu tri..."></textarea>
-                      </div>
-
-                      <!-- Note -->
-                      <div class="col-12">
-                        <label class="form-label-h">Ghi chu them</label>
-                        <textarea class="form-control-h" rows="2" name="note" placeholder="Ghi chu bo sung..."></textarea>
-                      </div>
-
-                      <!-- Follow up -->
-                      <div class="col-sm-6">
-                        <label class="form-label-h">Ngay tai kham</label>
-                        <input type="date" class="form-control-h" name="followUpDate">
-                      </div>
-                    </div>
-
-                    <div class="card-footer-h" style="margin:12px -20px -20px;padding:16px 20px">
-                      <div class="d-flex gap-2 justify-content-between">
-                        <button type="button" class="btn-hospital btn-ghost-h">
-                          <i class="fas fa-arrow-left"></i> Ve truoc
-                        </button>
-                        <div class="d-flex gap-2">
-                          <button type="submit" class="btn-hospital btn-outline-h">
-                            <i class="fas fa-floppy-disk"></i> Luu nhap
-                          </button>
-                          <button type="submit" name="action" value="complete" class="btn-hospital btn-primary-h">
-                            <i class="fas fa-check-circle"></i> Hoan thanh kham
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </c:when>
-                <c:otherwise>
-                  <div style="text-align:center;padding:60px 20px;color:var(--text-muted)">
-                    <i class="fas fa-clipboard-list" style="font-size:48px;margin-bottom:16px;opacity:0.3"></i>
-                    <h5>Khong co benh nhan dang kham</h5>
-                    <p>Vui long chon benh nhan tu hang cho hoac cho benh nhan tiep theo.</p>
-                  </div>
-                </c:otherwise>
-              </c:choose>
+              <p style="color:var(--text-muted);margin-bottom:16px">
+                Vao trang Lich kham de xac nhan lich hen va bat dau buoi kham. Tat ca chuc nang ghi benh an duoc thuc hien tai do.
+              </p>
+              <a href="${pageContext.request.contextPath}/doctor/schedule" class="btn-hospital btn-primary-h">
+                <i class="fas fa-calendar-days"></i> Mo lich kham
+              </a>
             </div>
           </div>
         </div>
@@ -353,6 +215,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>
-<script src="${pageContext.request.contextPath}/static/js/doctor-dashboard.js"></script>
 </body>
 </html>
