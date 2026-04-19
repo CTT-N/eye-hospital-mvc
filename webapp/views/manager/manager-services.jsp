@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -87,10 +88,10 @@
                 <c:otherwise>
                   <c:forEach var="svc" items="${services}">
                   <tr>
-                    <td><strong>${svc.serviceId}</strong></td>
-                    <td>${svc.serviceName}</td>
-                    <td style="color:var(--text-muted);font-size:13px">${not empty svc.description ? svc.description : '—'}</td>
-                    <td style="text-align:right;font-weight:600">${svc.price} ₫</td>
+                    <td><strong>${fn:escapeXml(svc.serviceId)}</strong></td>
+                    <td>${fn:escapeXml(svc.serviceName)}</td>
+                    <td style="color:var(--text-muted);font-size:13px">${not empty svc.description ? fn:escapeXml(svc.description) : '—'}</td>
+                    <td style="text-align:right;font-weight:600"><fmt:formatNumber value="${svc.price}" type="number" maxFractionDigits="0" /> ₫</td>
                     <td class="action-cell">
                       <button class="btn-hospital btn-sm" title="Sửa"
                               onclick="openEditModal('${svc.serviceId}')">
@@ -155,7 +156,7 @@
 <script>
 var serviceData = {
 <c:forEach var="svc" items="${services}" varStatus="st">
-  '${svc.serviceId}': { name: '${fn:escapeXml(svc.serviceName)}', price: ${svc.price}, desc: '${fn:escapeXml(svc.description)}' }${st.last ? '' : ','}
+  '${svc.serviceId}': { name: '${fn:escapeXml(svc.serviceName)}', price: ${svc.price}, desc: '${fn:escapeXml(not empty svc.description ? svc.description : "")}' }${st.last ? '' : ','}
 </c:forEach>
 };
 </script>

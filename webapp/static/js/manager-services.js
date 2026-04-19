@@ -12,6 +12,7 @@ function openAddModal() {
 
 function openEditModal(id) {
   var svc = serviceData[id];
+  if (!svc) return;
   document.getElementById('modalTitle').textContent  = 'Sửa dịch vụ';
   document.getElementById('modalAction').value       = 'edit';
   document.getElementById('modalServiceId').value    = id;
