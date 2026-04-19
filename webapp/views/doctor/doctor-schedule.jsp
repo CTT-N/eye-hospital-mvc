@@ -127,6 +127,10 @@
               </div>
               <span class="badge-status badge-${fn:toLowerCase(appt.status)}" style="align-self:center">${appt.status}</span>
               <div style="display:flex;gap:6px;align-self:center">
+                <c:if test="${appt.status == 'CONFIRMED' || appt.status == 'COMPLETED'}">
+                  <a href="${pageContext.request.contextPath}/doctor/examination?appointmentId=${appt.appointmentId}"
+                     class="btn-hospital btn-ghost-h btn-sm">Kham</a>
+                </c:if>
                 <c:if test="${appt.status == 'PENDING'}">
                   <form method="post" action="${pageContext.request.contextPath}/doctor/schedule" style="margin:0">
                     <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
@@ -134,8 +138,6 @@
                     <button type="submit" class="btn-hospital btn-primary-h btn-sm">Xac nhan</button>
                   </form>
                 </c:if>
-                <a href="${pageContext.request.contextPath}/doctor/examination?appointmentId=${appt.appointmentId}"
-                   class="btn-hospital btn-ghost-h btn-sm">Kham</a>
               </div>
             </div>
             </c:forEach>

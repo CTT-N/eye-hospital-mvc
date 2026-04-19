@@ -74,6 +74,21 @@
         <span class="current">Chi tiet lich hen</span>
       </div>
 
+      <c:if test="${param.msg eq 'saved'}">
+        <div class="alert alert-success mb-3">Hồ sơ đã được lưu.</div>
+      </c:if>
+      <c:if test="${param.error eq 'missing_fields'}">
+        <div class="alert alert-danger mb-3">Vui lòng nhập đủ triệu chứng, chẩn đoán và điều trị.</div>
+      </c:if>
+      <c:if test="${param.error eq 'save_failed'}">
+        <div class="alert alert-danger mb-3">Không thể lưu hồ sơ. Vui lòng thử lại.</div>
+      </c:if>
+
+      <c:set var="recordSymptoms" value="${not empty draftSymptoms ? draftSymptoms : medicalRecord.symptoms}" />
+      <c:set var="recordDiagnosis" value="${not empty draftDiagnosis ? draftDiagnosis : medicalRecord.diagnosis}" />
+      <c:set var="recordTreatment" value="${not empty draftTreatment ? draftTreatment : medicalRecord.treatment}" />
+      <c:set var="recordNote" value="${not empty draftNote ? draftNote : medicalRecord.note}" />
+
       <div class="row g-4">
         <!-- Left: appointment info -->
         <div class="col-lg-6">
@@ -86,29 +101,21 @@
               <div class="info-grid">
                 <div class="info-field">
                   <div class="lbl">Ngay kham</div>
-                  <div class="val">${not empty appointment ? appointment.date : 'N/A'}</div>
+                  <div class="val"><c:out value="${not empty appointment ? appointment.date : 'N/A'}" /></div>
                 </div>
                 <div class="info-field">
                   <div class="lbl">Gio kham</div>
-                  <div class="val">${not empty appointment ? appointment.time : 'N/A'}</div>
+                  <div class="val"><c:out value="${not empty appointment ? appointment.time : 'N/A'}" /></div>
                 </div>
                 <div class="info-field">
                   <div class="lbl">Phong kham</div>
-                  <div class="val"><i class="fas fa-door-open" style="margin-right:4px;color:var(--text-muted)"></i>Phong ${not empty appointment ? appointment.roomId : 'N/A'}</div>
+                  <div class="val"><i class="fas fa-door-open" style="margin-right:4px;color:var(--text-muted)"></i>Phong <c:out value="${not empty appointment ? appointment.roomId : 'N/A'}" /></div>
                 </div>
                 <div class="info-field">
                   <div class="lbl">Ma lich hen</div>
-                  <div class="val">${not empty appointment ? appointment.appointmentId : 'N/A'}</div>
+                  <div class="val"><c:out value="${not empty appointment ? appointment.appointmentId : 'N/A'}" /></div>
                 </div>
               </div>
-            </div>
-            <div class="card-footer-h" style="display:flex;gap:10px;justify-content:flex-end">
-              <a href="${pageContext.request.contextPath}/doctor/patients" class="btn-hospital btn-outline-h btn-sm">
-                <i class="fas fa-users"></i> Danh sach BN
-              </a>
-              <a href="${pageContext.request.contextPath}/doctor/examination?appointmentId=${not empty appointment ? appointment.appointmentId : ''}" class="btn-hospital btn-primary-h btn-sm">
-                <i class="fas fa-notes-medical"></i> Cap nhat ho so
-              </a>
             </div>
           </div>
         </div>
@@ -121,10 +128,10 @@
             </div>
             <div class="card-body-h">
               <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-                <div class="avatar avatar-lg" style="width:52px;height:52px;font-size:18px">${not empty appointment ? appointment.patientId.substring(0,2) : '--'}</div>
+                <div class="avatar avatar-lg" style="width:52px;height:52px;font-size:18px"><c:out value="${not empty appointment ? appointment.patientId.substring(0,2) : '--'}" /></div>
                 <div>
-                  <div style="font-weight:700;font-size:var(--font-md)">${not empty appointment ? appointment.patientId : 'N/A'}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">${not empty appointment ? appointment.patientId : ''}</div>
+                  <div style="font-weight:700;font-size:var(--font-md)"><c:out value="${not empty appointment ? appointment.patientId : 'N/A'}" /></div>
+                  <div style="font-size:12px;color:var(--text-muted)"><c:out value="${not empty appointment ? appointment.patientId : ''}" /></div>
                 </div>
               </div>
 
@@ -134,20 +141,20 @@
                 <div class="info-grid">
                   <div class="info-field col-span-2">
                     <div class="lbl">Chan doan</div>
-                    <div class="val">${medicalRecord.diagnosis}</div>
+                    <div class="val"><c:out value="${medicalRecord.diagnosis}" /></div>
                   </div>
                   <div class="info-field col-span-2">
                     <div class="lbl">Trieu chung</div>
-                    <div class="val">${medicalRecord.symptoms}</div>
+                    <div class="val"><c:out value="${medicalRecord.symptoms}" /></div>
                   </div>
                   <div class="info-field col-span-2">
                     <div class="lbl">Dieu tri</div>
-                    <div class="val">${medicalRecord.treatment}</div>
+                    <div class="val"><c:out value="${medicalRecord.treatment}" /></div>
                   </div>
                   <c:if test="${not empty medicalRecord.note}">
                   <div class="info-field col-span-2">
                     <div class="lbl">Ghi chu</div>
-                    <div class="val">${medicalRecord.note}</div>
+                    <div class="val"><c:out value="${medicalRecord.note}" /></div>
                   </div>
                   </c:if>
                 </div>
@@ -161,47 +168,48 @@
         <div class="col-lg-12">
           <div class="card-hospital">
             <div class="card-header-h">
-              <h5><i class="fas fa-notes-medical" style="color:var(--primary);margin-right:8px"></i>
-                <c:choose>
-                  <c:when test="${not empty medicalRecord}">Cập nhật hồ sơ bệnh án</c:when>
-                  <c:otherwise>Nhập hồ sơ bệnh án</c:otherwise>
-                </c:choose>
-              </h5>
+              <h5><i class="fas fa-notes-medical" style="color:var(--primary);margin-right:8px"></i>Ho so kham</h5>
             </div>
             <div class="card-body-h">
               <form action="${pageContext.request.contextPath}/doctor/examination" method="post">
                 <input type="hidden" name="appointmentId" value="${not empty appointment ? appointment.appointmentId : ''}">
+                <input type="hidden" name="action" value="save" id="examAction">
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label" style="font-size:13px;font-weight:600">Triệu chứng *</label>
                     <textarea name="symptoms" class="form-control" rows="3" required
-                      placeholder="Mô tả triệu chứng bệnh nhân">${not empty medicalRecord ? medicalRecord.symptoms : ''}</textarea>
+                      placeholder="Mô tả triệu chứng bệnh nhân"><c:out value="${recordSymptoms}" /></textarea>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" style="font-size:13px;font-weight:600">Chẩn đoán *</label>
                     <textarea name="diagnosis" class="form-control" rows="3" required
-                      placeholder="Chẩn đoán bệnh">${not empty medicalRecord ? medicalRecord.diagnosis : ''}</textarea>
+                      placeholder="Chẩn đoán bệnh"><c:out value="${recordDiagnosis}" /></textarea>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" style="font-size:13px;font-weight:600">Phác đồ điều trị *</label>
                     <textarea name="treatment" class="form-control" rows="3" required
-                      placeholder="Phương pháp điều trị">${not empty medicalRecord ? medicalRecord.treatment : ''}</textarea>
+                      placeholder="Phương pháp điều trị"><c:out value="${recordTreatment}" /></textarea>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" style="font-size:13px;font-weight:600">Ghi chú</label>
                     <textarea name="note" class="form-control" rows="3"
-                      placeholder="Ghi chú thêm (nếu có)">${not empty medicalRecord ? medicalRecord.note : ''}</textarea>
+                      placeholder="Ghi chú thêm (nếu có)"><c:out value="${recordNote}" /></textarea>
                   </div>
                 </div>
                 <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
                   <a href="${pageContext.request.contextPath}/doctor/schedule" class="btn-hospital btn-outline-h btn-sm">Hủy</a>
-                  <button type="submit" class="btn-hospital btn-primary-h btn-sm">
+                  <button type="submit" class="btn-hospital btn-outline-h btn-sm" onclick="document.getElementById('examAction').value='save';">
                     <i class="fas fa-save"></i>
                     <c:choose>
-                      <c:when test="${not empty medicalRecord}">Cập nhật</c:when>
-                      <c:otherwise>Lưu hồ sơ</c:otherwise>
+                      <c:when test="${not empty medicalRecord}">Cap nhat</c:when>
+                      <c:otherwise>Luu ho so</c:otherwise>
                     </c:choose>
                   </button>
+                  <c:if test="${not empty appointment and appointment.status eq 'CONFIRMED'}">
+                    <button type="submit" class="btn-hospital btn-primary-h btn-sm" onclick="document.getElementById('examAction').value='complete';">
+                      <i class="fas fa-check"></i> Hoan tat kham
+                    </button>
+                  </c:if>
                 </div>
               </form>
             </div>
