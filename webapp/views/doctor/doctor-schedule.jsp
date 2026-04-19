@@ -6,10 +6,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lich kham theo ngay - BV Mat PTIT</title>
+  <title>Lich kham - BV Mat PTIT</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  
   <link href="${pageContext.request.contextPath}/static/css/variables.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/static/css/base.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/static/css/components.css" rel="stylesheet">
@@ -53,43 +52,75 @@
       <div class="topbar-left">
         <button class="topbar-icon-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
         <div>
-          <div class="topbar-title">Lich kham hom nay</div>
-          <div style="font-size:12px;color:var(--text-muted)">Danh sach lich kham trong ngay hien tai</div>
+          <div class="topbar-title">Lich kham</div>
+          <div style="font-size:12px;color:var(--text-muted)">Xem lich va xac nhan lich hen</div>
         </div>
       </div>
       <div class="topbar-right">
-        <button class="topbar-icon-btn"><i class="fas fa-magnifying-glass"></i></button>
         <button class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
         <button class="topbar-user">
           <div class="avatar avatar-sm" style="background:var(--primary-light)"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
           <div class="user-details d-none d-md-block"><span class="user-name">${sessionScope.user.fullName}</span><span class="user-role">Bac si</span></div>
-          <i class="fas fa-chevron-down" style="font-size:11px;color:var(--text-muted)"></i>
         </button>
       </div>
     </header>
 
     <div class="content-area">
-      <!-- Summary row -->
-      <div style="display:flex;gap:12px;margin-bottom:var(--gap-lg);flex-wrap:wrap">
-        <div class="stat-card" style="flex:1;min-width:140px">
-          <div class="stat-icon stat-blue"><i class="fas fa-calendar-check"></i></div>
-          <div class="stat-info"><div class="label">Tong lich</div><div class="value">${totalCount}</div></div>
-        </div>
-        <div class="stat-card" style="flex:1;min-width:140px">
-          <div class="stat-icon stat-orange"><i class="fas fa-clock"></i></div>
-          <div class="stat-info"><div class="label">Cho kham</div><div class="value">${pendingCount}</div></div>
-        </div>
-        <div class="stat-card" style="flex:1;min-width:140px">
-          <div class="stat-icon stat-green"><i class="fas fa-circle-check"></i></div>
-          <div class="stat-info"><div class="label">Da kham</div><div class="value">${doneCount}</div></div>
-        </div>
+
+      <!-- Tab navigation -->
+      <div class="tab-nav-h" style="margin-bottom:var(--gap-lg)">
+        <a href="${pageContext.request.contextPath}/doctor/schedule?date=${selectedDate}&tab=today"
+           class="tab-btn ${activeTab == 'today' ? 'active' : ''}" style="text-decoration:none">
+          <i class="fas fa-calendar-days" style="margin-right:6px"></i>Lich theo ngay
+        </a>
+        <a href="${pageContext.request.contextPath}/doctor/schedule?tab=pending"
+           class="tab-btn ${activeTab == 'pending' ? 'active' : ''}" style="text-decoration:none">
+          <i class="fas fa-clock" style="margin-right:6px"></i>Cho xac nhan
+          <c:if test="${pendingAppointments.size() > 0}">
+            <span style="background:var(--warning);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px">${pendingAppointments.size()}</span>
+          </c:if>
+        </a>
       </div>
 
-      <!-- Schedule list -->
-      <div id="scheduleList">
+      <!-- ===== TAB 1: Lich theo ngay ===== -->
+      <c:if test="${activeTab == 'today'}">
+
+        <!-- Date navigator -->
+        <div class="date-nav" style="margin-bottom:var(--gap-lg)">
+          <a href="${pageContext.request.contextPath}/doctor/schedule?date=${prevDate}" class="date-nav-btn" style="text-decoration:none">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+          <div class="date-display">
+            <div class="day-label">${isToday ? 'Hom nay' : selectedDate}</div>
+            <div class="date-full">${selectedDate}</div>
+          </div>
+          <a href="${pageContext.request.contextPath}/doctor/schedule?date=${nextDate}" class="date-nav-btn" style="text-decoration:none">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+          <input type="date" class="form-control-h" value="${selectedDate}" style="width:auto;margin-left:auto"
+                 onchange="location.href='${pageContext.request.contextPath}/doctor/schedule?date='+this.value">
+        </div>
+
+        <!-- Summary row -->
+        <div style="display:flex;gap:12px;margin-bottom:var(--gap-lg);flex-wrap:wrap">
+          <div class="stat-card" style="flex:1;min-width:140px">
+            <div class="stat-icon stat-blue"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info"><div class="label">Tong lich</div><div class="value">${totalCount}</div></div>
+          </div>
+          <div class="stat-card" style="flex:1;min-width:140px">
+            <div class="stat-icon stat-orange"><i class="fas fa-clock"></i></div>
+            <div class="stat-info"><div class="label">Cho kham</div><div class="value">${pendingCount}</div></div>
+          </div>
+          <div class="stat-card" style="flex:1;min-width:140px">
+            <div class="stat-icon stat-green"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-info"><div class="label">Da kham</div><div class="value">${doneCount}</div></div>
+          </div>
+        </div>
+
+        <!-- Schedule list -->
         <c:choose>
           <c:when test="${empty appointments}">
-            <p style="text-align:center;padding:24px;color:var(--text-muted)">Khong co lich hen nao</p>
+            <p style="text-align:center;padding:24px;color:var(--text-muted)">Khong co lich hen nao trong ngay nay</p>
           </c:when>
           <c:otherwise>
             <c:forEach var="appt" items="${appointments}">
@@ -105,12 +136,8 @@
                 </div>
                 <div class="schedule-meta">
                   <c:choose>
-                    <c:when test="${not empty appt.roomId}">
-                      <span><i class="fas fa-door-open" style="margin-right:4px"></i>Phong ${appt.roomId}</span>
-                    </c:when>
-                    <c:otherwise>
-                      <span style="color:var(--text-muted)">Chua co phong</span>
-                    </c:otherwise>
+                    <c:when test="${not empty appt.roomId}"><span><i class="fas fa-door-open" style="margin-right:4px"></i>Phong ${appt.roomId}</span></c:when>
+                    <c:otherwise><span style="color:var(--text-muted)">Chua co phong</span></c:otherwise>
                   </c:choose>
                 </div>
               </div>
@@ -124,6 +151,7 @@
                   <form method="post" action="${pageContext.request.contextPath}/doctor/schedule" style="margin:0">
                     <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
                     <input type="hidden" name="status" value="CONFIRMED">
+                    <input type="hidden" name="returnDate" value="${selectedDate}">
                     <button type="submit" class="btn-hospital btn-primary-h btn-sm">Xac nhan</button>
                   </form>
                 </c:if>
@@ -132,7 +160,82 @@
             </c:forEach>
           </c:otherwise>
         </c:choose>
-      </div>
+
+      </c:if>
+
+      <!-- ===== TAB 2: Cho xac nhan ===== -->
+      <c:if test="${activeTab == 'pending'}">
+
+        <div class="card-hospital">
+          <div class="card-header-h">
+            <h5>Lich hen cho xac nhan (${pendingAppointments.size()})</h5>
+          </div>
+          <div class="card-body-h" style="padding:0">
+            <c:choose>
+              <c:when test="${empty pendingAppointments}">
+                <p style="text-align:center;padding:32px;color:var(--text-muted)">
+                  <i class="fas fa-check-circle" style="font-size:32px;margin-bottom:12px;opacity:0.3;display:block"></i>
+                  Khong con lich hen nao can xac nhan
+                </p>
+              </c:when>
+              <c:otherwise>
+                <div style="overflow-x:auto">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Ngay</th>
+                        <th>Gio</th>
+                        <th>Benh nhan</th>
+                        <th>Phong</th>
+                        <th class="action-cell">Thao tac</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <c:forEach var="appt" items="${pendingAppointments}">
+                      <tr>
+                        <td>${appt.date}</td>
+                        <td>${appt.time}</td>
+                        <td>
+                          <c:choose>
+                            <c:when test="${not empty appt.patientName}">${appt.patientName}</c:when>
+                            <c:otherwise>${appt.patientId}</c:otherwise>
+                          </c:choose>
+                        </td>
+                        <td>
+                          <c:choose>
+                            <c:when test="${not empty appt.roomId}">Phong ${appt.roomId}</c:when>
+                            <c:otherwise><span style="color:var(--text-muted)">Chua co</span></c:otherwise>
+                          </c:choose>
+                        </td>
+                        <td class="action-cell">
+                          <div style="display:flex;gap:6px">
+                            <form method="post" action="${pageContext.request.contextPath}/doctor/schedule" style="margin:0">
+                              <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
+                              <input type="hidden" name="status" value="CONFIRMED">
+                              <input type="hidden" name="returnTab" value="pending">
+                              <button type="submit" class="btn-hospital btn-primary-h btn-sm">Xac nhan</button>
+                            </form>
+                            <form method="post" action="${pageContext.request.contextPath}/doctor/schedule" style="margin:0">
+                              <input type="hidden" name="appointmentId" value="${appt.appointmentId}">
+                              <input type="hidden" name="status" value="CANCELLED">
+                              <input type="hidden" name="returnTab" value="pending">
+                              <button type="submit" class="btn-hospital btn-outline-h btn-sm"
+                                      style="color:var(--danger);border-color:var(--danger)">Tu choi</button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                      </c:forEach>
+                    </tbody>
+                  </table>
+                </div>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+
+      </c:if>
+
     </div>
   </main>
 </div>
