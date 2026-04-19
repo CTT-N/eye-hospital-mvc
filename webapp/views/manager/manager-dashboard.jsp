@@ -20,80 +20,8 @@
 </head>
 <body>
 <div class="app-shell">
-
-  <!-- ==== SIDEBAR ==== -->
-  <aside class="sidebar">
-    <a href="" class="sidebar-brand">
-      <div class="brand-logo"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></div>
-      <div class="brand-text">
-        BV Mắt PTIT
-        <small>Cổng Quản Lý</small>
-      </div>
-    </a>
-
-    <nav class="sidebar-nav">
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/dashboard" class="nav-link-h active">
-          <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-          <span class="nav-label">Tổng quan</span>
-        </a>
-      </div>
-      <div class="nav-section-label">Quản lý</div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/schedule" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
-          <span class="nav-label">Lịch hẹn</span>
-          <span class="nav-badge">${totalAppointments}</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/departments" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-building-columns"></i></span>
-          <span class="nav-label">Khoa phòng</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/rooms" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-door-open"></i></span>
-          <span class="nav-label">Phòng khám</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/hospital" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-hospital"></i></span>
-          <span class="nav-label">Thông tin BV</span>
-        </a>
-      </div>
-      <div class="nav-section-label">Báo cáo</div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/report" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-file-chart-column"></i></span>
-          <span class="nav-label">Báo cáo doanh thu</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="${pageContext.request.contextPath}/manager/report" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-users"></i></span>
-          <span class="nav-label">Báo cáo bệnh nhân</span>
-        </a>
-      </div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="avatar avatar-md"><c:choose><c:when test="${fn:length(sessionScope.user.fullName) >= 2}">${fn:substring(sessionScope.user.fullName, 0, 2)}</c:when><c:when test="${fn:length(sessionScope.user.fullName) == 1}">${fn:substring(sessionScope.user.fullName, 0, 1)}</c:when><c:otherwise>?</c:otherwise></c:choose></div>
-        <div class="user-info">
-          <div class="user-name">${sessionScope.user.fullName}</div>
-          <div class="user-role">Quản lý bệnh viện</div>
-        </div>
-        <i class="fas fa-ellipsis-v" style="color:rgba(255,255,255,0.4);font-size:13px"></i>
-      </div>
-      <a href="${pageContext.request.contextPath}/auth/logout" class="nav-link-h" style="margin-top:8px;padding:8px 12px;color:rgba(255,255,255,0.6);font-size:13px">
-        <span class="nav-icon"><i class="fas fa-right-from-bracket"></i></span>
-        <span class="nav-label">Đăng xuất</span>
-      </a>
-    </div>
-  </aside>
+  <c:set var="activeManagerNav" value="dashboard" />
+  <%@ include file="_sidebar.jspf" %>
 
   <!-- ==== MAIN CONTENT ==== -->
   <main class="main-content">
