@@ -89,7 +89,6 @@
                   <th>Benh nhan</th>
                   <th>Gioi tinh</th>
                   <th>Ngay sinh</th>
-                  <th class="action-cell">Ho so</th>
                 </tr>
               </thead>
               <tbody>
@@ -107,11 +106,6 @@
                   </td>
                   <td>${p.gender == 'M' ? 'Nam' : 'Nu'}</td>
                   <td>${p.birthday}</td>
-                  <td class="action-cell">
-                    <a href="${pageContext.request.contextPath}/doctor/medical-records?patientId=${p.patientId}" class="btn-icon" title="Xem ho so">
-                      <i class="fas fa-file-medical"></i>
-                    </a>
-                  </td>
                 </tr>
                 </c:forEach>
               </tbody>

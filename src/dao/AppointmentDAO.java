@@ -64,6 +64,37 @@ public class AppointmentDAO {
         return null;
     }
 
+    public Appointment getAppointmentByIdAndDoctorId(String appointmentId, String doctorId) {
+        String sql = "SELECT * FROM Appointment WHERE appointmentId = ? AND doctorId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, appointmentId);
+            ps.setString(2, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Appointment appt = new Appointment();
+                    appt.setAppointmentId(rs.getString("appointmentId"));
+                    appt.setPatientId(rs.getString("patientId"));
+                    appt.setDoctorId(rs.getString("doctorId"));
+                    appt.setRoomId(rs.getString("roomId"));
+                    appt.setDate(rs.getDate("date"));
+                    appt.setTime(rs.getTime("time"));
+                    appt.setStatus(rs.getString("status"));
+                    return appt;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isAppointmentOwnedByDoctor(String appointmentId, String doctorId) {
+        return getAppointmentByIdAndDoctorId(appointmentId, doctorId) != null;
+    }
+
     public List<Appointment> getAppointmentsByPatientId(String patientId) {
         List<Appointment> list = new ArrayList<>();
         String sql = "SELECT * FROM Appointment WHERE patientId = ?";
@@ -260,6 +291,41 @@ public class AppointmentDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public int updateAppointmentStatusForDoctor(String appointmentId, String doctorId, String status) {
+        String sql = "UPDATE Appointment SET status=? WHERE appointmentId=? AND doctorId=?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setString(2, appointmentId);
+            ps.setString(3, doctorId);
+
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int updateAppointmentStatusForDoctorAndCurrentStatus(String appointmentId, String doctorId, String currentStatus, String newStatus) {
+        String sql = "UPDATE Appointment SET status=? WHERE appointmentId=? AND doctorId=? AND status=?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newStatus);
+            ps.setString(2, appointmentId);
+            ps.setString(3, doctorId);
+            ps.setString(4, currentStatus);
+
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /** Manager-facing: all appointments enriched with doctor name and patient name. */

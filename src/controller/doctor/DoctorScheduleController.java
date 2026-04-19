@@ -18,6 +18,9 @@ import java.util.List;
 @WebServlet("/doctor/schedule")
 public class DoctorScheduleController extends HttpServlet {
 
+    private static final String CONFIRMED_STATUS = "CONFIRMED";
+    private static final String PENDING_STATUS = "PENDING";
+
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
     private DoctorDAO doctorDAO = new DoctorDAO();
 
@@ -42,12 +45,43 @@ public class DoctorScheduleController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Có thể dùng để Cập nhật trạng thái lịch khám (Chấp nhận / Hủy)
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || !"DOCTOR".equals(user.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/auth/login");
+            return;
+        }
+
+        Doctor doctor = doctorDAO.getDoctorByUserId(user.getUserId());
+        if (doctor == null) {
+            response.sendRedirect(request.getContextPath() + "/doctor/schedule?error=no_doctor");
+            return;
+        }
+
         String appointmentId = request.getParameter("appointmentId");
         String status = request.getParameter("status");
 
-        if (appointmentId != null && status != null) {
-            appointmentDAO.updateAppointmentStatus(appointmentId, status);
+        if (appointmentId == null || status == null) {
+            response.sendRedirect(request.getContextPath() + "/doctor/schedule");
+            return;
+        }
+
+        if (!CONFIRMED_STATUS.equals(status)) {
+            response.sendRedirect(request.getContextPath() + "/doctor/schedule?error=forbidden");
+            return;
+        }
+
+        Appointment appt = appointmentDAO.getAppointmentByIdAndDoctorId(appointmentId, doctor.getDoctorId());
+        if (appt == null || !PENDING_STATUS.equals(appt.getStatus())) {
+            response.sendRedirect(request.getContextPath() + "/doctor/schedule?error=forbidden");
+            return;
+        }
+
+        int updatedRows = appointmentDAO.updateAppointmentStatusForDoctorAndCurrentStatus(appointmentId, doctor.getDoctorId(), PENDING_STATUS, status);
+        if (updatedRows <= 0) {
+            response.sendRedirect(request.getContextPath() + "/doctor/schedule?error=forbidden");
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/doctor/schedule");

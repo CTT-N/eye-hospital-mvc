@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,7 +147,7 @@ public class MedicalRecordDAO {
     }
 
     public boolean updateRecord(MedicalRecord record) {
-        String sql = "UPDATE MedicalRecord SET appointmentId=?, symptoms=?, diagnosis=?, treatment=?, createdDate=?, note=? WHERE recordId=?";
+        String sql = "UPDATE MedicalRecord SET appointmentId=?, symptoms=?, diagnosis=?, treatment=?, note=? WHERE recordId=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -155,9 +156,8 @@ public class MedicalRecordDAO {
             ps.setString(2, record.getSymptoms());
             ps.setString(3, record.getDiagnosis());
             ps.setString(4, record.getTreatment());
-            ps.setDate(5, record.getCreatedDate());
-            ps.setString(6, record.getNote());
-            ps.setString(7, record.getRecordId());
+            ps.setString(5, record.getNote());
+            ps.setString(6, record.getRecordId());
 
             int rows = ps.executeUpdate();
             return rows > 0;
@@ -165,6 +165,93 @@ public class MedicalRecordDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean saveRecordAndCompleteAppointmentForDoctor(MedicalRecord record, String doctorId) {
+        String selectRecordSql = "SELECT recordId FROM MedicalRecord WHERE appointmentId = ?";
+        String insertRecordSql = "INSERT INTO MedicalRecord (recordId, appointmentId, symptoms, diagnosis, treatment, createdDate, note) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String updateRecordSql = "UPDATE MedicalRecord SET appointmentId=?, symptoms=?, diagnosis=?, treatment=?, note=? WHERE recordId=?";
+        String updateAppointmentSql = "UPDATE Appointment SET status=? WHERE appointmentId=? AND doctorId=? AND status=?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                String existingRecordId = null;
+                try (PreparedStatement ps = conn.prepareStatement(selectRecordSql)) {
+                    ps.setString(1, record.getAppointmentId());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            existingRecordId = rs.getString("recordId");
+                        }
+                    }
+                }
+
+                boolean recordSaved;
+                if (existingRecordId == null) {
+                    try (PreparedStatement ps = conn.prepareStatement(insertRecordSql)) {
+                        ps.setString(1, record.getRecordId());
+                        ps.setString(2, record.getAppointmentId());
+                        ps.setString(3, record.getSymptoms());
+                        ps.setString(4, record.getDiagnosis());
+                        ps.setString(5, record.getTreatment());
+                        ps.setDate(6, record.getCreatedDate() != null ? record.getCreatedDate() : new Date(System.currentTimeMillis()));
+                        ps.setString(7, record.getNote());
+                        recordSaved = ps.executeUpdate() > 0;
+                    }
+                } else {
+                    try (PreparedStatement ps = conn.prepareStatement(updateRecordSql)) {
+                        ps.setString(1, record.getAppointmentId());
+                        ps.setString(2, record.getSymptoms());
+                        ps.setString(3, record.getDiagnosis());
+                        ps.setString(4, record.getTreatment());
+                        ps.setString(5, record.getNote());
+                        ps.setString(6, existingRecordId);
+                        recordSaved = ps.executeUpdate() > 0;
+                    }
+                }
+
+                if (!recordSaved) {
+                    safeRollback(conn);
+                    return false;
+                }
+
+                try (PreparedStatement ps = conn.prepareStatement(updateAppointmentSql)) {
+                    ps.setString(1, "COMPLETED");
+                    ps.setString(2, record.getAppointmentId());
+                    ps.setString(3, doctorId);
+                    ps.setString(4, "CONFIRMED");
+
+                    if (ps.executeUpdate() <= 0) {
+                        safeRollback(conn);
+                        return false;
+                    }
+                }
+
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                safeRollback(conn);
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (Exception ignore) {
+                    // Restore best-effort; connection is closing.
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void safeRollback(Connection conn) {
+        try {
+            conn.rollback();
+        } catch (Exception ignore) {
+            // Best-effort rollback.
+        }
     }
 
     public boolean deleteRecord(String id) {
