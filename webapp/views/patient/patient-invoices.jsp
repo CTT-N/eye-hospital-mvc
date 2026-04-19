@@ -129,9 +129,18 @@
                       <td>${inv.date}</td>
                       <td>${inv.appointmentId}</td>
                       <td><strong>${inv.totalAmount} VNĐ</strong></td>
-                      <td><span class="badge-status badge-completed">Đã thanh toán</span></td>
+                      <td>
+                        <c:choose>
+                          <c:when test="${inv.status eq 'PAID'}">
+                            <span class="badge-h badge-success">Đã thanh toán</span>
+                          </c:when>
+                          <c:otherwise>
+                            <span class="badge-h badge-gray">Chờ thanh toán</span>
+                          </c:otherwise>
+                        </c:choose>
+                      </td>
                       <td class="action-cell">
-                        <button class="btn-hospital btn-sm" onclick="openInvoice('${inv.invoiceId}','${inv.date}','${inv.appointmentId}','${inv.totalAmount}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn-hospital btn-sm" onclick="openInvoice('${inv.invoiceId}')"><i class="fas fa-eye"></i></button>
                       </td>
                     </tr>
                     </c:forEach>
@@ -195,6 +204,19 @@
   </div>
 </div>
 
+<script>
+var invoiceData = {
+<c:forEach var="inv" items="${listInvoices}" varStatus="outer">
+  '${inv.invoiceId}': {
+    date: '${inv.date}',
+    doctor: '${fn:escapeXml(inv.doctorName)}',
+    total: ${inv.totalAmount},
+    status: '${inv.status}',
+    services: [<c:forEach var="s" items="${inv.services}" varStatus="inner">['${fn:escapeXml(s.serviceName)}', ${s.totalPrice}]${inner.last ? '' : ','}</c:forEach>]
+  }${outer.last ? '' : ','}
+</c:forEach>
+};
+</script>
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/patient-invoices.js"></script>
 </body>

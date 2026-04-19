@@ -1,6 +1,7 @@
 package controller.patient;
 
 import dao.InvoiceDAO;
+import dao.InvoiceServiceDAO;
 import dao.PatientDAO;
 import model.Invoice;
 import model.Patient;
@@ -13,13 +14,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/patient/invoices")
 public class PatientInvoiceController extends HttpServlet {
 
-    private InvoiceDAO invoiceDAO = new InvoiceDAO();
-    private PatientDAO patientDAO = new PatientDAO();
+    private final InvoiceDAO invoiceDAO = new InvoiceDAO();
+    private final InvoiceServiceDAO invoiceServiceDAO = new InvoiceServiceDAO();
+    private final PatientDAO patientDAO = new PatientDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,13 +35,18 @@ public class PatientInvoiceController extends HttpServlet {
         }
 
         Patient patient = patientDAO.getPatientByUserId(user.getUserId());
-        List<Invoice> list = (patient != null)
-            ? invoiceDAO.getInvoicesByPatientId(patient.getPatientId())
-            : new java.util.ArrayList<>();
-        request.setAttribute("listInvoices", list);
+        List<Invoice> listInvoices = (patient != null)
+            ? invoiceDAO.getInvoicesByPatientIdEnriched(patient.getPatientId())
+            : new ArrayList<>();
+
+        for (Invoice invoice : listInvoices) {
+            invoice.setServices(invoiceServiceDAO.getServicesByInvoiceId(invoice.getInvoiceId()));
+        }
+
+        request.setAttribute("listInvoices", listInvoices);
         request.getRequestDispatcher("/views/patient/patient-invoices.jsp").forward(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.sendRedirect(request.getContextPath() + "/patient/invoices");

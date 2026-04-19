@@ -1,15 +1,20 @@
 // patient-invoices.js — Invoice detail modal
 
-function openInvoice(id, date, doctor, services, total) {
+function openInvoice(id) {
+  var inv = invoiceData[id];
+  if (!inv) {
+    return;
+  }
+
   document.getElementById('modalInvoiceTitle').textContent = 'Hóa đơn #' + id;
   document.getElementById('modalId').textContent     = '#' + id;
-  document.getElementById('modalDate').textContent   = date;
-  document.getElementById('modalDoctor').textContent = doctor;
-  document.getElementById('modalTotal').textContent  = total + ' ₫';
+  document.getElementById('modalDate').textContent   = inv.date;
+  document.getElementById('modalDoctor').textContent = inv.doctor || '—';
+  document.getElementById('modalTotal').textContent  = inv.total.toLocaleString('vi-VN') + ' ₫';
   const tbody = document.getElementById('modalServiceBody');
-  tbody.innerHTML = services.map(([name, price]) =>
-    `<tr><td>${name}</td><td style="text-align:right">${price} ₫</td></tr>`
-  ).join('');
+  tbody.innerHTML = inv.services.map(function (service) {
+    return '<tr><td>' + service[0] + '</td><td style="text-align:right">' + service[1].toLocaleString('vi-VN') + ' ₫</td></tr>';
+  }).join('');
   document.getElementById('invoiceModal').classList.add('open');
 }
 
