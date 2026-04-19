@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS Invoice (
     appointmentId VARCHAR(25),
     date DATE,
     totalAmount DECIMAL(15,2),
+    status ENUM('PENDING','PAID') NOT NULL DEFAULT 'PENDING',
 
     FOREIGN KEY (appointmentId)
     REFERENCES Appointment(appointmentId)
