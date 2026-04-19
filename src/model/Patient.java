@@ -11,6 +11,7 @@ public class Patient {
     private Date birthday;
     private String gender;
     private String note;
+    private String fullName;
 
     public Patient() {
     }
@@ -69,5 +70,13 @@ public class Patient {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

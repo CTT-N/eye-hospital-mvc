@@ -74,10 +74,10 @@
 
       <div class="card-hospital">
         <div class="card-header-h">
-          <h5>Danh sach benh nhan (${patients.size()})</h5>
+          <h5>Benh nhan hom nay (${patients.size()})</h5>
           <div class="search-box">
             <span class="search-icon"><i class="fas fa-search"></i></span>
-            <input class="form-control-h btn-sm" placeholder="Tim ten benh nhan..." id="searchInput" oninput="filterPatients(this.value)">
+            <input class="form-control-h btn-sm" placeholder="Tim ten hoac ma benh nhan..." id="searchInput" oninput="filterPatients(this.value)">
           </div>
         </div>
         <div class="card-body-h" style="padding:0">
@@ -97,9 +97,9 @@
                   <td>${loop.count}</td>
                   <td>
                     <div style="display:flex;align-items:center;gap:10px">
-                      <div class="avatar avatar-sm">${p.patientId.charAt(0)}</div>
+                      <div class="avatar avatar-sm">${not empty p.fullName ? fn:substring(p.fullName, 0, 1) : fn:substring(p.patientId, 0, 1)}</div>
                       <div>
-                        <div style="font-weight:600">${p.patientId}</div>
+                        <div style="font-weight:600">${not empty p.fullName ? p.fullName : p.patientId}</div>
                         <div style="font-size:12px;color:var(--text-muted)">${p.patientId}</div>
                       </div>
                     </div>
