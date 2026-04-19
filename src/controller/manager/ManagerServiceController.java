@@ -43,22 +43,56 @@ public class ManagerServiceController extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("add".equals(action)) {
+            String serviceName = request.getParameter("serviceName");
+            String priceParam = request.getParameter("price");
+            if (serviceName == null || serviceName.trim().isEmpty() || priceParam == null || priceParam.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
+            double price;
+            try {
+                price = Double.parseDouble(priceParam);
+            } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
             Service svc = new Service();
             svc.setServiceId("SVC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-            svc.setServiceName(request.getParameter("serviceName").trim());
-            svc.setPrice(Double.parseDouble(request.getParameter("price")));
+            svc.setServiceName(serviceName.trim());
+            svc.setPrice(price);
             String desc = request.getParameter("description");
             svc.setDescription(desc != null ? desc.trim() : "");
-            serviceDAO.insertService(svc);
+            boolean inserted = serviceDAO.insertService(svc);
+            if (!inserted) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=savefail");
+                return;
+            }
 
         } else if ("edit".equals(action)) {
+            String serviceName = request.getParameter("serviceName");
+            String priceParam = request.getParameter("price");
+            if (serviceName == null || serviceName.trim().isEmpty() || priceParam == null || priceParam.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
+            double price;
+            try {
+                price = Double.parseDouble(priceParam);
+            } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
             Service svc = new Service();
             svc.setServiceId(request.getParameter("serviceId"));
-            svc.setServiceName(request.getParameter("serviceName").trim());
-            svc.setPrice(Double.parseDouble(request.getParameter("price")));
+            svc.setServiceName(serviceName.trim());
+            svc.setPrice(price);
             String desc = request.getParameter("description");
             svc.setDescription(desc != null ? desc.trim() : "");
-            serviceDAO.updateService(svc);
+            boolean updated = serviceDAO.updateService(svc);
+            if (!updated) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=savefail");
+                return;
+            }
 
         } else if ("delete".equals(action)) {
             boolean deleted = serviceDAO.deleteService(request.getParameter("serviceId"));
