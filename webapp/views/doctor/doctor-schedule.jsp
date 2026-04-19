@@ -53,8 +53,8 @@
       <div class="topbar-left">
         <button class="topbar-icon-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
         <div>
-          <div class="topbar-title">Lich kham cua toi</div>
-          <div style="font-size:12px;color:var(--text-muted)">Xem lich kham theo ngay</div>
+          <div class="topbar-title">Lich kham hom nay</div>
+          <div style="font-size:12px;color:var(--text-muted)">Danh sach lich kham trong ngay hien tai</div>
         </div>
       </div>
       <div class="topbar-right">
@@ -69,30 +69,19 @@
     </header>
 
     <div class="content-area">
-      <!-- Date Navigator -->
-      <div class="date-nav">
-        <button class="date-nav-btn" onclick="changeDay(-1)"><i class="fas fa-chevron-left"></i></button>
-        <div class="date-display">
-          <div class="day-label" id="dayLabel">Hom nay</div>
-          <div class="date-full" id="dateFull"></div>
-        </div>
-        <button class="date-nav-btn" onclick="changeDay(1)"><i class="fas fa-chevron-right"></i></button>
-        <input type="date" class="form-control-h" id="datePicker" style="width:auto;margin-left:auto" onchange="pickDate(this.value)">
-      </div>
-
       <!-- Summary row -->
       <div style="display:flex;gap:12px;margin-bottom:var(--gap-lg);flex-wrap:wrap">
         <div class="stat-card" style="flex:1;min-width:140px">
           <div class="stat-icon stat-blue"><i class="fas fa-calendar-check"></i></div>
-          <div class="stat-info"><div class="label">Tong lich</div><div class="value" id="totalCount">${appointments.size()}</div></div>
+          <div class="stat-info"><div class="label">Tong lich</div><div class="value">${totalCount}</div></div>
         </div>
         <div class="stat-card" style="flex:1;min-width:140px">
           <div class="stat-icon stat-orange"><i class="fas fa-clock"></i></div>
-          <div class="stat-info"><div class="label">Cho kham</div><div class="value" id="pendingCount">0</div></div>
+          <div class="stat-info"><div class="label">Cho kham</div><div class="value">${pendingCount}</div></div>
         </div>
         <div class="stat-card" style="flex:1;min-width:140px">
           <div class="stat-icon stat-green"><i class="fas fa-circle-check"></i></div>
-          <div class="stat-info"><div class="label">Da kham</div><div class="value" id="doneCount">0</div></div>
+          <div class="stat-info"><div class="label">Da kham</div><div class="value">${doneCount}</div></div>
         </div>
       </div>
 
@@ -149,6 +138,5 @@
 </div>
 
 <script src="${pageContext.request.contextPath}/static/js/sidebar.js"></script>
-<script src="${pageContext.request.contextPath}/static/js/doctor-schedule.js"></script>
 </body>
 </html>

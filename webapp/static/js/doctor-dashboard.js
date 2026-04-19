@@ -1,10 +1,1 @@
-// doctor-dashboard.js — Patient item selection
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.patient-item').forEach(item => {
-    item.addEventListener('click', function () {
-      document.querySelectorAll('.patient-item').forEach(i => i.classList.remove('selected'));
-      this.classList.add('selected');
-    });
-  });
-});
+// Dashboard doctor da duoc rut ve overview tinh; khong con hanh vi client-side rieng.

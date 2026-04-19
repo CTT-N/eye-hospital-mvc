@@ -132,6 +132,43 @@ public class PatientDAO {
         return false;
     }
 
+    public List<Patient> getPatientsByDoctorIdAndDate(String doctorId, java.sql.Date date) {
+        List<Patient> list = new ArrayList<>();
+        String sql =
+            "SELECT DISTINCT p.*, u.fullName " +
+            "FROM Appointment a " +
+            "JOIN Patient p ON a.patientId = p.patientId " +
+            "JOIN user u ON p.userId = u.userId " +
+            "WHERE a.doctorId = ? AND a.date = ? " +
+            "ORDER BY u.fullName ASC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, doctorId);
+            ps.setDate(2, date);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Patient patient = new Patient();
+                    patient.setPatientId(rs.getString("patientId"));
+                    patient.setUserId(rs.getString("userId"));
+                    patient.setCccd(rs.getString("CCCD"));
+                    patient.setAddress(rs.getString("address"));
+                    patient.setBirthday(rs.getDate("birthday"));
+                    patient.setGender(rs.getString("gender"));
+                    patient.setNote(rs.getString("note"));
+                    patient.setFullName(rs.getString("fullName"));
+                    list.add(patient);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
     public boolean deletePatient(String id) {
         String sql = "DELETE FROM Patient WHERE patientId=?";
 
