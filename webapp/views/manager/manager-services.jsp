@@ -98,7 +98,7 @@
                         <i class="fas fa-pen"></i>
                       </button>
                       <form action="${pageContext.request.contextPath}/manager/services" method="post" style="display:inline"
-                            onsubmit="return confirm('Xóa dịch vụ ${fn:escapeXml(svc.serviceName)}?')">
+                            data-service-name="${fn:escapeXml(svc.serviceName)}" onsubmit="return confirmDelete(this)">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="serviceId" value="${svc.serviceId}">
                         <button type="submit" class="btn-hospital btn-danger-h btn-sm" title="Xóa">

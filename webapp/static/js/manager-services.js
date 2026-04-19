@@ -26,6 +26,11 @@ function closeServiceModal() {
   document.getElementById('serviceModal').classList.remove('open');
 }
 
+function confirmDelete(form) {
+  var name = form.dataset.serviceName || '';
+  return confirm('Xóa dịch vụ ' + name + '?');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('serviceModal').addEventListener('click', function(e) {
     if (e.target === this) closeServiceModal();

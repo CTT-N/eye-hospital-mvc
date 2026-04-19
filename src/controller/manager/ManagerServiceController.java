@@ -56,6 +56,10 @@ public class ManagerServiceController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
                 return;
             }
+            if (price < 0) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
             Service svc = new Service();
             svc.setServiceId("SVC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
             svc.setServiceName(serviceName.trim());
@@ -79,6 +83,10 @@ public class ManagerServiceController extends HttpServlet {
             try {
                 price = Double.parseDouble(priceParam);
             } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
+                return;
+            }
+            if (price < 0) {
                 response.sendRedirect(request.getContextPath() + "/manager/services?error=invalid");
                 return;
             }
