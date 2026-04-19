@@ -142,6 +142,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ManagerServiceController</servlet-name>
+        <servlet-class>controller.manager.ManagerServiceController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManagerServiceController</servlet-name>
+        <url-pattern>/manager/services</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>ReportController</servlet-name>
         <servlet-class>controller.manager.ReportController</servlet-class>
     </servlet>
