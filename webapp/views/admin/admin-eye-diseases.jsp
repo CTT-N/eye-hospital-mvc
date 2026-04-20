@@ -36,36 +36,11 @@
           <span class="nav-label">Quản lý người dùng</span>
         </a>
       </div>
-      <div class="nav-item">
-        <a href="#" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-shield-halved"></i></span>
-          <span class="nav-label">Phân quyền</span>
-        </a>
-      </div>
       <div class="nav-section-label">Danh mục</div>
       <div class="nav-item">
         <a href="${pageContext.request.contextPath}/admin/diseases" class="nav-link-h active">
           <span class="nav-icon"><i class="fas fa-eye"></i></span>
           <span class="nav-label">Danh mục bệnh mắt</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="#" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-syringe"></i></span>
-          <span class="nav-label">Danh mục dịch vụ</span>
-        </a>
-      </div>
-      <div class="nav-section-label">Hệ thống</div>
-      <div class="nav-item">
-        <a href="#" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-cog"></i></span>
-          <span class="nav-label">Cài đặt hệ thống</span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="#" class="nav-link-h">
-          <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-          <span class="nav-label">Nhật ký hoạt động</span>
         </a>
       </div>
     </nav>
