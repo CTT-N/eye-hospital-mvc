@@ -2,8 +2,10 @@ package controller.doctor;
 
 import dao.AppointmentDAO;
 import dao.MedicalRecordDAO;
+import dao.InvoiceDAO;
 import model.Appointment;
 import model.MedicalRecord;
+import model.Invoice;
 import model.User;
 
 import jakarta.servlet.ServletException;
@@ -77,6 +79,16 @@ public class ExaminationController extends HttpServlet {
 
         // Đánh dấu cuộc hẹn đã khám xong
         appointmentDAO.updateAppointmentStatus(appointmentId, "COMPLETED");
+
+        InvoiceDAO invoiceDAO = new InvoiceDAO();
+        if (invoiceDAO.getInvoicesByAppointmentId(appointmentId).isEmpty()) {
+            Invoice invoice = new Invoice();
+            invoice.setInvoiceId("INV-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
+            invoice.setAppointmentId(appointmentId);
+            invoice.setDate(new Date(System.currentTimeMillis()));
+            invoice.setTotalAmount(200000.0); // Mức giá khám cơ bản
+            invoiceDAO.insertInvoice(invoice);
+        }
 
         response.sendRedirect(request.getContextPath() + "/doctor/schedule?msg=exam_success");
     }
