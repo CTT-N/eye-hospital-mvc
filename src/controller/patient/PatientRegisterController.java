@@ -4,6 +4,7 @@ import dao.AppointmentDAO;
 import dao.PatientDAO;
 import dao.UserDAO;
 import dao.MedicalRecordDAO;
+import dao.ServiceDAO;
 import model.Appointment;
 import model.Patient;
 import model.User;
@@ -35,6 +36,11 @@ public class PatientRegisterController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
+
+        // Truy xuất giá dịch vụ cơ bản
+        model.Service baseExam = new ServiceDAO().getServiceById("SVC001");
+        double baseFee = (baseExam != null) ? baseExam.getPrice() : 200000.0;
+        request.setAttribute("baseFee", baseFee);
 
         request.getRequestDispatcher("/views/patient/book-appointment.jsp").forward(request, response);
     }

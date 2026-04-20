@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -151,7 +152,7 @@
         <div class="sc-row"><span class="label">Ngày khám</span><span class="value" id="sumDate">-- Chọn ngày --</span></div>
         <div class="sc-row"><span class="label">Giờ khám</span><span class="value" id="sumTime">07:30</span></div>
         <div class="sc-divider"></div>
-        <div class="price-row"><span class="lbl">Phí khám</span><span class="price">350,000đ</span></div>
+        <div class="price-row"><span class="lbl">Phí khám</span><span class="price"><fmt:formatNumber value="${baseFee != null ? baseFee : 200000}" type="currency" currencySymbol="đ" maxFractionDigits="0"/></span></div>
         <div style="font-size:11px;color:var(--muted);margin-top:6px">Chưa bao gồm thuốc và xét nghiệm</div>
         <div class="sc-divider"></div>
         <div style="font-size:12px;color:var(--muted);line-height:1.7">

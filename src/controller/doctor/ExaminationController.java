@@ -3,6 +3,7 @@ package controller.doctor;
 import dao.AppointmentDAO;
 import dao.MedicalRecordDAO;
 import dao.InvoiceDAO;
+import dao.ServiceDAO;
 import model.Appointment;
 import model.MedicalRecord;
 import model.Invoice;
@@ -86,7 +87,12 @@ public class ExaminationController extends HttpServlet {
             invoice.setInvoiceId("INV-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
             invoice.setAppointmentId(appointmentId);
             invoice.setDate(new Date(System.currentTimeMillis()));
-            invoice.setTotalAmount(200000.0); // Mức giá khám cơ bản
+            
+            // Tính số tiền động
+            model.Service baseService = new ServiceDAO().getServiceById("SVC001");
+            double amount = (baseService != null) ? baseService.getPrice() : 200000.0;
+            invoice.setTotalAmount(amount);
+            
             invoiceDAO.insertInvoice(invoice);
         }
 
