@@ -411,6 +411,9 @@ public class AppointmentDAO {
 
             int rows = ps.executeUpdate();
             return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

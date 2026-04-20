@@ -96,7 +96,7 @@ Sau đó restart Tomcat. (Start tomcat)
 ---
 
 Chạy project trên trình duyệt: (tùy thư mục desploy vào mà đường dẫn sau 8080/ sẽ khác)
-http://localhost:8080/webapp/login
+http://localhost:8080/webapp/auth/login
 
 Trang login sẽ xuất hiện.
 

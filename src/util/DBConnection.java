@@ -6,10 +6,10 @@ import java.sql.DriverManager;
 public class DBConnection {
 
     private static final String URL =
-            "jdbc:mysql://localhost:3306/eye_hospital?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh";
+            "jdbc:mysql://localhost:3306/eye_hospital?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "@TaTh2005";
+    private static final String PASSWORD = "minhkhuat123";
 
     public static Connection getConnection() {
 

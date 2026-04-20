@@ -8,7 +8,7 @@ public class DataGenerator {
 
     static final String DB_URL = "jdbc:mysql://localhost:3306/eye_hospital";
     static final String USER = "root";
-    static final String PASS = "123456";
+    static final String PASS = "minhkhuat123";
 
     static Random rand = new Random();
 
