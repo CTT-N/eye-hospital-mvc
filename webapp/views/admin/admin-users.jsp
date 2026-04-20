@@ -108,6 +108,11 @@
     </header>
 
     <div class="content-area">
+      <c:if test="${param.msg == 'error_delete'}">
+        <div class="alert alert-danger" style="margin-bottom:20px;padding:12px;background:#fee2e2;color:#b91c1c;border-radius:4px; border:1px solid #f87171">
+          <i class="fas fa-exclamation-circle"></i> Không thể xóa người dùng này vì hồ sơ đã tồn tại các dữ liệu lịch sử khám bệnh.
+        </div>
+      </c:if>
       <div class="filter-bar">
         <div class="search-box" style="flex:1;max-width:280px">
           <span class="search-icon"><i class="fas fa-search"></i></span>

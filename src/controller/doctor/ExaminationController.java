@@ -3,9 +3,11 @@ package controller.doctor;
 import dao.AppointmentDAO;
 import dao.DoctorDAO;
 import dao.MedicalRecordDAO;
+import dao.InvoiceDAO;
 import model.Appointment;
 import model.Doctor;
 import model.MedicalRecord;
+import model.Invoice;
 import model.User;
 
 import jakarta.servlet.ServletException;
@@ -146,6 +148,16 @@ public class ExaminationController extends HttpServlet {
                 storeDraft(session, appointmentId, symptoms, diagnosis, treatment, note);
                 response.sendRedirect(request.getContextPath() + "/doctor/examination?appointmentId=" + appointmentId + "&error=save_failed");
                 return;
+            }
+
+            InvoiceDAO invoiceDAO = new InvoiceDAO();
+            if (invoiceDAO.getInvoicesByAppointmentId(appointmentId).isEmpty()) {
+                Invoice invoice = new Invoice();
+                invoice.setInvoiceId("INV-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
+                invoice.setAppointmentId(appointmentId);
+                invoice.setDate(new Date(System.currentTimeMillis()));
+                invoice.setTotalAmount(200000.0);
+                invoiceDAO.insertInvoice(invoice);
             }
 
             clearDraft(session);

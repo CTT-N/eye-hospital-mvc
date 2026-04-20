@@ -2,9 +2,12 @@ package controller.patient;
 
 import dao.AppointmentDAO;
 import dao.PatientDAO;
+import dao.UserDAO;
+import dao.MedicalRecordDAO;
 import model.Appointment;
 import model.Patient;
 import model.User;
+import model.MedicalRecord;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -53,31 +56,88 @@ public class PatientRegisterController extends HttpServlet {
             return;
         }
 
+        request.setCharacterEncoding("UTF-8");
+
         String dateStr = request.getParameter("date");
         String timeStr = request.getParameter("time");
+        String doctorId = request.getParameter("doctorId");
 
-        if (dateStr == null || dateStr.isEmpty() || timeStr == null || timeStr.isEmpty()) {
-            request.setAttribute("error", "Vui lòng chọn ngày và giờ khám.");
+        if (dateStr == null || dateStr.isEmpty() || timeStr == null || timeStr.isEmpty() || doctorId == null || doctorId.isEmpty()) {
+            request.setAttribute("error", "Vui lòng chọn ngày, giờ khám và bác sĩ.");
             request.getRequestDispatcher("/views/patient/book-appointment.jsp").forward(request, response);
             return;
         }
 
-        Appointment appt = new Appointment();
-        appt.setAppointmentId(UUID.randomUUID().toString());
-        appt.setPatientId(patient.getPatientId());
-        appt.setDoctorId(request.getParameter("doctorId"));
+        String fullName = request.getParameter("fullName");
+        String dobStr = request.getParameter("dob");
+        String phone = request.getParameter("phone");
+        String email = request.getParameter("email");
+        String gender = request.getParameter("gender");
+        String insuranceId = request.getParameter("insuranceId");
+        String reason = request.getParameter("reason");
+        String medicalHistory = request.getParameter("medicalHistory");
 
+        Date apptDate;
+        Time apptTime;
         try {
-            appt.setDate(Date.valueOf(dateStr));
-            appt.setTime(Time.valueOf(timeStr + ":00"));
+            apptDate = Date.valueOf(dateStr);
+            apptTime = Time.valueOf(timeStr + ":00");
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", "Ngày hoặc giờ không hợp lệ. Vui lòng chọn lại.");
             request.getRequestDispatcher("/views/patient/book-appointment.jsp").forward(request, response);
             return;
         }
 
+        if (!appointmentDAO.isDoctorAvailable(doctorId, apptDate, apptTime)) {
+            request.setAttribute("error", "Bác sĩ đã có lịch hẹn vào thời gian này. Vui lòng chọn giờ hoặc bác sĩ khác.");
+            request.getRequestDispatcher("/views/patient/book-appointment.jsp").forward(request, response);
+            return;
+        }
+
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            user.setFullName(fullName.trim());
+        }
+        if (phone != null) user.setPhone(phone.trim());
+        if (email != null) user.setEmail(email.trim());
+        new UserDAO().updateUser(user);
+        session.setAttribute("user", user);
+
+        try {
+            if (dobStr != null && !dobStr.isEmpty()) patient.setBirthday(Date.valueOf(dobStr));
+        } catch (IllegalArgumentException e) {}
+        
+        if (gender != null) patient.setGender(gender);
+        
+        String combinedNote = "";
+        if (insuranceId != null && !insuranceId.trim().isEmpty()) {
+            combinedNote += "BHYT: " + insuranceId.trim() + " | ";
+        }
+        if (medicalHistory != null && !medicalHistory.trim().isEmpty()) {
+            combinedNote += "Tiền sử: " + medicalHistory.trim();
+        }
+        if (!combinedNote.isEmpty()) patient.setNote(combinedNote);
+        
+        patientDAO.updatePatient(patient);
+
+        Appointment appt = new Appointment();
+        String appointmentId = "APT-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        appt.setAppointmentId(appointmentId);
+        appt.setPatientId(patient.getPatientId());
+        appt.setDoctorId(doctorId);
+        appt.setDate(apptDate);
+        appt.setTime(apptTime);
         appt.setStatus("PENDING");
         appointmentDAO.insertAppointment(appt);
+
+        MedicalRecord record = new MedicalRecord();
+        record.setRecordId("MR-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
+        record.setAppointmentId(appointmentId);
+        record.setSymptoms(reason != null ? reason.trim() : "");
+        record.setDiagnosis("");
+        record.setTreatment("");
+        record.setNote("");
+        record.setCreatedDate(new Date(System.currentTimeMillis()));
+        new MedicalRecordDAO().insertRecord(record);
 
         response.sendRedirect(request.getContextPath() + "/patient/history?msg=registered");
     }

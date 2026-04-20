@@ -47,7 +47,10 @@ public class ManageUserController extends HttpServlet {
         
         if ("delete".equals(action)) {
             String userId = request.getParameter("userId");
-            userDAO.deleteUser(userId);
+            if (!userDAO.deleteUser(userId)) {
+                response.sendRedirect(request.getContextPath() + "/admin/users?msg=error_delete");
+                return;
+            }
         } else if ("updateRole".equals(action)) {
             String userId = request.getParameter("userId");
             String role = request.getParameter("role");

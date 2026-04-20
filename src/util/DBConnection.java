@@ -9,7 +9,7 @@ public class DBConnection {
             "jdbc:mysql://localhost:3306/eye_hospital?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "minhkhuat123";
+    private static final String PASSWORD = "@TaTh2005";
 
     public static Connection getConnection() {
 

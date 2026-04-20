@@ -411,10 +411,27 @@ public class AppointmentDAO {
 
             int rows = ps.executeUpdate();
             return rows > 0;
+        return false;
+    }
+
+    public boolean isDoctorAvailable(String doctorId, Date date, Time time) {
+        String sql = "SELECT * FROM Appointment WHERE doctorId=? AND date=? AND time=? AND status != 'CANCELLED'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, doctorId);
+            ps.setDate(2, date);
+            ps.setTime(3, time);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return false; // Doctor already has an appointment at this time
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return true; // Available
     }
 
     public Appointment getAppointmentByIdEnriched(String appointmentId) {
