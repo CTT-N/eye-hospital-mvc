@@ -1,4 +1,4 @@
-// book-appointment.js — Date grid, specialty/doctor/time selection, and booking
+// book-appointment.js
 
 const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const dateGrid = document.getElementById('dateGrid');
@@ -19,6 +19,7 @@ for (let i = 0; i < 7; i++) {
       const mm   = String(d.getMonth() + 1).padStart(2, '0');
       const dd   = String(d.getDate()).padStart(2, '0');
       document.getElementById('hidDate').value = `${yyyy}-${mm}-${dd}`;
+      loadBookedSlots();
     };
   }
   dateGrid.appendChild(btn);
@@ -27,7 +28,6 @@ for (let i = 0; i < 7; i++) {
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 
-// Pre-select tomorrow's date in hidden input
 (function () {
   const d = tomorrow;
   const yyyy = d.getFullYear();
@@ -54,6 +54,7 @@ function selectDoc(el, doctorId, fullName) {
   el.classList.add('selected');
   document.getElementById('sumDoc').textContent = fullName || doctorId;
   document.getElementById('hidDoctorId').value = doctorId;
+  loadBookedSlots();
 }
 
 function selectTime(el) {
@@ -65,13 +66,39 @@ function selectTime(el) {
   document.getElementById('hidTime').value = t;
 }
 
-// Pre-select the default time shown as selected in the markup
 (function () {
   const defaultTime = document.querySelector('.time-btn.selected');
   if (defaultTime) {
     document.getElementById('hidTime').value = defaultTime.textContent.trim();
   }
 })();
+
+function loadBookedSlots() {
+  const doctorId = document.getElementById('hidDoctorId').value;
+  const date     = document.getElementById('hidDate').value;
+  if (!doctorId || !date) return;
+
+  fetch(CONTEXT_PATH + '/patient/available-slots?doctorId=' + encodeURIComponent(doctorId) + '&date=' + encodeURIComponent(date))
+    .then(function(r) { return r.json(); })
+    .then(function(bookedTimes) {
+      document.querySelectorAll('.time-btn').forEach(function(btn) {
+        const t = btn.textContent.trim();
+        if (bookedTimes.includes(t)) {
+          btn.classList.add('full');
+          btn.onclick = null;
+          if (btn.classList.contains('selected')) {
+            btn.classList.remove('selected');
+            document.getElementById('hidTime').value = '';
+            document.getElementById('sumTime').textContent = '-- Chọn giờ --';
+          }
+        } else {
+          btn.classList.remove('full');
+          btn.onclick = function() { selectTime(this); };
+        }
+      });
+    })
+    .catch(function() {});
+}
 
 function confirmBooking() {
   const doctorId = document.getElementById('hidDoctorId').value;

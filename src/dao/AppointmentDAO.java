@@ -417,6 +417,25 @@ public class AppointmentDAO {
         return false;
     }
 
+    public List<String> getBookedTimesByDoctorAndDate(String doctorId, Date date) {
+        List<String> times = new ArrayList<>();
+        String sql = "SELECT time FROM Appointment WHERE doctorId=? AND date=? AND status != 'CANCELLED'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, doctorId);
+            ps.setDate(2, date);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Time t = rs.getTime("time");
+                    times.add(String.format("%02d:%02d", t.toLocalTime().getHour(), t.toLocalTime().getMinute()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return times;
+    }
+
     public boolean isDoctorAvailable(String doctorId, Date date, Time time) {
         String sql = "SELECT * FROM Appointment WHERE doctorId=? AND date=? AND time=? AND status != 'CANCELLED'";
         try (Connection conn = DBConnection.getConnection();

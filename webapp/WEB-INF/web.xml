@@ -172,6 +172,15 @@
 
 <!--Mapping Patient Controllers-->
     <servlet>
+        <servlet-name>AvailableSlotsController</servlet-name>
+        <servlet-class>controller.patient.AvailableSlotsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AvailableSlotsController</servlet-name>
+        <url-pattern>/patient/available-slots</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>PatientDashboardController</servlet-name>
         <servlet-class>controller.patient.PatientDashboardController</servlet-class>
     </servlet>

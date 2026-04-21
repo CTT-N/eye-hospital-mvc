@@ -68,14 +68,23 @@ public class PatientAppointmentController extends HttpServlet {
                 patientDAO.insertPatient(patient);
             }
 
+            Date date = Date.valueOf(dateStr);
+            Time time = Time.valueOf(timeStr + ":00");
+
+            if (!appointmentDAO.isDoctorAvailable(doctorId, date, time)) {
+                request.setAttribute("error", "Khung giờ " + timeStr + " ngày " + dateStr + " đã được đặt. Vui lòng chọn giờ khác.");
+                doGet(request, response);
+                return;
+            }
+
             // Tạo đối tượng Appointment
             Appointment appt = new Appointment();
             appt.setAppointmentId("APT-" + UUID.randomUUID().toString().substring(0, 8));
             appt.setPatientId(patient.getPatientId());
             appt.setDoctorId(doctorId);
-            appt.setDate(Date.valueOf(dateStr));
-            appt.setTime(Time.valueOf(timeStr + ":00")); // format HH:mm:ss
-            appt.setStatus("PENDING"); // trạng thái chờ duyệt
+            appt.setDate(date);
+            appt.setTime(time);
+            appt.setStatus("PENDING");
 
             boolean success = appointmentDAO.insertAppointment(appt);
             

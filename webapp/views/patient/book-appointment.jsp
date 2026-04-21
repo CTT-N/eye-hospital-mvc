@@ -105,18 +105,18 @@
       <h4><div class="num">3</div> Chọn ngày khám</h4>
       <div class="date-grid" id="dateGrid"></div>
       <h4 style="margin-top:20px"><div class="num">4</div> Chọn giờ khám</h4>
-      <div class="time-grid">
-        <div class="time-btn full">07:00</div>
+      <div class="time-grid" id="timeGrid">
+        <div class="time-btn" onclick="selectTime(this)">07:00</div>
         <div class="time-btn selected" onclick="selectTime(this)">07:30</div>
         <div class="time-btn" onclick="selectTime(this)">08:00</div>
         <div class="time-btn" onclick="selectTime(this)">08:30</div>
         <div class="time-btn" onclick="selectTime(this)">09:00</div>
-        <div class="time-btn full">09:30</div>
+        <div class="time-btn" onclick="selectTime(this)">09:30</div>
         <div class="time-btn" onclick="selectTime(this)">10:00</div>
         <div class="time-btn" onclick="selectTime(this)">10:30</div>
         <div class="time-btn" onclick="selectTime(this)">13:30</div>
         <div class="time-btn" onclick="selectTime(this)">14:00</div>
-        <div class="time-btn full">14:30</div>
+        <div class="time-btn" onclick="selectTime(this)">14:30</div>
         <div class="time-btn" onclick="selectTime(this)">15:00</div>
       </div>
     </div>
@@ -169,6 +169,7 @@
   </form>
 </div>
 
+<script>const CONTEXT_PATH = '${pageContext.request.contextPath}';</script>
 <script src="${pageContext.request.contextPath}/static/js/book-appointment.js"></script>
 </body>
 </html>
