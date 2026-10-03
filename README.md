@@ -1,5 +1,5 @@
-# eye-hospital-mvc
-Web Eye Hospital Management System (Java MVC + MySQL)
+# EYE HOSPITAL MANAGEMENT SYSTEM
+> A web-based hospital management system designed to support the management of patients, doctors, appointments, medical examinations, and hospital services (Java MVC + MySQL)
 
 Project sử dụng:
 - Java Servlet + JSP
@@ -21,155 +21,180 @@ Kiểm tra Java:
 java -version
 javac -version
 
+---
+
+## Overview
+
+Eye Hospital Management System is a web-based application developed as a team project to support the management and operation of an eye hospital.
+
+The system provides different functionalities for patients, doctors, managers, and administrators, helping manage patient information, appointments, medical examinations, and hospital services through a centralized web application.
+
+The project was developed using Java web technologies with a MySQL database.
 
 ---
 
-Clone project từ GitHub:
-git clone <repo-url>
+## Project Objectives
 
-Sau đó mở project bằng VS Code hoặc IDE Java.
-
----
-
-Tạo database:
-
-Trong project đã có file:
-database.sql
-
-Cách 1 (khuyên dùng):
-
-- Mở MySQL Workbench  
-- Chọn **File → Open SQL Script**  
-- Mở file `database.sql`  
-- Nhấn nút **Execute (⚡)**  
-
-Database và dữ liệu mẫu sẽ được tạo tự động.
-
-Cách 2 (command line):
-mysql -u root -p
-
-Sau đó chạy:
-source path/to/database.sql;
+- Build a web-based system for managing eye hospital operations.
+- Manage patient and doctor information.
+- Support appointment scheduling and management.
+- Manage medical examination and patient records.
+- Provide different functionalities based on user roles.
+- Apply database management and web application development practices.
 
 ---
 
-Cấu hình kết nối database:
+## Technologies
 
-Mở file:
-src/util/DBConnection.java
+### Backend
 
-Kiểm tra thông tin kết nối:
-jdbc:mysql://localhost:3306/eye_hospital
+- Java
+- JSP / Servlet
+- Apache Tomcat
 
-ví dụ:
-String url = "jdbc:mysql://localhost:3306/eye_hospital";
-String user = "root";
-String password = "123456";
+### Frontend
 
-(Nếu password MySQL khác thì chỉnh lại.)
+- HTML
+- CSS
+- JavaScript
+- JSP
 
----
+### Database
 
-Kiểm tra thư viện trong project: webapp/WEB-INF/lib
+- MySQL
+- JDBC
 
-Thư mục này cần có:
+### Tools
 
-- mysql-connector-j.jar
-- servlet-api.jar
-
----
-
-Build project:
-
-Trong VS Code:
-Ctrl + Shift + B
+- Git
+- GitHub
+- Maven
+- IntelliJ IDEA / NetBeans
 
 ---
 
-Deploy vào Tomcat:
+## User Roles
 
-Copy thư mục project vào: apache-tomcat/webapps/
-(thư mục eye-hospital-mvc/webapp/)
+### Doctor
 
-Sau đó restart Tomcat. (Start tomcat)
+- View assigned appointments
+- View patient information
+- Manage medical examination records
+- Update examination results
 
----
+### Patient
 
-Chạy project trên trình duyệt: (tùy thư mục desploy vào mà đường dẫn sau 8080/ sẽ khác)
-http://localhost:8080/webapp/auth/login
+- Register and log in
+- Manage personal information
+- Book appointments
+- View appointment information
+- View medical examination records
 
-Trang login sẽ xuất hiện.
+### Manager
 
----
+- Manage doctors and patients
+- Manage hospital services
+- Monitor appointments and hospital operations
 
-Cấu trúc project:
-eye-hospital-mvc
-│
-├── src
-│   ├── controller
-│   │     LoginController.java
-│   │     ...
-│   ├── dao
-│   │     UserDAO.java
-│   │     ...
-│   ├── model
-│   │     User.java
-│   │     ...
-│   └── util
-│         DBConnection.java
-│
-├── webapp
-│   ├── css
-│   ├── js
-│   │
-│   ├── views
-│   │     home.jsp
-│   │     login.jsp
-│   │
-│   │     ├── admin
-│   │     │     dashboard.jsp
-│   │     │     ...
-│   │     ├── doctor
-│   │     │     dashboard.jsp
-│   │     │     ...
-│   │     ├── manager
-│   │     │     dashboard.jsp
-│   │     │     ...
-│   │     └── patient
-│   │           dashboard.jsp
-│   │           ...
-│   └── WEB-INF
-│        ├── classes
-│        ├── lib
-│        │    mysql-connector-j-9.6.0.jar
-│        │    servlet-api.jar
-│        └── web.xml
+### Administrator
 
+- Manage user accounts
+- Manage system access and permissions
 
 ---
 
-Lỗi thường gặp:
+## Main Features
 
-Không kết nối được database:
+### Authentication and Authorization
 
-- Kiểm tra MySQL đã chạy chưa
-- Kiểm tra username/password
-- Kiểm tra database đã import chưa
+- User registration and login
+- Session management
+- Role-based access control
+
+### Patient Management
+
+- Manage patient information
+- Search and view patient records
+- View medical history
+
+### Doctor Management
+
+- Manage doctor information
+- View doctor schedules
+- Manage assigned appointments
+
+### Appointment Management
+
+- Create appointments
+- View appointment schedules
+- Update appointment status
+- Manage appointments between patients and doctors
+
+### Medical Examination
+
+- Record examination information
+- Store examination results
+- View patient examination history
+
+### Hospital Management
+
+- Manage hospital services
+- Manage users and system information
+- Support different workflows for each role
 
 ---
 
-Lỗi 404:
+## Application Screenshots
 
-- Kiểm tra project nằm trong `tomcat/webapps`
-- Restart Tomcat
+### Home Page 
+
+![Home Page](images/home.jpg)
+
+### Login Page
+
+![Login Page](images/login.jpg)
+
+### Patient Dashboard
+
+![Patient Dashboard](images/patient-dashboard.jpg)
+
+### Doctor Dashboard
+
+![Doctor Dashboard](images/doctor-dashboard.jpg)
+
+### Appointment Management
+
+![Appointment Management](images/appointment.jpg)
+
 
 ---
 
-Lỗi ClassNotFoundException:
+## System Architecture
 
-Kiểm tra file:
-WEB-INF/lib/mysql-connector-j.jar
+The application follows a layered web application architecture:
 
----
-
-Sau khi hoàn thành các bước trên, project sẽ chạy được trên máy local.
+```text
+              +----------------------+
+              |       Client         |
+              |  HTML / CSS / JS     |
+              |        JSP           |
+              +----------+-----------+
+                         |
+                         v
+              +----------------------+
+              |      Controller      |
+              |    Servlet / JSP     |
+              +----------+-----------+
+                         |
+                         v
+              +----------------------+
+              |        Model         |
+              |   Java / Business    |
+              |       Logic          |
+              +----------+-----------+
+                         |
+                         v
+              +----------------------+
+              |      Database        |
+              |        MySQL         |
+              +----------------------+
