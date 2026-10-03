@@ -148,23 +148,23 @@ The project was developed using Java web technologies with a MySQL database.
 
 ### Home Page 
 
-![Home Page](images/home.jpg)
+![Home Page](images/home.jpeg)
 
 ### Login Page
 
-![Login Page](images/login.jpg)
+![Login Page](images/login.jpeg)
 
 ### Patient Dashboard
 
-![Patient Dashboard](images/patient-dashboard.jpg)
+![Patient Dashboard](images/patient-dashboard.jpeg)
 
 ### Doctor Dashboard
 
-![Doctor Dashboard](images/doctor-dashboard.jpg)
+![Doctor Dashboard](images/doctor-dashboard.jpeg)
 
 ### Appointment Management
 
-![Appointment Management](images/appointment.jpg)
+![Appointment Management](images/appointment.jpeg)
 
 
 ---
